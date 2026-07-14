@@ -43,7 +43,7 @@ const coreMat = new THREE.ShaderMaterial({
   transparent: true,
   uniforms: {
     uTime: { value: 0 },
-    uAmp: { value: 0.16 },
+    uAmp: { value: 0.2 },
     uMouse: { value: new THREE.Vector2(0, 0) },
     uA: { value: ACCENT },
     uB: { value: ACCENT2 },
@@ -104,9 +104,9 @@ const coreMat = new THREE.ShaderMaterial({
 
     // smooth rolling displacement (low frequency, gentle second octave)
     float disp(vec3 dir) {
-      float t = uTime * 0.2;
+      float t = uTime * 0.32;
       float n = snoise(dir * 1.05 + vec3(t, t * 0.6, uMouse.x + uMouse.y));
-      n += 0.22 * snoise(dir * 1.9 - vec3(t * 0.7));
+      n += 0.28 * snoise(dir * 1.9 - vec3(t * 0.75));
       return n;
     }
 
@@ -290,11 +290,11 @@ function animate() {
   // core breathing + rotation
   coreMat.uniforms.uTime.value = t;
   coreMat.uniforms.uMouse.value.set(pointer.x, pointer.y);
-  core.rotation.y = t * 0.1 + pointer.x * 0.32;
-  core.rotation.x = pointer.y * 0.26 + Math.sin(t * 0.18) * 0.08;
+  core.rotation.y = t * 0.14 + pointer.x * 0.32;
+  core.rotation.x = pointer.y * 0.26 + Math.sin(t * 0.24) * 0.1;
 
-  shell.rotation.y = -t * 0.07;
-  shell.rotation.x = t * 0.04;
+  shell.rotation.y = -t * 0.09;
+  shell.rotation.x = t * 0.05;
 
   ringGroup.rotation.y = t * 0.08 + pointer.x * 0.3;
   ringGroup.rotation.x = pointer.y * 0.2;
@@ -313,8 +313,9 @@ function animate() {
   shell.position.copy(core.position);
   ringGroup.position.copy(core.position);
   const scale = Math.max(0.55, 1 - s * 0.18);
-  core.scale.setScalar(scale);
-  shell.scale.setScalar(scale);
+  const pulse = 1 + Math.sin(t * 0.9) * 0.03; // gentle breathing
+  core.scale.setScalar(scale * pulse);
+  shell.scale.setScalar(scale * (1 + Math.sin(t * 0.9 + 0.6) * 0.02));
   ringGroup.scale.setScalar(scale);
 
   // camera gentle parallax
