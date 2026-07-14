@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>João Vaz — Product Manager</title>
+  <meta name="description" content="João Vaz — Product Manager for data products at OLX Group Motors B2B. Strategy, ML products, and AI-assisted building." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- 3D canvas background + hero object -->
+  <canvas id="scene"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Progress bar -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- Nav -->
+  <nav class="nav" id="nav">
+    <a href="#top" class="nav__mark">JV</a>
+    <div class="nav__links">
+      <a href="#about">About</a>
+      <a href="#work">Experience</a>
+      <a href="#building">Building</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact" class="nav__cta">Contact</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <header class="hero" id="top">
+      <div class="hero__inner">
+        <p class="hero__eyebrow reveal">Product Manager · Data Products · B2B</p>
+        <h1 class="hero__title" id="heroTitle">
+          <span class="hero__line" data-text="João">João</span>
+          <span class="hero__line hero__line--accent" data-text="Vaz">Vaz</span>
+        </h1>
+        <p class="hero__lede reveal">
+          I set product strategy for the data tools that
+          <strong>12k+ professional car dealers</strong> rely on across Portugal,
+          Poland &amp; Romania — and I ship production fixes with AI tooling when it counts.
+        </p>
+        <div class="hero__actions reveal">
+          <a class="btn btn--primary" href="#contact">Get in touch</a>
+          <a class="btn btn--ghost" href="#work">See the work</a>
+        </div>
+      </div>
+      <div class="hero__scroll reveal" aria-hidden="true">
+        <span>Scroll</span>
+        <span class="hero__scroll-line"></span>
+      </div>
+    </header>
+
+    <!-- ABOUT -->
+    <section class="section section--about" id="about">
+      <div class="section__label reveal"><span>01</span> About</div>
+      <p class="lead reveal">
+        Product Manager at <em>OLX Group (Motors, B2B)</em>, part of Prosus. I lead the
+        <strong>Insights &amp; Recommendations</strong> team — a 10-person crew of engineers,
+        a designer and an analyst building data and recommendation products for professional dealers.
+      </p>
+      <p class="lead reveal">
+        Rated <strong>above expectations</strong> in every annual review since joining. I care about
+        outcome-driven strategy, honest experimentation, and using the newest tools to move faster
+        than the roadmap says I should.
+      </p>
+      <div class="stats">
+        <div class="stat reveal">
+          <span class="stat__num" data-target="150" data-suffix="%" data-prefix="+">+0%</span>
+          <span class="stat__label">avg weekly engagement lift across 3 data products</span>
+        </div>
+        <div class="stat reveal">
+          <span class="stat__num" data-target="40" data-suffix="+">0</span>
+          <span class="stat__label">experiments run — A/B, AA &amp; fake-door</span>
+        </div>
+        <div class="stat reveal">
+          <span class="stat__num" data-target="90" data-suffix="+">0</span>
+          <span class="stat__label">PMs enabled through AI-tooling workshops</span>
+        </div>
+        <div class="stat reveal">
+          <span class="stat__num" data-target="12" data-suffix="k+">0</span>
+          <span class="stat__label">professional dealers served in PT · PL · RO</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section class="section section--work" id="work">
+      <div class="section__label reveal"><span>02</span> Experience</div>
+      <ol class="timeline">
+        <li class="tl reveal">
+          <div class="tl__meta">
+            <span class="tl__date">Mar 2025 — Present</span>
+            <span class="tl__org"><i class="ic logo logo--olx" data-icon="olx"></i> Prosus</span>
+          </div>
+          <div class="tl__body">
+            <h3>Product Manager <span>— Motors, B2B</span></h3>
+            <p>Own product strategy for the Insights &amp; Recommendations team. Define outcome-driven
+              quarterly OKRs (~72% avg completion over 2.5 years) and steer the roadmap end-to-end,
+              from upstream data pipelines to downstream microservices.</p>
+            <ul class="tl__tags">
+              <li>Strategy &amp; OKRs</li>
+              <li>ML products</li>
+              <li>Experimentation</li>
+              <li>Data architecture</li>
+            </ul>
+          </div>
+        </li>
+        <li class="tl reveal">
+          <div class="tl__meta">
+            <span class="tl__date">Mar 2024 — Mar 2025</span>
+            <span class="tl__org"><i class="ic logo logo--olx" data-icon="olx"></i> Prosus</span>
+          </div>
+          <div class="tl__body">
+            <h3>Associate Product Manager <span>— Motors, B2B</span></h3>
+            <p>Same team and scope, promoted to PM in Mar 2025. Owned the product application of
+              data-science models — vehicle price estimation and expected time-to-sell — and ran
+              50+ in-person dealer interviews across PL, RO and PT.</p>
+            <ul class="tl__tags">
+              <li>Price estimation</li>
+              <li>Time-to-sell</li>
+              <li>Dealer research</li>
+            </ul>
+          </div>
+        </li>
+        <li class="tl reveal">
+          <div class="tl__meta">
+            <span class="tl__date">Sept 2023 — Feb 2024</span>
+            <span class="tl__org"><i class="ic logo logo--olx" data-icon="olx"></i></span>
+          </div>
+          <div class="tl__body">
+            <h3>Product Management Trainee</h3>
+            <p>Led product discovery on dealer lead generation; ran A/B experiments with Data Science
+              on recommendation types tied to exposure services.</p>
+            <ul class="tl__tags">
+              <li>Discovery</li>
+              <li>Lead generation</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- BUILDING -->
+    <section class="section section--building" id="building">
+      <div class="section__label reveal"><span>03</span> Building with AI</div>
+      <p class="lead reveal">
+        I don't just spec things — I build them. Fluent in the underlying concepts: MCPs, skills,
+        agent loops and goals, context windows. Here's what that looks like in practice.
+      </p>
+      <div class="cards">
+        <article class="card reveal" data-tilt>
+          <div class="card__glow"></div>
+          <div class="card__top"><i class="ic" data-icon="swift"></i><span class="card__kicker">macOS · Swift</span></div>
+          <h3>Mixd</h3>
+          <p>A native per-app volume mixer for macOS, built end-to-end with AI tooling using
+            Core Audio process taps. Set Zoom and Spotify to different levels, independently.</p>
+          <div class="card__foot"><span>Claude Code</span><span>Core Audio</span></div>
+        </article>
+        <article class="card reveal" data-tilt>
+          <div class="card__glow"></div>
+          <div class="card__top"><i class="ic" data-icon="anthropic"></i><span class="card__kicker">Productivity · Agents</span></div>
+          <h3>PM-OS</h3>
+          <p>My own productivity system on Claude: ingests meeting transcripts, extracts action items,
+            pulls knowledge-base context, drafts Slack messages for review, and picks the right MCP
+            tools for each analysis.</p>
+          <div class="card__foot"><span>MCP</span><span>Agent loops</span></div>
+        </article>
+        <article class="card reveal" data-tilt>
+          <div class="card__glow"></div>
+          <div class="card__top"><i class="ic" data-icon="users"></i><span class="card__kicker">Enablement</span></div>
+          <h3>AI Workshops</h3>
+          <p>Designed and ran AI-tooling workshops for the company's 90+ PMs. 75% of attendees adopted
+            harnesses into their day-to-day work.</p>
+          <div class="card__foot"><span>Harnesses</span><span>Adoption</span></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="section section--skills" id="skills">
+      <div class="section__label reveal"><span>04</span> Toolkit</div>
+      <div class="skills">
+        <div class="skill reveal">
+          <h4>AI-assisted building</h4>
+          <ul class="chips">
+            <li class="chip"><i class="ic" data-icon="anthropic"></i><span>Claude Code</span></li>
+            <li class="chip"><i class="ic" data-icon="cursor"></i><span>Cursor</span></li>
+            <li class="chip"><i class="ic" data-icon="heart"></i><span>Lovable</span></li>
+            <li class="chip"><i class="ic" data-icon="plug"></i><span>MCP</span></li>
+          </ul>
+        </div>
+        <div class="skill reveal">
+          <h4>Data &amp; experimentation</h4>
+          <ul class="chips">
+            <li class="chip"><i class="ic" data-icon="sql"></i><span>SQL</span></li>
+            <li class="chip"><i class="ic" data-icon="googleanalytics"></i><span>GA4</span></li>
+            <li class="chip"><i class="ic" data-icon="flask"></i><span>A/B &amp; fake-door</span></li>
+            <li class="chip"><i class="ic" data-icon="maze"></i><span>Maze</span></li>
+          </ul>
+        </div>
+        <div class="skill reveal">
+          <h4>Delivery &amp; technical</h4>
+          <ul class="chips">
+            <li class="chip"><i class="ic" data-icon="jira"></i><span>Jira</span></li>
+            <li class="chip"><i class="ic" data-icon="atlassian"></i><span>Atlassian</span></li>
+            <li class="chip"><i class="ic" data-icon="graphql"></i><span>GraphQL</span></li>
+            <li class="chip"><i class="ic" data-icon="flag"></i><span>LaunchDarkly</span></li>
+            <li class="chip"><i class="ic" data-icon="newrelic"></i><span>New Relic</span></li>
+            <li class="chip"><i class="ic" data-icon="postman"></i><span>Postman</span></li>
+          </ul>
+        </div>
+        <div class="skill reveal">
+          <h4>CRM &amp; GTM</h4>
+          <ul class="chips">
+            <li class="chip"><i class="ic" data-icon="message"></i><span>Braze</span></li>
+            <li class="chip"><i class="ic" data-icon="intercom"></i><span>Intercom</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="edu">
+        <div class="edu__block reveal">
+          <span class="edu__cap"><i class="ic" data-icon="cap"></i> MSc · Industrial Engineering &amp; Management · 2021–2023</span>
+          <div class="unis">
+            <div class="uni">
+              <i class="ic logo logo--uni" data-icon="minho"></i>
+              <div><h4>University of Minho</h4><span>Braga, Portugal</span></div>
+            </div>
+            <div class="uni">
+              <i class="ic logo logo--uni" data-icon="tugraz"></i>
+              <div><h4>TU Graz</h4><span>Graz, Austria</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="edu__block reveal">
+          <span class="edu__cap">Languages</span>
+          <div class="langs">
+            <div class="lang">
+              <i class="ic ic--lg" data-icon="ptflag"></i>
+              <div><h4>Portuguese</h4><span>Native</span></div>
+            </div>
+            <div class="lang">
+              <i class="ic ic--lg" data-icon="enflag"></i>
+              <div><h4>English</h4><span>C2 · Proficient</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section section--contact" id="contact">
+      <div class="section__label reveal"><span>05</span> Contact</div>
+      <h2 class="contact__title reveal">Let's build something<br /><span>worth shipping.</span></h2>
+      <div class="contact__links reveal">
+        <a href="mailto:joaosfvaz@gmail.com" class="contact__link">
+          <span class="contact__link-label">Email</span>
+          <span class="contact__link-val">joaosfvaz@gmail.com</span>
+        </a>
+        <a href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener" class="contact__link">
+          <span class="contact__link-label">LinkedIn</span>
+          <span class="contact__link-val">in/joaovaz00</span>
+        </a>
+        <a href="tel:+351966452685" class="contact__link">
+          <span class="contact__link-label">Phone</span>
+          <span class="contact__link-val">+351 966 452 685</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 João Vaz</span>
+    <span>Built with Three.js &amp; a little AI</span>
+  </footer>
+
+  <!-- Three.js via import map -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+  <script src="js/icons.js"></script>
+  <script type="module" src="js/scene.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
