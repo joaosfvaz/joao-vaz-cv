@@ -43,7 +43,7 @@ const coreMat = new THREE.ShaderMaterial({
   transparent: true,
   uniforms: {
     uTime: { value: 0 },
-    uAmp: { value: 0.28 },
+    uAmp: { value: 0.16 },
     uMouse: { value: new THREE.Vector2(0, 0) },
     uA: { value: ACCENT },
     uB: { value: ACCENT2 },
@@ -102,13 +102,33 @@ const coreMat = new THREE.ShaderMaterial({
       return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
     }
 
+    // smooth rolling displacement (low frequency, gentle second octave)
+    float disp(vec3 dir) {
+      float t = uTime * 0.2;
+      float n = snoise(dir * 1.05 + vec3(t, t * 0.6, uMouse.x + uMouse.y));
+      n += 0.22 * snoise(dir * 1.9 - vec3(t * 0.7));
+      return n;
+    }
+
     void main() {
-      vNormal = normal;
-      float t = uTime * 0.35;
-      float n = snoise(normal * 1.4 + vec3(t, t * 0.6, uMouse.x + uMouse.y));
-      n += 0.5 * snoise(normal * 3.0 - vec3(t * 0.8));
+      vec3 nrm = normalize(normal);
+      float rad = length(position);           // vertices lie on a sphere of this radius
+      float n = disp(nrm);
       vDisp = n;
-      vec3 pos = position + normal * n * uAmp;
+      vec3 pos = nrm * (rad + n * uAmp);
+
+      // reconstruct a soft surface normal from the displaced neighbourhood
+      vec3 t1 = normalize(cross(nrm, abs(nrm.y) < 0.99 ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0)));
+      vec3 t2 = normalize(cross(nrm, t1));
+      float eps = 0.12;
+      vec3 da = normalize(nrm + t1 * eps);
+      vec3 db = normalize(nrm + t2 * eps);
+      vec3 pa = da * (rad + disp(da) * uAmp);
+      vec3 pb = db * (rad + disp(db) * uAmp);
+      vec3 sn = normalize(cross(pa - pos, pb - pos));
+      if (dot(sn, nrm) < 0.0) sn = -sn;
+
+      vNormal = normalize(normalMatrix * sn);  // view-space normal for lighting
       gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
     }
   `,
@@ -119,26 +139,37 @@ const coreMat = new THREE.ShaderMaterial({
     varying vec3 vNormal;
     varying float vDisp;
     void main() {
-      float f = clamp(vDisp * 0.7 + 0.5, 0.0, 1.0);
-      vec3 col = mix(uA, uB, smoothstep(0.0, 0.6, f));
-      col = mix(col, uC, smoothstep(0.55, 1.0, f));
-      // fresnel-ish rim using view-space normal
-      float rim = pow(1.0 - abs(vNormal.z), 1.6);
-      col += rim * 0.35;
-      gl_FragColor = vec4(col, 0.92);
+      vec3 N = normalize(vNormal);
+      vec3 V = vec3(0.0, 0.0, 1.0);                 // toward camera (view space)
+      vec3 L = normalize(vec3(0.35, 0.55, 0.75));   // soft key light
+
+      // smooth colour gradient across the surface
+      float f = clamp(vDisp * 0.55 + 0.5, 0.0, 1.0);
+      vec3 col = mix(uA, uB, smoothstep(0.0, 0.7, f));
+      col = mix(col, uC, smoothstep(0.5, 1.0, f));
+
+      // gentle diffuse + wrap lighting for a rounded, realistic feel
+      float diff = dot(N, L) * 0.5 + 0.5;           // half-lambert, no hard terminator
+      col *= 0.55 + 0.6 * diff;
+
+      // soft fresnel rim
+      float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.6);
+      col += fres * 0.28;
+
+      gl_FragColor = vec4(col, 0.95);
     }
   `,
 });
 const core = new THREE.Mesh(coreGeo, coreMat);
 scene.add(core);
 
-/* wireframe shell around the core */
-const shellGeo = new THREE.IcosahedronGeometry(2.55, 1);
+/* faint wireframe halo around the core — finer mesh, barely-there lines */
+const shellGeo = new THREE.IcosahedronGeometry(2.62, 2);
 const shellMat = new THREE.MeshBasicMaterial({
-  color: 0x6ea8fe,
+  color: 0x8ab4ff,
   wireframe: true,
   transparent: true,
-  opacity: 0.16,
+  opacity: 0.06,
 });
 const shell = new THREE.Mesh(shellGeo, shellMat);
 scene.add(shell);
@@ -252,18 +283,18 @@ function animate() {
   requestAnimationFrame(animate);
   const t = clock.getElapsedTime();
 
-  // smooth pointer + scroll
-  pointer.lerp(target, 0.05);
+  // smooth pointer + scroll (extra damping = calmer, less jerky follow)
+  pointer.lerp(target, 0.035);
   scrollY += (scrollTarget - scrollY) * 0.06;
 
   // core breathing + rotation
   coreMat.uniforms.uTime.value = t;
   coreMat.uniforms.uMouse.value.set(pointer.x, pointer.y);
-  core.rotation.y = t * 0.15 + pointer.x * 0.5;
-  core.rotation.x = pointer.y * 0.4 + Math.sin(t * 0.2) * 0.1;
+  core.rotation.y = t * 0.1 + pointer.x * 0.32;
+  core.rotation.x = pointer.y * 0.26 + Math.sin(t * 0.18) * 0.08;
 
-  shell.rotation.y = -t * 0.1;
-  shell.rotation.x = t * 0.05;
+  shell.rotation.y = -t * 0.07;
+  shell.rotation.x = t * 0.04;
 
   ringGroup.rotation.y = t * 0.08 + pointer.x * 0.3;
   ringGroup.rotation.x = pointer.y * 0.2;
