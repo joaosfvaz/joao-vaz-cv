@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ *
  *  Motion layer — reveals, character splits, counters, the marquee,
- *  the hero instrument, magnetic buttons and the scroll-told timeline.
+ *  the hero glass, magnetic buttons and the scroll-told timeline.
  *
  *  Two rules hold this file together:
  *
@@ -178,10 +178,6 @@
     });
   }
 
-  /* the instrument is decorative, and arrives with the hero */
-  const dial = document.getElementById("dial");
-  if (dial) dial.classList.add("is-in");
-
   /* ------------------------------------------------------------------
    * Marquee
    * The track is duplicated once and translated by exactly half its
@@ -280,7 +276,8 @@
    * The global CSS `scroll-behavior: smooth` stays off: it desyncs
    * every scroll-driven effect from the input. Anchors smooth here.
    * ---------------------------------------------------------------- */
-  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  /* the hero CTA's fallback href is for the no-script page only */
+  document.querySelectorAll('a[href^="#"]:not([data-cta-open])').forEach((a) => {
     a.addEventListener("click", (e) => {
       const id = a.getAttribute("href").slice(1);
       const el = document.getElementById(id);
@@ -292,11 +289,12 @@
   });
 
   /* ------------------------------------------------------------------
-   * Hero — the copy lifts away, the instrument drifts and turns
+   * Hero — the copy lifts away as the page scrolls. The glass behind it
+   * is js/scene.js.
    * ---------------------------------------------------------------- */
   const heroInner = document.querySelector(".hero__inner");
   const heroScroll = document.querySelector(".hero__scroll");
-  if (!reduced && (heroInner || dial)) {
+  if (!reduced && heroInner) {
     S.onFrame((st) => {
       const p = clamp(st.y / (st.vh * 0.95), 0, 1);
       const e = S.smoothstep(p);
@@ -305,13 +303,103 @@
         heroInner.style.opacity = (1 - e).toFixed(3);
       }
       if (heroScroll) heroScroll.style.opacity = (1 - p * 2.6).toFixed(3);
-      if (dial) {
-        dial.style.setProperty("--dy", (e * 150).toFixed(1) + "px");
-        dial.style.setProperty("--s", (1 - e * 0.28).toFixed(3));
-        /* four looping animations off screen are four animations the
-           phone pays for and nobody sees */
-        dial.classList.toggle("is-idle", st.y > st.vh * 1.1);
+    });
+  }
+
+  /* ------------------------------------------------------------------
+   * Hero call to action
+   * "Get in touch" opens into a pill that types the address in; the
+   * arrow copies it, the pill confirms, and four seconds later the
+   * button comes back. Without this script the button is a link to the
+   * contact section.
+   * ---------------------------------------------------------------- */
+  const cta = document.querySelector("[data-cta]");
+  if (cta) {
+    const email = cta.dataset.email;
+    const openBtn = cta.querySelector("[data-cta-open]");
+    const pill = cta.querySelector("[data-cta-pill]");
+    const text = cta.querySelector("[data-cta-text]");
+    const copyBtn = cta.querySelector("[data-cta-copy]");
+    const status = cta.querySelector("[data-cta-status]");
+    const STEP = 60;
+    const HOLD = 4000;
+    let typing = null;
+    let resetTimer = null;
+
+    const type = (message) => {
+      clearInterval(typing);
+      status.textContent = message;
+      if (reduced) {
+        text.textContent = message;
+        return;
       }
+      let i = 0;
+      text.textContent = "";
+      typing = setInterval(() => {
+        i++;
+        text.textContent = message.slice(0, i);
+        if (i >= message.length) clearInterval(typing);
+      }, STEP);
+    };
+
+    /* out, then in — the two states never overlap */
+    const swap = (from, to, after) => {
+      const show = () => {
+        from.hidden = true;
+        from.classList.remove("cta-out");
+        to.hidden = false;
+        to.classList.remove("cta-in");
+        void to.offsetWidth;
+        to.classList.add("cta-in");
+        if (after) after();
+      };
+      if (reduced) return show();
+      from.classList.add("cta-out");
+      setTimeout(show, 200);
+    };
+
+    openBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      swap(openBtn, pill, () => {
+        type(email);
+        copyBtn.focus({ preventScroll: true });
+      });
+    });
+
+    copyBtn.addEventListener("click", () => {
+      if (cta.classList.contains("is-done")) return;
+      const done = (message) => {
+        cta.classList.add("is-done");
+        copyBtn.setAttribute("aria-label", "Copied");
+        type(message);
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => {
+          swap(pill, openBtn, () => {
+            clearInterval(typing);
+            text.textContent = "";
+            status.textContent = "";
+            cta.classList.remove("is-done");
+            copyBtn.setAttribute("aria-label", "Copy the email address");
+          });
+        }, HOLD);
+      };
+      const copy = navigator.clipboard && window.isSecureContext
+        ? navigator.clipboard.writeText(email)
+        : Promise.reject();
+      copy.then(
+        () => done("Copied — talk soon"),
+        () => {
+          /* no clipboard access: leave the address selected to copy by hand */
+          clearInterval(typing);
+          text.textContent = email;
+          const range = document.createRange();
+          range.selectNodeContents(text);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+          status.textContent = "Address selected — copy it from the field";
+        }
+      );
     });
   }
 

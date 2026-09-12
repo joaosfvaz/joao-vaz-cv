@@ -8,11 +8,7 @@
 
 /* ---------- Nav ---------- */
 .nav__back {
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
+  color: rgba(255, 255, 255, 0.8);
   transition: color 0.3s var(--ease);
 }
 .nav__back:hover { color: var(--accent-3); }
@@ -62,17 +58,10 @@
 .facts {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  gap: 14px;
   margin-bottom: 56px;
 }
-.fact {
-  background: var(--bg);
-  padding: 22px 22px 20px;
-  transition: background 0.4s var(--ease);
-}
-.fact:hover { background: var(--bg-2); }
+.fact { padding: 22px 22px 20px; }
 .fact dt {
   font-family: var(--mono);
   font-size: 11px;
@@ -87,12 +76,9 @@
 .notes {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  gap: 14px;
 }
-.note { background: var(--bg); padding: 28px 26px; transition: background 0.4s var(--ease); }
-.note:hover { background: var(--bg-2); }
+.note { padding: 28px 26px; }
 .note h4 { font-family: var(--display); font-size: 17px; font-weight: 600; margin-bottom: 10px; }
 .note p { font-size: 14.5px; color: var(--ink-dim); }
 
@@ -101,18 +87,13 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  gap: 10px;
 }
 .takeaways li {
-  background: var(--bg);
   padding: 24px 26px;
   font-size: 16px;
   color: var(--ink-dim);
-  transition: background 0.4s var(--ease);
 }
-.takeaways li:hover { background: var(--bg-2); }
 .takeaways strong { color: var(--ink); font-weight: 600; }
 .takeaways em { color: var(--accent-3); font-style: normal; }
 
@@ -138,8 +119,6 @@
    ================================================================== */
 .diagram {
   margin: 44px 0 0;
-  border: 1px solid var(--line);
-  background: var(--bg-2);
   padding: clamp(20px, 3.5vw, 40px);
   overflow-x: auto;
 }
@@ -152,7 +131,7 @@
   color: var(--ink-faint);
 }
 
-.d-box rect { fill: var(--bg); stroke: var(--line); stroke-width: 1; }
+.d-box rect { fill: rgba(255, 255, 255, 0.03); stroke: rgba(255, 255, 255, 0.16); stroke-width: 1; rx: 10px; }
 .d-box--fn rect { stroke: color-mix(in srgb, var(--accent) 55%, transparent); }
 .d-box--store rect {
   fill: color-mix(in srgb, var(--accent) 5%, transparent);
@@ -204,8 +183,11 @@
 
 /* a page that must state what it is deliberately not showing */
 .disclaimer {
-  border-left: 2px solid var(--accent);
-  padding: 4px 0 4px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 3px 0 0 var(--accent), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: 16px 20px 16px 22px;
   font-size: 14.5px;
   color: var(--ink-dim);
   max-width: 760px;

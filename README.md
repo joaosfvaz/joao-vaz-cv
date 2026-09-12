@@ -1,20 +1,35 @@
 # João Vaz — Personal Website
 
-A single-page personal site built from my CV. Near-black, flat and precise: the page is line-art,
-hairline grids and type, and everything that moves is CSS or SVG. No framework, no build step, and
-— since the Three.js scene came out — no runtime JavaScript dependency at all.
+A single-page personal site built from my CV. Liquid glass on a near-black ground: two wavy glass
+bands flow across every page from the header to the footer, and every surface is a translucent pane
+with a bright hairline edge. Everything that moves is CSS. No framework, no build step, and no
+runtime JavaScript dependency at all.
 
-The look takes the surface and motion character from [animejs.com](https://animejs.com)
-(flat dark ground, instrument line-art, monospace micro-labels, springy staggers) and the
-typographic discipline from [wodniack.dev](https://wodniack.dev) (display scale, numbered section
-rules, a ticker strip).
+The motion character comes from [animejs.com](https://animejs.com) (monospace micro-labels,
+springy staggers) and the typographic discipline from [wodniack.dev](https://wodniack.dev)
+(display scale, numbered section rules, a ticker strip). The glass — the pill nav, the buttons, the
+hero — came later.
 
 ## Highlights
 
-- **The hero instrument** — the portrait sits at the centre of an inline SVG dial: a 120-tick
-  ring, three coloured arcs, a dashed ring and a crosshair, each turning on its own clock. It
-  drifts and shrinks as the hero leaves, and stops turning once it is off screen. Roughly 20 lines
-  of markup and no library.
+- **The liquid scene** — soft accent light drifting behind two wide glass bands that run off both
+  edges of the page. Each band is one SVG tile — a wave along the top, two along the bottom —
+  repeated and used as both its picture and its mask, so the edges stay wavy and the sideways flow
+  loops without a seam. The front band blurs and saturates what passes under it. The scene is
+  fixed, so it runs from the header to the footer on every page, lit in that page's accent trio.
+  - **Motion:** CSS flows each band sideways and lets it breathe (a slow tilt and swell), each on
+    its own clock. `js/scene.js` adds the scroll: the bands rise and fall at different rates, fast
+    scrolling stretches them a little, and a veil rises as the hero leaves so the copy below has a
+    calm ground. There is no pointer interaction.
+  - **Structure:** `.scene__band` (scroll) › `.scene__tilt` (breathing) › `.scene__flow` (the
+    loop). No two motions share a transform, and all of it is transform and opacity.
+  - **Reduced motion:** nothing runs and the scene holds its first frame.
+- **Reveals** — glass settles out of a blur as the reading position reaches it, and panes catch a
+  sweep of light as they land.
+- **Get in touch** — the hero button opens into a pill that types the email address in, one
+  character every 60ms. The arrow copies it and the pill confirms; four seconds later the button
+  comes back. There is no form and nothing is collected. Without the script it is a link to the
+  contact section.
 - **One scroll driver** — `js/scroll.js` is the only reader of scroll position. It samples
   `scrollY` once per animation frame, caches layout metrics and section anchors on resize, and
   runs a single `requestAnimationFrame` loop that every effect subscribes to. Nothing else binds a
@@ -29,9 +44,9 @@ rules, a ticker strip).
   counters run up to the value already written in the markup.
 - **Scrollytelling** — the experience timeline draws its spine as you read, sticks each date
   beside its role, and lights the entry under the reading line.
-- **Interactive on hover** — magnetic buttons that lean towards the pointer, a wipe fill on the
-  calls to action, corner brackets that open around the portrait, sliding contact rows, masked nav
-  labels, and a ticker that pauses under the cursor.
+- **Interactive on hover** — magnetic buttons that lean towards the pointer, glass panes that
+  brighten and lift, sliding contact rows, masked nav labels, and a ticker that pauses under the
+  cursor.
 - **Visual enumerations** — no plain text lists. Skills render as branded icon chips (Claude,
   Cursor, Jira, GraphQL, New Relic, Postman, GA4, Maze…), experience carries the **OLX Group**
   lockup (circular "G" symbol + OLX wordmark), and education shows the real **University of Minho**
@@ -41,12 +56,14 @@ rules, a ticker strip).
   Brand marks: tool icons from [Simple Icons](https://simpleicons.org) (CC0); the University of
   Minho and TU Graz logos from Wikimedia Commons; the OLX Group circular symbol reconstructed as
   SVG. Used to identify the respective employer/institutions.
-- **Tasteful palette** — near-black ground, one hairline grey, and a three-colour accent
-  (electric blue → violet → teal) used only as small strokes and single-colour type. No gradient
-  washes, no glow, no blur.
+- **Liquid glass** — one recipe for every pane (`--glass-fill`, `--glass-edge`, `--glass-shine` at
+  the top of `styles.css`): a faint white fill the page's light shows through, a masked gradient
+  hairline on `::before`, and a top highlight. The light behind them is the liquid scene, so the
+  panes show the glass moving through them. The accent trio (electric blue → violet → teal) stays
+  for type and small strokes.
 - **Accessible** — `prefers-reduced-motion` takes an explicit branch, not a stripped animation:
-  the scroll loop never starts, and every sequence renders at its end state. Sticky positioning is
-  dropped below 900px, and the dial moves behind the copy and fades back.
+  the scroll loop never starts, and every sequence renders at its end state — the CSS glass scene
+  included, which holds its first frame. Sticky positioning is dropped below 900px.
 
 ## Pages
 
@@ -101,7 +118,7 @@ browser runs. Any other static server works too. Only the webfonts come from the
 
 ```
 CNAME             # the custom domain GitHub Pages serves from
-index.html        # markup + content (from the CV), and the hero dial SVG
+index.html        # markup + content (from the CV); every page opens with the #scene markup
 tabiya/           # /tabiya/  — the chess coach and its AWS diagram
 pm-os/            # /pm-os/   — the zones, the routines, the graph view
 team-context/     # /team-context/ — the MCP tool surface and its security boundary
@@ -111,13 +128,16 @@ tabiya.css        # what Tabiya adds: accents, lockup, screenshots
 pm-os.css         # what PM-OS adds: accents, graph frame, zone cards, routine list
 team-context.css  # what the MCP page adds: accents, tool grid, the allow/deny gate
 js/scroll.js    # the single scroll driver: metrics, progress, one rAF loop
-js/ui.js        # reveals, character splits, counters, marquee, timeline, magnetics
+js/scene.js     # couples the glass bands to the scroll, and raises the veil
+js/ui.js        # reveals, character splits, counters, marquee, timeline, magnetics, the hero CTA
 js/graph.js     # the generated Obsidian-style graph on the PM-OS page (that page only)
 js/icons.js     # inline-SVG icon system (brand marks + custom badges)
 dev-server.py   # no-cache static server for development
 ```
 
-Load order matters: `js/scroll.js` must define `window.Scroll` before `js/ui.js` consumes it.
+Load order matters: `js/scroll.js` must define `window.Scroll` before `js/scene.js` and `js/ui.js`
+consume it. Every page carries the
+`#scene` markup right after `<body>`.
 
 ## Two rules to keep
 
@@ -145,8 +165,11 @@ All copy lives in `index.html`. Accent colours are CSS variables at the top of `
 
 - **Speed of a reveal** — `revealIn` in `styles.css`, and the `--i` stagger step (70ms).
 - **The hero name** — `charUp`, and the 32ms per-character step in the `.is-lit` rule.
-- **The dial** — the `spin` durations on `.dial__ticks`, `.dial__arcs` and `.dial__dash`; how far
-  it drifts on scroll is the `--dy` and `--s` maths at the end of the hero block in `js/ui.js`.
+- **The glass bands** — the flow speed is the `flow` duration on each `.scene__flow` (46s back,
+  30s front); the breathing is `breatheBack` and `breatheFront`; the wave shape is the SVG path in
+  the `.scene__flow` background and mask; how far the bands travel on scroll is in `js/scene.js`;
+  how dark the scene gets under the copy is `VEIL_TO`.
+- **The light** — the `drift1`–`drift4` keyframes on `.aura__blob--*`.
 - **The ticker** — the pixels-per-second divisor in the marquee block of `js/ui.js`.
 - **The PM-OS graph** — the zone table at the top of `js/graph.js` (how many nodes each zone has
   and how far out it sits), and the beat interval at the bottom. It runs only while it is on

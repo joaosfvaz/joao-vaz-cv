@@ -4,7 +4,7 @@
    for the curated core and teal for what feeds it; the zone colours
    below are read by both the page and js/graph.js's legend.
    Everything else here is specific to this project: the graph view,
-   the zone cards, the routine list.
+   the zone panes, the routine list.
    ================================================================== */
 
 .page--pmos {
@@ -25,24 +25,16 @@
 .vault { margin: 0 0 26px; }
 .vault__frame {
   position: relative;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--r);
+  box-shadow: var(--glass-shine);
   background:
-    radial-gradient(72% 62% at 50% 46%, rgba(139, 124, 246, 0.07), transparent 70%),
-    var(--bg-2);
+    radial-gradient(72% 62% at 50% 46%, rgba(139, 124, 246, 0.09), transparent 70%),
+    rgba(255, 255, 255, 0.025);
   aspect-ratio: 16 / 8;
   min-height: 300px;
   overflow: hidden;
 }
-.vault__frame::before,
-.vault__frame::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  width: 20px; height: 20px;
-  border: 1px solid var(--accent);
-}
-.vault__frame::before { top: 10px; left: 10px; border-right: 0; border-bottom: 0; }
-.vault__frame::after { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }
 #vault { display: block; width: 100%; height: 100%; }
 
 .vault__key {
@@ -87,29 +79,26 @@
   list-style: none;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  gap: 14px;
   margin-top: 34px;
 }
 .zone {
   position: relative;
-  background: var(--bg);
   padding: 26px 24px 28px;
-  transition: background 0.4s var(--ease);
+  overflow: hidden;
 }
-.zone::before {
+.zone::after {
   content: "";
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 2px;
+  top: 0; left: 24px; right: 24px;
+  height: 2px;
+  border-radius: 2px;
   background: var(--zc, var(--ink-faint));
   transform: scaleX(0);
   transform-origin: 0 50%;
   transition: transform 0.5s var(--ease);
 }
-.zone:hover { background: var(--bg-2); }
-.zone:hover::before { transform: none; }
+.zone:hover::after { transform: none; }
 .zone[data-zone="curated"] { --zc: var(--z-curated); }
 .zone[data-zone="meetings"] { --zc: var(--z-meetings); }
 .zone[data-zone="work"] { --zc: var(--z-work); }
@@ -145,11 +134,10 @@
   grid-template-columns: 200px 1fr;
   gap: 28px;
   align-items: start;
-  border: 1px solid var(--line);
-  border-top: 0;
+  margin-top: 14px;
   padding: 26px 24px;
-  background: rgba(139, 124, 246, 0.05);
 }
+.rule-row { background-color: rgba(139, 124, 246, 0.06); }
 .rule-row__k {
   font-family: var(--mono);
   font-size: 11px;
@@ -165,18 +153,18 @@
 .routines {
   list-style: none;
   margin-top: 34px;
-  border: 1px solid var(--line);
+  overflow: hidden;
 }
 .routine {
   display: grid;
   grid-template-columns: 230px 1fr;
   gap: 28px;
   padding: 28px 26px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
   transition: background 0.4s var(--ease);
 }
 .routine:first-child { border-top: 0; }
-.routine:hover { background: var(--bg-2); }
+.routine:hover { background: rgba(255, 255, 255, 0.03); }
 .routine__when {
   font-family: var(--mono);
   font-size: 11.5px;
@@ -203,8 +191,10 @@
   font-size: 11px;
   letter-spacing: 0.06em;
   color: var(--ink-faint) !important;
-  border: 1px solid var(--line);
-  padding: 6px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px 12px;
   margin-bottom: 0 !important;
 }
 .routine__writes b { color: var(--accent-3); font-weight: 400; }
