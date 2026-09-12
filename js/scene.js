@@ -258,14 +258,19 @@ const S = window.Scroll;
 
    The story: the crystal leads the hero, steps back behind the copy
    while you read, wakes up for the building section, and returns to
-   meet you at the contact. Fog does the dimming for free. */
+   meet you at the contact. Fog does the dimming for free.
+
+   The reading sections keep it to the right of the 1120px text column —
+   the left margin is only ~160px wide at 1440, and the sticky date
+   column of the timeline lives there. Travel between poses is carried
+   by depth, scale and energy rather than by crossing the copy. */
 const POSES = {
   /*            x       y      z     scale  amp    rings  shift  glow   cam  */
   top:      { x:  1.05, y:  0.40, z:  0.0, s: 1.00, a: 0.20, r: 0.50, h:  0.00, g: 0.28, c: 9.0 },
   about:    { x:  2.05, y: -0.35, z: -6.0, s: 0.52, a: 0.12, r: 0.18, h: -0.18, g: 0.12, c: 9.4 },
-  work:     { x: -2.15, y:  0.15, z: -7.5, s: 0.44, a: 0.09, r: 0.30, h:  0.10, g: 0.10, c: 9.6 },
+  work:     { x:  2.30, y:  0.45, z: -7.5, s: 0.44, a: 0.09, r: 0.30, h:  0.10, g: 0.10, c: 9.6 },
   building: { x:  1.30, y:  0.30, z: -5.0, s: 0.66, a: 0.26, r: 0.55, h:  0.26, g: 0.22, c: 9.2 },
-  skills:   { x: -2.00, y: -0.25, z: -7.0, s: 0.42, a: 0.10, r: 0.20, h: -0.10, g: 0.10, c: 9.5 },
+  skills:   { x:  2.30, y: -0.45, z: -7.0, s: 0.42, a: 0.10, r: 0.20, h: -0.10, g: 0.10, c: 9.5 },
   contact:  { x:  0.00, y:  0.55, z:  0.2, s: 0.95, a: 0.28, r: 0.75, h:  0.05, g: 0.34, c: 8.4 },
 };
 const ORDER = ["top", "about", "work", "building", "skills", "contact"];

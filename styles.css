@@ -710,28 +710,33 @@ main, .nav, .footer { position: relative; z-index: 3; }
 /* ---------- Reveal on scroll ---------- */
 /* --i is set per element by js/ui.js, so siblings land as a run of
    beats instead of one block. */
-.reveal {
+/* Every reveal declaration is scoped to `:not(.is-done)`, so a finished
+   reveal is left with no transform, filter or transition of its own.
+   That matters twice over:
+
+   - a transform on an ancestor becomes the containing block for any
+     position: sticky child, which would break `.tl__meta`;
+   - `.reveal` and `.reveal.is-done` tie on specificity with `.stat` and
+     `.stat:hover`. Declaring `transform: none` or `transition: none`
+     here would win on source order and kill the hover polish those
+     components declare for themselves.
+
+   js/ui.js adds `is-done` once the transition has finished, and --i
+   staggers siblings so a group arrives as a run of beats. */
+.reveal:not(.is-done) {
   opacity: 0;
   transform: translate3d(0, 28px, 0);
+  filter: blur(6px);
+  will-change: transform, opacity;
   transition:
     opacity 0.85s var(--ease) calc(var(--i, 0) * 80ms),
     transform 0.85s var(--ease) calc(var(--i, 0) * 80ms),
     filter 0.85s var(--ease) calc(var(--i, 0) * 80ms);
-  filter: blur(6px);
-  will-change: transform, opacity;
 }
-.reveal.is-visible {
+.reveal.is-visible:not(.is-done) {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   filter: blur(0);
-}
-/* a finished reveal must drop its transform: a transform on an ancestor
-   becomes the containing block for any position: sticky child. */
-.reveal.is-done {
-  transform: none;
-  filter: none;
-  will-change: auto;
-  transition: none;
 }
 
 /* ---------- Responsive ---------- */
@@ -745,7 +750,7 @@ main, .nav, .footer { position: relative; z-index: 3; }
   }
   .tl__meta { position: static; top: auto; }
   .tl__body { opacity: 1; }
-  .reveal { filter: none; }
+  .reveal:not(.is-done) { filter: none; }
   .about__grid { grid-template-columns: 1fr; }
   .portrait { max-width: 340px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
@@ -761,7 +766,7 @@ main, .nav, .footer { position: relative; z-index: 3; }
   * { animation: none !important; transition-duration: 0.01ms !important; }
   /* js/scroll.js never starts its loop here; these are the end states */
   .veil { opacity: 0.55; }
-  .reveal { opacity: 1; transform: none; filter: none; }
+  .reveal, .reveal:not(.is-done) { opacity: 1; transform: none; filter: none; }
   .hero__line { overflow: visible; }
   .hero__line-in { transform: none; }
   .timeline::after { transform: scaleY(1); }

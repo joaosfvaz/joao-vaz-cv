@@ -60,6 +60,29 @@
       { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
     );
     revealEls.forEach((el) => io.observe(el));
+
+    /* IntersectionObserver never fires for an element the reader skipped
+       outright — a deep link such as /#building jumps on load, and every
+       section above it goes from below the viewport to above it without
+       crossing a visibility threshold. Those would stay at opacity 0 for
+       good, and a `.tl` stuck that way keeps the transform that breaks
+       its sticky date column. The scroll driver catches them. */
+    let passed = [];
+    S.onMeasure(() => {
+      passed = revealEls.map((el) => {
+        const r = el.getBoundingClientRect();
+        return { el: el, bottom: r.top + window.scrollY + r.height };
+      });
+    });
+    S.onScroll((st) => {
+      for (let i = 0; i < passed.length; i++) {
+        const m = passed[i];
+        if (m.bottom >= st.y || m.el.classList.contains("is-visible")) continue;
+        io.unobserve(m.el);
+        m.el.classList.add("is-visible");
+        settle(m.el);
+      }
+    });
   }
 
   /* ------------------------------------------------------------------
