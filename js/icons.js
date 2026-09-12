@@ -36,15 +36,21 @@
 
   // Rich badges (own colours / text / viewBox).
   const RICH = {
-    // OLX Group lockup — circular "G" symbol + OLX wordmark (monochrome brand mark).
+    /* OLX Group lockup. The symbol is an annulus with two solid quarter
+       discs — a large one to the top right and a small one to the bottom
+       left — which together read as the "G". The ring is cut with
+       fill-rule evenodd so the interior stays transparent and picks up
+       the tile colour instead of hard-coding white. */
     olx: {
-      vb: "0 0 250 100",
+      vb: "0 0 372 100",
       cls: "ic--logo",
       body:
-        '<circle cx="50" cy="50" r="47" fill="#1a1a1a"/>' +
-        '<path fill="#fff" d="M11 50 A39 39 0 0 0 89 50 Z"/>' +
-        '<path fill="#fff" d="M50 11 A39 39 0 0 1 89 50 L67 50 A17 17 0 0 0 50 33 Z"/>' +
-        '<text x="116" y="68" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="54" letter-spacing="0.5" fill="#1a1a1a">OLX</text>',
+        '<path fill="#3c4043" fill-rule="evenodd" d="' +
+        'M5 50 A45 45 0 1 1 95 50 A45 45 0 1 1 5 50 Z' +
+        'M20 50 A30 30 0 1 1 80 50 A30 30 0 1 1 20 50 Z"/>' +
+        '<path fill="#3c4043" d="M50 50 L50 20 A30 30 0 0 1 80 50 Z"/>' +
+        '<path fill="#3c4043" d="M50 50 L33 50 A17 17 0 0 0 50 67 Z"/>' +
+        '<text x="118" y="66" font-family="Space Grotesk, Arial, sans-serif" font-weight="600" font-size="44" letter-spacing="1.2" fill="#3c4043">OLX GROUP</text>',
     },
     // Official University of Minho mark (white glyph on maroon field).
     minho: {

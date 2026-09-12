@@ -550,7 +550,7 @@ main, .nav, .footer { position: relative; z-index: 3; }
   transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
 .ic.logo .ic__svg { width: 100%; height: 100%; }
-.ic.logo--olx { width: 62px; height: 25px; padding: 3px 6px; vertical-align: middle; }
+.ic.logo--olx { width: 89px; height: 24px; padding: 3px 6px; vertical-align: middle; }
 .ic.logo--uni { width: 54px; height: 36px; padding: 4px 6px; }
 /* Minho's mark fills its tile (white glyph on maroon) — let it bleed to the edges */
 .ic.logo--uni:has(.ic--logo-fill) { padding: 0; overflow: hidden; }
