@@ -37,13 +37,15 @@ const ACCENT3 = new THREE.Color(0x4fe0c8);
 /* ------------------------------------------------------------------ *
  *  Hero crystal — icosahedron with a vertex-displacement shader
  * ------------------------------------------------------------------ */
-const coreGeo = new THREE.IcosahedronGeometry(2.1, 6);
+const coreGeo = new THREE.IcosahedronGeometry(2.1, 5);
 
 const coreMat = new THREE.ShaderMaterial({
   transparent: true,
   uniforms: {
     uTime: { value: 0 },
     uAmp: { value: 0.2 },
+    uShift: { value: 0.0 },
+    uGlow: { value: 0.28 },
     uMouse: { value: new THREE.Vector2(0, 0) },
     uA: { value: ACCENT },
     uB: { value: ACCENT2 },
@@ -136,6 +138,8 @@ const coreMat = new THREE.ShaderMaterial({
     uniform vec3 uA;
     uniform vec3 uB;
     uniform vec3 uC;
+    uniform float uShift;
+    uniform float uGlow;
     varying vec3 vNormal;
     varying float vDisp;
     void main() {
@@ -144,7 +148,7 @@ const coreMat = new THREE.ShaderMaterial({
       vec3 L = normalize(vec3(0.35, 0.55, 0.75));   // soft key light
 
       // smooth colour gradient across the surface
-      float f = clamp(vDisp * 0.55 + 0.5, 0.0, 1.0);
+      float f = clamp(vDisp * 0.55 + 0.5 + uShift, 0.0, 1.0);
       vec3 col = mix(uA, uB, smoothstep(0.0, 0.7, f));
       col = mix(col, uC, smoothstep(0.5, 1.0, f));
 
@@ -154,7 +158,7 @@ const coreMat = new THREE.ShaderMaterial({
 
       // soft fresnel rim
       float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.6);
-      col += fres * 0.28;
+      col += fres * uGlow;
 
       gl_FragColor = vec4(col, 0.95);
     }
@@ -238,98 +242,187 @@ const fill = new THREE.PointLight(0xb388ff, 24, 40);
 fill.position.set(-8, -4, 4);
 scene.add(fill);
 
+
 /* ------------------------------------------------------------------ *
- *  Interaction — mouse parallax + scroll
+ *  Scroll storytelling
+ *
+ *  The crystal is the narrator. Each section owns a pose — where the
+ *  object sits, how big it is, how loud its surface and rings are, and
+ *  which end of the palette it leans on. Scroll interpolates between
+ *  the poses, so the object reacts to the story instead of drifting.
+ * ------------------------------------------------------------------ */
+const S = window.Scroll;
+
+/* One pose per section. x is in units of `spread`, so the object keeps
+   the same relation to the text column at every width.
+
+   The story: the crystal leads the hero, steps back behind the copy
+   while you read, wakes up for the building section, and returns to
+   meet you at the contact. Fog does the dimming for free. */
+const POSES = {
+  /*            x       y      z     scale  amp    rings  shift  glow   cam  */
+  top:      { x:  1.05, y:  0.40, z:  0.0, s: 1.00, a: 0.20, r: 0.50, h:  0.00, g: 0.28, c: 9.0 },
+  about:    { x:  2.05, y: -0.35, z: -6.0, s: 0.52, a: 0.12, r: 0.18, h: -0.18, g: 0.12, c: 9.4 },
+  work:     { x: -2.15, y:  0.15, z: -7.5, s: 0.44, a: 0.09, r: 0.30, h:  0.10, g: 0.10, c: 9.6 },
+  building: { x:  1.30, y:  0.30, z: -5.0, s: 0.66, a: 0.26, r: 0.55, h:  0.26, g: 0.22, c: 9.2 },
+  skills:   { x: -2.00, y: -0.25, z: -7.0, s: 0.42, a: 0.10, r: 0.20, h: -0.10, g: 0.10, c: 9.5 },
+  contact:  { x:  0.00, y:  0.55, z:  0.2, s: 0.95, a: 0.28, r: 0.75, h:  0.05, g: 0.34, c: 8.4 },
+};
+const ORDER = ["top", "about", "work", "building", "skills", "contact"];
+const KEYS = ["x", "y", "z", "s", "a", "r", "h", "g", "c"];
+
+let spread = 3.0;
+let sizeFit = 1.0;
+let yShift = 0.0;
+let stops = [];
+
+function computeLayout(state, anchors) {
+  const w = state.vw;
+  if (w > 1240) spread = 3.4;
+  else if (w > 1040) spread = 2.8;
+  else if (w > 860) spread = 2.2;
+  else if (w > 700) spread = 1.3;
+  else spread = 0.0; // phones: keep it centred, behind the veil
+
+  /* At radius 2.1 the crystal is wider than a phone viewport, so it
+     would bury the hero title. Shrink it to fit, and on phones drop it
+     below the title instead of behind it. */
+  sizeFit = S.clamp(0.55 + ((w - 375) / (1000 - 375)) * 0.45, 0.55, 1.0);
+  yShift = w > 820 ? 0.0 : -1.05;
+
+  /* Two stops per section — arrive, then hold. The object settles
+     while you read a section and only travels between them. */
+  stops = [];
+  ORDER.forEach((id, i) => {
+    const a = anchors[id];
+    if (!a) return;
+    const pose = POSES[id];
+    const arrive = i === 0 ? 0 : a.top - state.vh * 0.35;
+    const leave = a.top + a.height - state.vh * 0.80;
+    stops.push({ id: id, at: arrive, pose: pose });
+    if (leave > arrive) stops.push({ id: id + ":hold", at: leave, pose: pose });
+  });
+  stops.sort((p, q) => p.at - q.at);
+}
+S.onMeasure(computeLayout);
+
+/* interpolate the pose track at the current scroll position */
+const pose = Object.assign({}, POSES.top);
+function samplePose(y) {
+  if (!stops.length) return;
+  if (y <= stops[0].at) {
+    KEYS.forEach((k) => (pose[k] = stops[0].pose[k]));
+    return;
+  }
+  const last = stops[stops.length - 1];
+  if (y >= last.at) {
+    KEYS.forEach((k) => (pose[k] = last.pose[k]));
+    return;
+  }
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i];
+    const b = stops[i + 1];
+    if (y >= a.at && y < b.at) {
+      const t = S.smoothstep(S.invLerp(a.at, b.at, y));
+      KEYS.forEach((k) => (pose[k] = S.lerp(a.pose[k], b.pose[k], t)));
+      return;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ *  Pointer parallax
  * ------------------------------------------------------------------ */
 const pointer = new THREE.Vector2(0, 0);
 const target = new THREE.Vector2(0, 0);
-let scrollY = 0;
-let scrollTarget = 0;
-
-/* base resting offset so the crystal sits beside the left-aligned
-   hero copy rather than directly behind it */
-let baseX = 0;
-let baseY = 0;
-function computeBase() {
-  const w = window.innerWidth;
-  if (w > 1100) { baseX = 3.0; baseY = 0.4; }
-  else if (w > 760) { baseX = 1.8; baseY = 0.3; }
-  else { baseX = 0; baseY = 0.2; }
-}
-computeBase();
 
 window.addEventListener("pointermove", (e) => {
   target.x = (e.clientX / window.innerWidth) * 2 - 1;
   target.y = -((e.clientY / window.innerHeight) * 2 - 1);
 });
-window.addEventListener("scroll", () => {
-  scrollTarget = window.scrollY / window.innerHeight; // sections-ish units
-}, { passive: true });
 
 window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  computeBase();
 });
 
 /* ------------------------------------------------------------------ *
- *  Render loop
+ *  Render — driven by the shared scroll loop
  * ------------------------------------------------------------------ */
 const clock = new THREE.Clock();
 
-function animate() {
-  requestAnimationFrame(animate);
+/* the pose is eased again on arrival, so a flick scroll glides */
+const live = Object.assign({}, POSES.top);
+let first = true;
+
+function render(state) {
   const t = clock.getElapsedTime();
 
-  // smooth pointer + scroll (extra damping = calmer, less jerky follow)
-  pointer.lerp(target, 0.035);
-  scrollY += (scrollTarget - scrollY) * 0.06;
+  samplePose(state.y);
+  const k = first ? 1 : 0.08;
+  KEYS.forEach((key) => (live[key] += (pose[key] - live[key]) * k));
+  first = false;
 
-  // core breathing + rotation
+  pointer.lerp(target, 0.035);
+
+  /* surface */
   coreMat.uniforms.uTime.value = t;
+  coreMat.uniforms.uAmp.value = live.a;
+  coreMat.uniforms.uShift.value = live.h;
+  coreMat.uniforms.uGlow.value = live.g;
   coreMat.uniforms.uMouse.value.set(pointer.x, pointer.y);
-  core.rotation.y = t * 0.14 + pointer.x * 0.32;
+
+  /* rotation: time, pointer, and a slow roll paid for by scroll */
+  const roll = state.y * 0.0007;
+  core.rotation.y = t * 0.14 + pointer.x * 0.32 + roll;
   core.rotation.x = pointer.y * 0.26 + Math.sin(t * 0.24) * 0.1;
 
-  shell.rotation.y = -t * 0.09;
+  shell.rotation.y = -t * 0.09 - roll * 0.6;
   shell.rotation.x = t * 0.05;
 
-  ringGroup.rotation.y = t * 0.08 + pointer.x * 0.3;
+  ringGroup.rotation.y = t * 0.08 + pointer.x * 0.3 + roll * 1.4;
   ringGroup.rotation.x = pointer.y * 0.2;
   rings.forEach((ring, i) => {
     ring.rotation.z = t * (0.1 + i * 0.05);
+    ring.material.opacity = live.r * (1 - i * 0.12);
   });
 
-  particles.rotation.y = t * 0.02;
+  particles.rotation.y = t * 0.02 + roll * 0.25;
   particles.rotation.x = pointer.y * 0.05;
 
-  // scroll: push the whole core group back + down as you read on,
-  // so it recedes and drifts to the side of the content.
-  const s = scrollY;
-  core.position.x = baseX + 2.2 * Math.min(s, 2);
-  core.position.y = baseY - 0.6 * s;
+  /* placement */
+  core.position.set(live.x * spread, live.y + yShift, live.z);
   shell.position.copy(core.position);
   ringGroup.position.copy(core.position);
-  const scale = Math.max(0.55, 1 - s * 0.18);
-  const pulse = 1 + Math.sin(t * 0.9) * 0.03; // gentle breathing
-  core.scale.setScalar(scale * pulse);
-  shell.scale.setScalar(scale * (1 + Math.sin(t * 0.9 + 0.6) * 0.02));
-  ringGroup.scale.setScalar(scale);
 
-  // camera gentle parallax
+  const size = live.s * sizeFit;
+  const pulse = 1 + Math.sin(t * 0.9) * 0.03;
+  core.scale.setScalar(size * pulse);
+  shell.scale.setScalar(size * (1 + Math.sin(t * 0.9 + 0.6) * 0.02));
+  ringGroup.scale.setScalar(size);
+
+  /* camera drifts in and out with the story */
   camera.position.x += (pointer.x * 0.6 - camera.position.x) * 0.04;
   camera.position.y += (pointer.y * 0.4 - camera.position.y) * 0.04;
+  camera.position.z += (live.c - camera.position.z) * 0.06;
   camera.lookAt(0, 0, 0);
 
   renderer.render(scene, camera);
 }
 
-if (!prefersReduced) {
-  animate();
-} else {
-  // draw a single static frame
+if (prefersReduced) {
+  /* one settled frame at the hero pose — no loop, no scroll reaction */
   coreMat.uniforms.uTime.value = 1.0;
+  core.position.set(POSES.top.x * spread, POSES.top.y + yShift, POSES.top.z);
+  shell.position.copy(core.position);
+  ringGroup.position.copy(core.position);
+  core.scale.setScalar(POSES.top.s * sizeFit);
+  shell.scale.setScalar(POSES.top.s * sizeFit);
+  ringGroup.scale.setScalar(POSES.top.s * sizeFit);
   renderer.render(scene, camera);
+} else {
+  S.onFrame(render);
 }
+

@@ -13,6 +13,7 @@
 <body>
   <!-- 3D canvas background + hero object -->
   <canvas id="scene"></canvas>
+  <div class="veil" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
 
   <!-- Progress bar -->
@@ -36,8 +37,8 @@
       <div class="hero__inner">
         <p class="hero__eyebrow reveal">Product Manager · Data Products · B2B</p>
         <h1 class="hero__title" id="heroTitle">
-          <span class="hero__line" data-text="João">João</span>
-          <span class="hero__line hero__line--accent" data-text="Vaz">Vaz</span>
+          <span class="hero__line"><span class="hero__line-in">João</span></span>
+          <span class="hero__line hero__line--accent"><span class="hero__line-in">Vaz</span></span>
         </h1>
         <p class="hero__lede reveal">
           I set product strategy for the data tools that
@@ -304,7 +305,8 @@
     }
   </script>
   <script src="js/icons.js"></script>
-  <script type="module" src="js/scene.js"></script>
+  <script src="js/scroll.js"></script>
   <script src="js/ui.js"></script>
+  <script type="module" src="js/scene.js"></script>
 </body>
 </html>
