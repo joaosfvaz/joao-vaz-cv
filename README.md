@@ -1,26 +1,37 @@
 # João Vaz — Personal Website
 
-A single-page personal site built from my CV. Dark, tech-forward, and scroll-told: a live
-Three.js scene renders a breathing iridescent "crystal core" that acts as the narrator. It leads
-the hero, steps back behind the copy while you read, wakes up for the building section, and returns
-to meet you at the contact — wrapped in orbiting rings and a drifting particle field.
+A single-page personal site built from my CV. Near-black, flat and precise: the page is line-art,
+hairline grids and type, and everything that moves is CSS or SVG. No framework, no build step, and
+— since the Three.js scene came out — no runtime JavaScript dependency at all.
+
+The look takes the surface and motion character from [animejs.com](https://animejs.com)
+(flat dark ground, instrument line-art, monospace micro-labels, springy staggers) and the
+typographic discipline from [wodniack.dev](https://wodniack.dev) (display scale, numbered section
+rules, a ticker strip).
 
 ## Highlights
 
-- **3D hero object + background** — one WebGL scene (`js/scene.js`): a custom vertex-displacement
-  shader crystal, a wireframe shell, three orbiting rings, and ~1,400 additive particles.
+- **The hero instrument** — the portrait sits at the centre of an inline SVG dial: a 120-tick
+  ring, three coloured arcs, a dashed ring and a crosshair, each turning on its own clock. It
+  drifts and shrinks as the hero leaves, and stops turning once it is off screen. Roughly 20 lines
+  of markup and no library.
 - **One scroll driver** — `js/scroll.js` is the only reader of scroll position. It samples
-  `scrollY` once per animation frame, caches layout metrics on resize, publishes normalised
-  per-section progress, and runs a single `requestAnimationFrame` loop that both the 3D scene and
-  the DOM effects subscribe to. Nothing else binds a scroll listener for motion.
-- **Scrollytelling** — the crystal holds one pose per section and travels only between them;
-  a readability veil rises while you read and clears at both ends; the hero copy lifts and dims as
-  it leaves; the experience timeline draws its spine as you read, sticks each date beside its role,
-  and lights the entry under the reading line.
-- **Interactive on hover** — pointer-tracking card tilt + glow, lifting stat tiles, animated
-  buttons and contact links.
-- **Entrance** — the hero name rises out of its own mask on load; sections reveal as a staggered
-  run of beats rather than one block.
+  `scrollY` once per animation frame, caches layout metrics and section anchors on resize, and
+  runs a single `requestAnimationFrame` loop that every effect subscribes to. Nothing else binds a
+  scroll listener for motion.
+- **Fail-open reveals** — the document is written in its finished state. An inline script in the
+  `<head>` adds `.js` to `<html>`, and that class is the only thing that hides anything; `js/ui.js`
+  puts it back as the reading position arrives. A reveal that never fires shows readable copy
+  rather than a blank block. Reveals are driven by position, not by `IntersectionObserver`, so a
+  deep link or a fast flick cannot skip one, and a three-second failsafe catches the rest.
+- **Type that moves** — the hero name and the contact heading rise character by character out of
+  their own masks; section rules draw themselves; skill chips land one after another; stat
+  counters run up to the value already written in the markup.
+- **Scrollytelling** — the experience timeline draws its spine as you read, sticks each date
+  beside its role, and lights the entry under the reading line.
+- **Interactive on hover** — magnetic buttons that lean towards the pointer, a wipe fill on the
+  calls to action, corner brackets that open around the portrait, sliding contact rows, masked nav
+  labels, and a ticker that pauses under the cursor.
 - **Visual enumerations** — no plain text lists. Skills render as branded icon chips (Claude,
   Cursor, Jira, GraphQL, New Relic, Postman, GA4, Maze…), experience carries the **OLX Group**
   lockup (circular "G" symbol + OLX wordmark), and education shows the real **University of Minho**
@@ -30,12 +41,39 @@ to meet you at the contact — wrapped in orbiting rings and a drifting particle
   Brand marks: tool icons from [Simple Icons](https://simpleicons.org) (CC0); the University of
   Minho and TU Graz logos from Wikimedia Commons; the OLX Group circular symbol reconstructed as
   SVG. Used to identify the respective employer/institutions.
-- **Tasteful palette** — near-black background with a controlled electric-blue → violet → teal
-  accent gradient. Colourful, not loud.
+- **Tasteful palette** — near-black ground, one hairline grey, and a three-colour accent
+  (electric blue → violet → teal) used only as small strokes and single-colour type. No gradient
+  washes, no glow, no blur.
 - **Accessible** — `prefers-reduced-motion` takes an explicit branch, not a stripped animation:
-  the scroll loop never starts, the scene draws one static frame, and every sequence renders at its
-  end state. Sticky positioning and the reveal blur are dropped below 820px, and the crystal is
-  scaled to fit and moved clear of the title on phones.
+  the scroll loop never starts, and every sequence renders at its end state. Sticky positioning is
+  dropped below 900px, and the dial moves behind the copy and fades back.
+
+## Pages
+
+| File | What it is |
+| --- | --- |
+| `index.html` | The CV itself: hero, about, experience, building, toolkit, contact |
+| `tabiya.html` | Tabiya — the chess coach, and the AWS pipeline behind it |
+| `pm-os.html` | PM-OS — a knowledge base a crew of scheduled Claude routines keeps current |
+
+A project page loads `styles.css`, then `project.css`, then its own sheet, and reuses
+`js/scroll.js` and `js/ui.js` unchanged.
+
+- `project.css` holds everything every case study needs: the hero, the facts strip, the note grid,
+  the takeaway list.
+- The page's own sheet re-points `--accent`, `--accent-2` and `--accent-3` — Tabiya to its Amber
+  and Lapis, PM-OS to violet and teal — and adds only what is specific to that project.
+
+To add a project page, copy that pattern. Do not fork the system: if two pages need the same
+component, it belongs in `project.css`.
+
+Tabiya's screenshots live in `assets/tabiya/` at 1600px wide as JPEG, and its brand marks are the
+reverse (light-on-dark) cuts from that project's own `brand/logo/`.
+
+**The PM-OS page carries no content from the vault it describes** — no pages, no names, no numbers,
+no identifiers. The graph view on it is generated by `js/graph.js` from a seeded PRNG, not read
+from anything. Keep it that way: the page is about the structure, and the structure is the part
+that is safe to show.
 
 ## Run it
 
@@ -46,35 +84,59 @@ python3 dev-server.py 4599
 ```
 
 `dev-server.py` is `http.server` with `Cache-Control: no-store`, so an edit is always the thing the
-browser runs. Any other static server works too.
-
-Three.js loads from a CDN via an import map, so an internet connection is needed on first view.
+browser runs. Any other static server works too. Only the webfonts come from the network.
 
 ## Structure
 
 ```
-index.html      # markup + content (from the CV)
-styles.css      # all styling, animations, responsive rules
+index.html      # markup + content (from the CV), and the hero dial SVG
+tabiya.html     # the Tabiya project page, including the architecture diagram (inline SVG)
+pm-os.html      # the PM-OS project page: the zones, the routines, the graph view
+styles.css      # the system: all styling, animation and responsive rules
+project.css     # the furniture every project page shares
+tabiya.css      # what Tabiya adds: accents, lockup, screenshots, diagram
+pm-os.css       # what PM-OS adds: accents, graph frame, zone cards, routine list
 js/scroll.js    # the single scroll driver: metrics, progress, one rAF loop
-js/scene.js     # Three.js 3D hero + background, posed per section (ES module)
-js/ui.js        # reveals, counters, veil, timeline, nav state, card tilt
+js/ui.js        # reveals, character splits, counters, marquee, timeline, magnetics
+js/graph.js     # the generated Obsidian-style graph on the PM-OS page (that page only)
 js/icons.js     # inline-SVG icon system (brand marks + custom badges)
 dev-server.py   # no-cache static server for development
 ```
 
-Load order matters: `js/scroll.js` must define `window.Scroll` before `js/ui.js` and `js/scene.js`
-consume it.
+Load order matters: `js/scroll.js` must define `window.Scroll` before `js/ui.js` consumes it.
 
-## Tuning the scroll story
+## Two rules to keep
 
-The crystal's choreography is the `POSES` table near the bottom of `js/scene.js` — one row per
-section, giving position, scale, surface amplitude, ring opacity, palette shift, rim glow and
-camera distance. Edit a row to change what that section feels like. `computeLayout()` turns each
-section into an *arrive* and a *hold* stop, so a pose settles while you read and only travels
-between sections.
+1. **Fail open.** Write the finished state into `index.html`, and hide it only from a `.js`-scoped
+   rule in `styles.css`. Never ship markup whose correct content only appears if a script runs —
+   that is why the stat tiles carry `+150%`, not `0`, and `data-count` is the target to animate
+   *up to*.
+2. **One clock.** Anything that reacts to scroll subscribes to `window.Scroll`. Do not add a
+   `scroll` listener, and do not turn on `scroll-behavior: smooth` globally — it desyncs every
+   scroll-driven effect from the input. `js/ui.js` smooths anchor jumps on its own.
+3. **Re-measuring re-fires.** `Scroll.measure()` re-tests every consumer against the current
+   position, because a layout shift after load — the webfonts swapping in — otherwise leaves a
+   deep-linked page holding reveals that already sit on screen.
+
+A reveal animation always ends on `transform: none`, and `js/ui.js` drops the animation entirely
+once it finishes. A held transform — even an identity matrix — becomes the containing block for
+`.tl__meta`'s sticky dates and outranks the hover transforms on the chips.
 
 ## Editing content
 
 All copy lives in `index.html`. Accent colours are CSS variables at the top of `styles.css`
-(`--accent`, `--accent-2`, `--accent-3`); the 3D scene reads the same three colours near the top
-of `js/scene.js` — keep them in sync if you retheme.
+(`--accent`, `--accent-2`, `--accent-3`) and nothing else needs to change when you retheme.
+
+## Tuning the motion
+
+- **Speed of a reveal** — `revealIn` in `styles.css`, and the `--i` stagger step (70ms).
+- **The hero name** — `charUp`, and the 32ms per-character step in the `.is-lit` rule.
+- **The dial** — the `spin` durations on `.dial__ticks`, `.dial__arcs` and `.dial__dash`; how far
+  it drifts on scroll is the `--dy` and `--s` maths at the end of the hero block in `js/ui.js`.
+- **The ticker** — the pixels-per-second divisor in the marquee block of `js/ui.js`.
+- **The PM-OS graph** — the zone table at the top of `js/graph.js` (how many nodes each zone has
+  and how far out it sits), and the beat interval at the bottom. It runs only while it is on
+  screen and never in a hidden tab.
+
+A split heading inside an `<h1>` is lit on load; every other `[data-split]` line waits for the
+reading position, which is how the contact heading and the project titles behave.

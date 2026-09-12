@@ -1,10 +1,11 @@
 /* ------------------------------------------------------------------ *
  *  Scroll driver — the single reader of scroll position on the page.
  *
- *  Everything that reacts to scroll (the 3D scene, the DOM effects,
- *  the progress bar) subscribes here. Layout metrics are cached on
- *  resize, scrollY is sampled once per frame, and one rAF loop drives
- *  every consumer — so the whole page moves on the same clock.
+ *  Everything that reacts to scroll (the reveals, the hero, the
+ *  timeline, the progress bar) subscribes here. Layout metrics and
+ *  section anchors are cached on resize, scrollY is sampled once per
+ *  frame, and one rAF loop drives every consumer — so the whole page
+ *  moves on the same clock.
  * ------------------------------------------------------------------ */
 (function () {
   "use strict";
@@ -53,31 +54,6 @@
     for (let i = 0; i < measureCbs.length; i++) measureCbs[i](state, anchors);
   }
 
-  /* ---------------- per-section progress helpers ------------------- */
-
-  /* 0 when the section top reaches the viewport bottom,
-     1 when the section top reaches the viewport top. */
-  function enterProgress(id) {
-    const a = anchors[id];
-    if (!a) return 0;
-    return invLerp(a.top - state.vh, a.top, state.y);
-  }
-
-  /* 0 when the section enters the viewport,
-     1 when its bottom edge leaves the top of the viewport. */
-  function throughProgress(id) {
-    const a = anchors[id];
-    if (!a) return 0;
-    return invLerp(a.top - state.vh, a.top + a.height, state.y);
-  }
-
-  /* 0..1 across the section's own height, measured from its top. */
-  function selfProgress(id) {
-    const a = anchors[id];
-    if (!a) return 0;
-    return invLerp(a.top, a.top + a.height - state.vh * 0.5, state.y);
-  }
-
   /* ---------------- loop ------------------------------------------- */
   let started = 0;
 
@@ -96,6 +72,17 @@
     for (let i = 0; i < scrollCbs.length; i++) scrollCbs[i](state);
   }
 
+  /* Re-measuring moves every element's recorded position, so the
+     consumers have to be re-tested against the current scroll straight
+     away. Without this, a layout shift after load — the webfonts
+     swapping in is the usual one — leaves a deep-linked page holding
+     reveals that already sit inside the viewport, until the reader
+     happens to scroll. */
+  function remeasure() {
+    measure();
+    fireScroll();
+  }
+
   /* ---------------- public API ------------------------------------- */
   const Scroll = {
     state: state,
@@ -106,17 +93,13 @@
     invLerp: invLerp,
     smoothstep: smoothstep,
     easeOutCubic: easeOutCubic,
-    enterProgress: enterProgress,
-    throughProgress: throughProgress,
-    selfProgress: selfProgress,
-    measure: measure,
+    measure: remeasure,
 
     /* motion callbacks. Under reduced motion they never loop — each one
        runs a single settled pass so the page renders its end state. */
     onFrame: function (cb) {
       if (reduced) {
-        measure();
-        fireScroll();
+        remeasure();
         cb(state);
         return;
       }
@@ -137,15 +120,11 @@
   let resizeId = 0;
   window.addEventListener("resize", function () {
     clearTimeout(resizeId);
-    resizeId = setTimeout(measure, 120);
+    resizeId = setTimeout(remeasure, 120);
   });
   window.addEventListener("scroll", fireScroll, { passive: true });
-  window.addEventListener("load", function () {
-    measure();
-    fireScroll();
-  });
+  window.addEventListener("load", remeasure);
 
-  measure();
-  fireScroll();
+  remeasure();
   if (!reduced) requestAnimationFrame(frame);
 })();

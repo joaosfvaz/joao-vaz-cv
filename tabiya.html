@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tabiya — João Vaz</title>
+  <meta name="description" content="Tabiya: a chess coach that explains every move in plain English, and the project João Vaz used to learn AWS. Serverless pipeline on Lambda, SQS, S3 and CloudFront." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="project.css" />
+  <link rel="stylesheet" href="tabiya.css" />
+  <script>document.documentElement.className += " js";</script>
+</head>
+<body class="page page--tabiya">
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__mark">JV</a>
+    <div class="nav__links">
+      <a href="index.html#building" class="nav__back"><span>← Back to the work</span></a>
+      <a href="https://dij9fnusrsdml.cloudfront.net" target="_blank" rel="noopener" class="nav__cta" data-magnetic><span>Open the app</span></a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <header class="proj" id="top">
+      <p class="proj__eyebrow reveal">
+        <span class="dot" aria-hidden="true"></span>
+        Side project · 2026 · Built end-to-end
+      </p>
+      <img class="proj__lockup reveal" src="assets/tabiya/tabiya-lockup.svg" alt="Tabiya" width="327" height="64" />
+      <h1 class="proj__title">
+        <span class="hero__line"><span class="hero__line-in" data-split>The position you know.</span></span>
+        <span class="hero__line hero__line--accent"><span class="hero__line-in" data-split>The move you don't.</span></span>
+      </h1>
+      <p class="proj__lede reveal">
+        A chess coach that explains every move in plain English — and the first thing I built to find
+        out what AWS could actually do for me.
+      </p>
+      <dl class="facts">
+        <div class="fact reveal"><dt>Why</dt><dd>Learn AWS by shipping something real</dd></div>
+        <div class="fact reveal"><dt>Stack</dt><dd>TypeScript · React · Stockfish · CDK</dd></div>
+        <div class="fact reveal"><dt>AWS</dt><dd>Lambda · SQS · S3 · CloudFront · EventBridge</dd></div>
+        <div class="fact reveal"><dt>Running cost</dt><dd>Inside the permanent free tier</dd></div>
+      </dl>
+      <figure class="shot shot--hero reveal">
+        <div class="shot__frame">
+          <img src="assets/tabiya/dashboard.jpg" alt="The Tabiya dashboard: the last 7 days, games and accuracy per day, and the openings to work on next." width="1600" height="895" />
+        </div>
+        <figcaption>The dashboard, reading 181 of my own games.</figcaption>
+      </figure>
+    </header>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track" data-marquee>
+        <span>Serverless</span><b>✳</b>
+        <span>Stockfish</span><b>✳</b>
+        <span>No server, no database</span><b>✳</b>
+        <span>181 games analysed</span><b>✳</b>
+        <span>Plain English</span><b>✳</b>
+        <span>Built with Claude Code</span><b>✳</b>
+      </div>
+    </div>
+
+    <!-- WHY -->
+    <section class="section" id="why">
+      <div class="section__label reveal"><span>01</span><em>Why I built it</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        I got back into chess. I played a lot, I lost a lot, and I could not say <em>why</em> — the
+        games just ended. The obvious answer was a Chess.com subscription. I did not want to pay for
+        one, and I wanted the practice more than I wanted the tool.
+      </p>
+      <p class="lead reveal">
+        So I built the thing I wanted: something that watches the games I actually play against
+        friends, names the mistake I keep repeating, and tells me the move where my opening knowledge
+        runs out. <strong>The chess was the excuse.</strong> The real goal was to stop reading about
+        AWS and put something live on it — a pipeline that runs on a schedule, costs nothing, and
+        keeps working when I close the laptop.
+      </p>
+    </section>
+
+    <!-- WHAT IT DOES -->
+    <section class="section" id="features">
+      <div class="section__label reveal"><span>02</span><em>What it does</em><i class="rule"></i></div>
+
+      <article class="feat">
+        <div class="feat__text">
+          <span class="feat__no reveal">01</span>
+          <h2 class="reveal">A coach on every move</h2>
+          <p class="reveal">
+            Play Stockfish at eight strengths. After each move the coach gives a verdict, the reason
+            in one sentence, the move that was better, and the engine lines you can step through on
+            the board. Every sentence is built from facts the position actually shows — a hanging
+            piece, a fork, material won along the line — so it never claims something the board does
+            not back up.
+          </p>
+        </div>
+        <figure class="shot reveal">
+          <div class="shot__frame">
+            <img src="assets/tabiya/play.jpg" loading="lazy" width="1600" height="895"
+                 alt="Play and Learn: the coach marks 3.Bc4 as a blunder, explains that the bishop is not defended well enough, gives the evaluation before and after, and lists the best line." />
+          </div>
+          <figcaption>My blunder, named and explained, with the line I should have played.</figcaption>
+        </figure>
+      </article>
+
+      <article class="feat feat--flip">
+        <div class="feat__text">
+          <span class="feat__no reveal">02</span>
+          <h2 class="reveal">Your own games, turned into patterns</h2>
+          <p class="reveal">
+            It downloads my Chess.com archive, analyses every game with Stockfish, and groups the
+            mistakes by what went wrong rather than by game. One habit at the top accounts for a
+            quarter of my errors — which makes it the only thing worth practising this week. Each
+            pattern carries real examples you can open on the board.
+          </p>
+        </div>
+        <figure class="shot reveal">
+          <div class="shot__frame">
+            <img src="assets/tabiya/patterns.jpg" loading="lazy" width="1600" height="895"
+                 alt="The report groups 551 mistakes into patterns: walked into a combination, missed a way to win material, strategic error, left a piece undefended, endgame technique error." />
+          </div>
+          <figcaption>551 mistakes across 181 games, sorted by the habit behind them.</figcaption>
+        </figure>
+      </article>
+
+      <article class="feat">
+        <div class="feat__text">
+          <span class="feat__no reveal">03</span>
+          <h2 class="reveal">Openings, explained line by line</h2>
+          <p class="reveal">
+            Twenty openings and forty-nine lines, each move with a reason. Learn mode walks the line;
+            Practice mode makes you find the moves and judges the wrong ones with the engine. The
+            report ties back into it: it knows the move where I leave the book in each opening, and
+            sends me to that exact line.
+          </p>
+        </div>
+        <figure class="shot reveal">
+          <div class="shot__frame">
+            <img src="assets/tabiya/openings.jpg" loading="lazy" width="1600" height="895"
+                 alt="The Sicilian Defence in Learn mode: the line list, the board with an arrow on 3.d4, and the explanation that White opens the centre to use the lead in development." />
+          </div>
+          <figcaption>Every book move carries the reason it is played.</figcaption>
+        </figure>
+      </article>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section class="section" id="architecture">
+      <div class="section__label reveal"><span>03</span><em>How it runs</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        No server and no database. A schedule wakes a function, the functions write files, and the
+        browser reads them.
+      </p>
+
+      <figure class="diagram reveal">
+        <svg viewBox="0 0 880 432" role="img" aria-labelledby="archTitle archDesc">
+          <title id="archTitle">Tabiya on AWS</title>
+          <desc id="archDesc">EventBridge triggers a Poller every 15 minutes. The Poller writes new games to S3
+            and puts them on an SQS queue. An Analyser Lambda running Stockfish reads the queue and writes
+            analysis to S3. A Reporter Lambda turns the analysis into report files in S3. CloudFront serves
+            the app and those files to the browser.</desc>
+
+          <!-- pipeline -->
+          <g class="d-box">
+            <rect x="16" y="26" width="150" height="58" />
+            <text class="d-t" x="91" y="50">EventBridge</text>
+            <text class="d-s" x="91" y="68">every 15 min</text>
+          </g>
+          <g class="d-box d-box--fn">
+            <rect x="196" y="26" width="130" height="58" />
+            <text class="d-t" x="261" y="50">Poller</text>
+            <text class="d-s" x="261" y="68">λ</text>
+          </g>
+          <g class="d-box">
+            <rect x="356" y="26" width="110" height="58" />
+            <text class="d-t" x="411" y="50">SQS</text>
+            <text class="d-s" x="411" y="68">one job per game</text>
+          </g>
+          <g class="d-box d-box--fn">
+            <rect x="496" y="26" width="170" height="58" />
+            <text class="d-t" x="581" y="50">Analyser</text>
+            <text class="d-s" x="581" y="68">λ · Stockfish WASM</text>
+          </g>
+          <g class="d-box d-box--fn">
+            <rect x="696" y="26" width="168" height="58" />
+            <text class="d-t" x="780" y="50">Reporter</text>
+            <text class="d-s" x="780" y="68">λ · patterns</text>
+          </g>
+
+          <g class="d-flow">
+            <path d="M166 55h22" /><path d="M326 55h22" /><path d="M466 55h22" /><path d="M666 55h22" />
+          </g>
+
+          <!-- writes into the bucket -->
+          <g class="d-line">
+            <path d="M261 84v88" /><path d="M581 84v88" /><path d="M780 84v88" />
+          </g>
+          <text class="d-l" x="270" y="130">games</text>
+          <text class="d-l" x="590" y="130">analysis</text>
+          <text class="d-l" x="789" y="130">report</text>
+
+          <g class="d-box d-box--store">
+            <rect x="196" y="172" width="668" height="66" />
+            <text class="d-t" x="530" y="200">S3 — one bucket</text>
+            <text class="d-s" x="530" y="221">data/ the games, the analysis, the report · web/ the app itself</text>
+          </g>
+
+          <!-- read path -->
+          <g class="d-line"><path d="M420 238v84" /></g>
+          <g class="d-box">
+            <rect x="320" y="322" width="200" height="58" />
+            <text class="d-t" x="420" y="346">CloudFront</text>
+            <text class="d-s" x="420" y="364">cached at the edge</text>
+          </g>
+          <g class="d-flow"><path d="M520 351h100" /></g>
+          <g class="d-box d-box--out">
+            <rect x="620" y="322" width="200" height="58" />
+            <text class="d-t" x="720" y="346">Browser</text>
+            <text class="d-s" x="720" y="364">reads the files, no API</text>
+          </g>
+
+          <g class="d-arrows">
+            <path d="M188 55l-8-4v8z" /><path d="M348 55l-8-4v8z" /><path d="M488 55l-8-4v8z" /><path d="M688 55l-8-4v8z" />
+            <path d="M261 172l-4-8h8z" /><path d="M581 172l-4-8h8z" /><path d="M780 172l-4-8h8z" />
+            <path d="M420 322l-4-8h8z" /><path d="M620 351l-8-4v8z" />
+          </g>
+        </svg>
+        <figcaption>Five moving parts. Nothing runs while nothing is happening.</figcaption>
+      </figure>
+
+      <div class="notes">
+        <div class="note reveal">
+          <h4>The pipeline is the product</h4>
+          <p>Every stage writes a file and stops. A failed analysis retries on its own from the queue
+            without replaying the download, and the browser only ever reads finished files — so a
+            slow Stockfish run never makes the page slow.</p>
+        </div>
+        <div class="note reveal">
+          <h4>Stockfish inside a Lambda</h4>
+          <p>The engine runs as WebAssembly inside the function, one game per invocation, about a
+            minute each. Roughly ninety games a month is a rounding error against the free tier.</p>
+        </div>
+        <div class="note reveal">
+          <h4>Infrastructure as code</h4>
+          <p>The whole stack is a CDK app: one command builds it, deploys it, uploads the site and
+            clears the CDN cache. Tearing it down and rebuilding it is how I learned what each piece
+            was actually for.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEARNED -->
+    <section class="section" id="learned">
+      <div class="section__label reveal"><span>04</span><em>What I took from it</em><i class="rule"></i></div>
+      <ul class="takeaways">
+        <li class="reveal"><strong>Queues change how you design.</strong> Splitting "fetch" from
+          "analyse" turned a script that failed halfway into a pipeline that picks itself back up.</li>
+        <li class="reveal"><strong>Files beat a database more often than I expected.</strong> The
+          whole read path is static objects behind a CDN. There is nothing to keep awake, patch or pay
+          for.</li>
+        <li class="reveal"><strong>The free tier is a real design constraint.</strong> Knowing the
+          limits made me choose the cheap architecture first, which happened to be the simple one.</li>
+        <li class="reveal"><strong>I can now have the AWS conversation.</strong> That is the part
+          that came back to work with me — talking about pipelines and cost with engineers as
+          someone who has deployed one.</li>
+      </ul>
+      <div class="proj__cta reveal">
+        <a class="btn btn--primary" href="https://dij9fnusrsdml.cloudfront.net" target="_blank" rel="noopener" data-magnetic><span>Open the app</span></a>
+        <a class="btn btn--ghost" href="index.html#building" data-magnetic><span>Back to the work</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 João Vaz</span>
+    <span>Tabiya · a chess coach that explains</span>
+  </footer>
+
+  <script src="js/icons.js"></script>
+  <script src="js/scroll.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

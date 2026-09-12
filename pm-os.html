@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PM-OS — João Vaz</title>
+  <meta name="description" content="PM-OS: a knowledge base a team of Claude routines keeps current — four zones, one entity per page, and scheduled agents that file, promote, lint and draft." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="project.css" />
+  <link rel="stylesheet" href="pm-os.css" />
+  <script>document.documentElement.className += " js";</script>
+</head>
+<body class="page page--pmos">
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <nav class="nav" id="nav">
+    <a href="index.html" class="nav__mark">JV</a>
+    <div class="nav__links">
+      <a href="index.html#building" class="nav__back"><span>← Back to the work</span></a>
+      <a href="tabiya.html" class="nav__cta" data-magnetic><span>Next project</span></a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <header class="proj" id="top">
+      <p class="proj__eyebrow reveal">
+        <span class="dot" aria-hidden="true"></span>
+        Internal tool · Runs every weekday
+      </p>
+      <h1 class="proj__title">
+        <span class="hero__line"><span class="hero__line-in" data-split>A wiki that maintains</span></span>
+        <span class="hero__line hero__line--accent"><span class="hero__line-in" data-split>itself.</span></span>
+      </h1>
+      <p class="proj__lede reveal">
+        My team's knowledge base: Markdown files I read in Obsidian, kept current by seven scheduled
+        Claude routines.
+      </p>
+      <dl class="facts">
+        <div class="fact reveal"><dt>Shape</dt><dd>Markdown · git · Obsidian</dd></div>
+        <div class="fact reveal"><dt>Keeps it current</dt><dd>7 scheduled Claude routines</dd></div>
+        <div class="fact reveal"><dt>Pattern</dt><dd>Karpathy's LLM Wiki</dd></div>
+        <div class="fact reveal"><dt>Writes outward</dt><dd>Drafts only — never sends</dd></div>
+      </dl>
+
+      <!-- The graph view, as a stand-in. Generated nodes, no real pages. -->
+      <figure class="vault reveal">
+        <div class="vault__frame">
+          <canvas id="vault" aria-hidden="true"></canvas>
+          <ul class="vault__key">
+            <li><i data-zone="curated"></i>Curated — what is true</li>
+            <li><i data-zone="meetings"></i>Meetings — what happened</li>
+            <li><i data-zone="work"></i>Work — what we produced</li>
+            <li><i data-zone="raw"></i>Raw — what the source said</li>
+          </ul>
+        </div>
+        <figcaption>
+          A bright curated core, evidence at the rim. Watch a meeting arrive and its fact get
+          promoted into the page that owns it. <b>Generated nodes, not real pages.</b>
+        </figcaption>
+      </figure>
+
+      <p class="disclaimer reveal">
+        <b>Note.</b> The vault holds internal material. Nothing from it appears here — structure and
+        mechanics only.
+      </p>
+    </header>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track" data-marquee>
+        <span>Markdown</span><b>✳</b>
+        <span>Provenance on every claim</span><b>✳</b>
+        <span>Increment, don't overhaul</span><b>✳</b>
+        <span>Read-only by default</span><b>✳</b>
+        <span>Drafts, never sends</span><b>✳</b>
+        <span>No invented facts</span><b>✳</b>
+      </div>
+    </div>
+
+    <!-- WHY -->
+    <section class="section" id="why">
+      <div class="section__label reveal"><span>01</span><em>Why</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        Ask an assistant anything and it re-reads the same raw sources from scratch, then
+        <em>throws the answer away</em>. Nothing compounds.
+      </p>
+      <p class="lead reveal">
+        So I gave it somewhere to keep what it works out. <strong>Synthesise once, at ingest.</strong>
+        Questions get answered from a maintained page with a citation.
+      </p>
+    </section>
+
+    <!-- STRUCTURE -->
+    <section class="section" id="structure">
+      <div class="section__label reveal"><span>02</span><em>Structure</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        Four zones. Each carries a different level of trust — which is what tells an agent what it
+        may state as true.
+      </p>
+
+      <ol class="zones">
+        <li class="zone reveal" data-zone="curated">
+          <span class="zone__tag">Curated</span>
+          <h3>What is true</h3>
+          <p>One page per thing. Actively maintained. Every answer comes from here.</p>
+        </li>
+        <li class="zone reveal" data-zone="meetings">
+          <span class="zone__tag">Meetings</span>
+          <h3>What happened</h3>
+          <p>Dated and distilled — never the raw transcript. History, not current state.</p>
+        </li>
+        <li class="zone reveal" data-zone="work">
+          <span class="zone__tag">Work</span>
+          <h3>What we produced</h3>
+          <p>Dated analyses and dashboards. Append-only; a later one supersedes an earlier one.</p>
+        </li>
+        <li class="zone reveal" data-zone="raw">
+          <span class="zone__tag">Raw</span>
+          <h3>What the source said</h3>
+          <p>Verbatim material nobody authored here. Evidence, never current truth.</p>
+        </li>
+      </ol>
+
+      <div class="rule-row reveal">
+        <div class="rule-row__k">The one rule</div>
+        <p>A fact in the bottom three zones is evidence. Its conclusion belongs in a curated page
+          that <em>cites</em> it — so promotion is a step in every routine, not a good intention.</p>
+      </div>
+
+      <div class="notes">
+        <div class="note reveal">
+          <h4>One entity per page</h4>
+          <p>A page covers one thing and links to its neighbours. That is what makes the graph a
+            graph and not a pile.</p>
+        </div>
+        <div class="note reveal">
+          <h4>Provenance · freshness · confidence</h4>
+          <p>Three fields on every curated page. A claim with no source is a bug.</p>
+        </div>
+        <div class="note reveal">
+          <h4>Structure, not live values</h4>
+          <p>Definitions live here. This week's number comes from the system that owns it.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROUTINES -->
+    <section class="section" id="routines">
+      <div class="section__label reveal"><span>03</span><em>What runs, and when</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        Seven routines. Narrow job, fixed time, a written limit on what each may change.
+      </p>
+
+      <ol class="routines">
+        <li class="routine reveal">
+          <span class="routine__when">Weekdays · morning</span>
+          <div class="routine__body">
+            <h3>File yesterday's meetings</h3>
+            <p>De-duplicates, resolves people by address, routes each meeting to its folder and
+              distils it — then promotes the durable facts into the curated pages that own them.</p>
+            <p class="routine__writes"><b>Writes</b> meeting pages · the curated pages a fact touches</p>
+          </div>
+        </li>
+        <li class="routine reveal">
+          <span class="routine__when">Weekdays · morning</span>
+          <div class="routine__body">
+            <h3>Refresh the commitments ledger</h3>
+            <p>Rebuilds what I owe people and they owe me. Anything ticked by hand stays ticked.</p>
+            <p class="routine__writes"><b>Writes</b> one ledger page</p>
+          </div>
+        </li>
+        <li class="routine reveal">
+          <span class="routine__when">Monday</span>
+          <div class="routine__body">
+            <h3>Lint the vault</h3>
+            <p>Ages any page past its freshness threshold to <em>stale</em> — the one change it may
+              make alone, because it follows from dates. Everything else is reported with a proposed
+              fix, for a human.</p>
+            <p class="routine__writes"><b>Writes</b> a status field · otherwise reports only</p>
+          </div>
+        </li>
+        <li class="routine reveal">
+          <span class="routine__when">Monday · before kick-off</span>
+          <div class="routine__body">
+            <h3>Check delivery against the roadmap</h3>
+            <p>Rates each epic on track / at risk / delayed against live ticket status, and lists
+              what each engineer is on next. Read-only: it never assigns, moves or creates.</p>
+            <p class="routine__writes"><b>Writes</b> a draft message — never sends</p>
+          </div>
+        </li>
+        <li class="routine reveal">
+          <span class="routine__when">Monday · weekly</span>
+          <div class="routine__body">
+            <h3>Post the weekly goal update</h3>
+            <p>Latest complete week per key result, partial weeks dropped. The one routine that
+              publishes on its own — its output is a number with its source attached.</p>
+            <p class="routine__writes"><b>Writes</b> one recurring update</p>
+          </div>
+        </li>
+        <li class="routine reveal">
+          <span class="routine__when">Every other Monday</span>
+          <div class="routine__body">
+            <h3>Submit the goal check-ins</h3>
+            <p>Scores each outcome against its live target with a confidence call. Checks the
+              fortnight first and exits doing nothing on an off week.</p>
+            <p class="routine__writes"><b>Writes</b> one check-in per outcome</p>
+          </div>
+        </li>
+        <li class="routine reveal">
+          <span class="routine__when">Every other Monday</span>
+          <div class="routine__body">
+            <h3>Rebuild a recurring dashboard</h3>
+            <p>Re-runs the queries, republishes to the same address, and messages me only if
+              something moved past a threshold. A quiet run is a successful run.</p>
+            <p class="routine__writes"><b>Writes</b> one dashboard · alerts only on a real change</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- RULES -->
+    <section class="section" id="rules">
+      <div class="section__label reveal"><span>04</span><em>The rules</em><i class="rule"></i></div>
+      <ul class="takeaways">
+        <li class="reveal"><strong>No invented facts.</strong> A silent source becomes
+          <em>unknown</em>, plus the connector that would answer it.</li>
+        <li class="reveal"><strong>Read the systems, don't drive them.</strong> Every routine is
+          read-only against the board, the reporting layer and the inbox.</li>
+        <li class="reveal"><strong>Outbound goes through me.</strong> A schedule may prepare the
+          message. It may not be the one who said it.</li>
+        <li class="reveal"><strong>Increment, don't overhaul.</strong> Update the page that changed;
+          add the row, not the table.</li>
+        <li class="reveal"><strong>One named write scope per routine.</strong> An agent with an
+          unbounded one is a liability, however good the model is.</li>
+      </ul>
+
+      <div class="proj__cta reveal">
+        <a class="btn btn--primary" href="index.html#building" data-magnetic><span>Back to the work</span></a>
+        <a class="btn btn--ghost" href="tabiya.html" data-magnetic><span>See Tabiya</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 João Vaz</span>
+    <span>PM-OS · a wiki that maintains itself</span>
+  </footer>
+
+  <script src="js/icons.js"></script>
+  <script src="js/scroll.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/graph.js"></script>
+</body>
+</html>

@@ -9,13 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- Motion is opt-in: every animated state is gated on .js, so the page
+       renders finished if this never runs. -->
+  <script>document.documentElement.className += " js";</script>
 </head>
 <body>
-  <!-- 3D canvas background + hero object -->
-  <canvas id="scene"></canvas>
-  <div class="veil" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
-
   <!-- Progress bar -->
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
@@ -23,11 +21,11 @@
   <nav class="nav" id="nav">
     <a href="#top" class="nav__mark">JV</a>
     <div class="nav__links">
-      <a href="#about">About</a>
-      <a href="#work">Experience</a>
-      <a href="#building">Building</a>
-      <a href="#skills">Skills</a>
-      <a href="#contact" class="nav__cta">Contact</a>
+      <a href="#about"><span>About</span></a>
+      <a href="#work"><span>Experience</span></a>
+      <a href="#building"><span>Building</span></a>
+      <a href="#skills"><span>Skills</span></a>
+      <a href="#contact" class="nav__cta" data-magnetic><span>Contact</span></a>
     </div>
   </nav>
 
@@ -35,10 +33,13 @@
     <!-- HERO -->
     <header class="hero" id="top">
       <div class="hero__inner">
-        <p class="hero__eyebrow reveal">Product Manager · Data Products · B2B</p>
-        <h1 class="hero__title" id="heroTitle">
-          <span class="hero__line"><span class="hero__line-in">João</span></span>
-          <span class="hero__line hero__line--accent"><span class="hero__line-in">Vaz</span></span>
+        <p class="hero__eyebrow reveal">
+          <span class="dot" aria-hidden="true"></span>
+          Product Manager · Data Products · B2B
+        </p>
+        <h1 class="hero__title">
+          <span class="hero__line"><span class="hero__line-in" data-split>João</span></span>
+          <span class="hero__line hero__line--accent"><span class="hero__line-in" data-split>Vaz</span></span>
         </h1>
         <p class="hero__lede reveal">
           I set product strategy for the data tools that
@@ -46,21 +47,61 @@
           Poland &amp; Romania — and I ship production fixes with AI tooling when it counts.
         </p>
         <div class="hero__actions reveal">
-          <a class="btn btn--primary" href="#contact">Get in touch</a>
-          <a class="btn btn--ghost" href="#work">See the work</a>
+          <a class="btn btn--primary" href="#contact" data-magnetic><span>Get in touch</span></a>
+          <a class="btn btn--ghost" href="#work" data-magnetic><span>See the work</span></a>
         </div>
       </div>
-      <div class="hero__scroll reveal" aria-hidden="true">
+
+      <!-- The portrait sits at the centre of the instrument: the line-art
+           rings orbit it. Pure SVG, turning on their own clock, coupled to
+           the scroll by js/ui.js. -->
+      <div class="hero__figure">
+        <div class="dial" id="dial" aria-hidden="true">
+          <svg viewBox="0 0 400 400" class="dial__svg">
+            <g class="dial__ticks"><circle cx="200" cy="200" r="188" /></g>
+            <g class="dial__arcs">
+            <circle class="dial__arc dial__arc--1" cx="200" cy="200" r="160" />
+            <circle class="dial__arc dial__arc--2" cx="200" cy="200" r="160" />
+            <circle class="dial__arc dial__arc--3" cx="200" cy="200" r="160" />
+            </g>
+            <circle class="dial__dash" cx="200" cy="200" r="132" />
+            <circle class="dial__thin" cx="200" cy="200" r="104" />
+            <g class="dial__cross">
+            <path d="M200 52v40M200 308v40M52 200h40M308 200h40" />
+            </g>
+            <circle class="dial__pip" cx="200" cy="12" r="4" />
+        </svg>
+        </div>
+        <figure class="portrait reveal">
+          <div class="portrait__frame">
+            <img src="assets/portrait.jpg" alt="Portrait of João Vaz" width="675" height="900" />
+          </div>
+        </figure>
+      </div>
+
+      <div class="hero__scroll" aria-hidden="true">
         <span>Scroll</span>
         <span class="hero__scroll-line"></span>
       </div>
     </header>
 
+    <!-- TICKER -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track" data-marquee>
+        <span>Product strategy</span><b>✳</b>
+        <span>Data products</span><b>✳</b>
+        <span>Machine learning</span><b>✳</b>
+        <span>Experimentation</span><b>✳</b>
+        <span>12k+ dealers</span><b>✳</b>
+        <span>PT · PL · RO · FR · ZA</span><b>✳</b>
+        <span>AI-assisted building</span><b>✳</b>
+      </div>
+    </div>
+
     <!-- ABOUT -->
     <section class="section section--about" id="about">
-      <div class="section__label reveal"><span>01</span> About</div>
-      <div class="about__grid">
-        <div class="about__text">
+      <div class="section__label reveal"><span>01</span><em>About</em><i class="rule"></i></div>
+      <div class="about__text">
           <p class="lead reveal">
             Product Manager at <em>OLX Group (Motors, B2B)</em>, part of Prosus. I lead the
             <strong>Insights &amp; Recommendations</strong> team — 10 people, engineers alongside a
@@ -72,36 +113,32 @@
             outcome-driven strategy, honest experimentation, and using the newest tools to move faster
             than the roadmap says I should.
           </p>
-        </div>
-        <figure class="portrait reveal" data-tilt>
-          <div class="portrait__frame">
-            <img src="assets/portrait.jpg" alt="Portrait of João Vaz" width="675" height="900" loading="lazy" />
-          </div>
-        </figure>
       </div>
+      <!-- Counters read their finished value from the markup; js/ui.js
+           animates up to it. If the script never runs, the number is right. -->
       <div class="stats">
         <div class="stat reveal">
-          <span class="stat__num" data-target="150" data-suffix="%" data-prefix="+">+0%</span>
+          <span class="stat__num" data-count="150" data-prefix="+" data-suffix="%">+150%</span>
           <span class="stat__label">avg weekly engagement lift across 3 data products, in under 18 months</span>
         </div>
         <div class="stat reveal">
-          <span class="stat__num" data-target="40" data-suffix="+">0</span>
+          <span class="stat__num" data-count="40" data-suffix="+">40+</span>
           <span class="stat__label">experiments run — A/B, AA &amp; fake-door</span>
         </div>
         <div class="stat reveal">
-          <span class="stat__num" data-target="50" data-suffix="+">0</span>
+          <span class="stat__num" data-count="50" data-suffix="+">50+</span>
           <span class="stat__label">in-person dealer interviews across PT · RO · PL</span>
         </div>
         <div class="stat reveal">
-          <span class="stat__num" data-target="90" data-suffix="+">0</span>
+          <span class="stat__num" data-count="90" data-suffix="+">90+</span>
           <span class="stat__label">PMs enabled through AI-tooling workshops</span>
         </div>
         <div class="stat reveal">
-          <span class="stat__num" data-target="12" data-suffix="k+">0</span>
+          <span class="stat__num" data-count="12" data-suffix="k+">12k+</span>
           <span class="stat__label">professional dealers served in PT · PL · RO</span>
         </div>
         <div class="stat reveal">
-          <span class="stat__num" data-target="5">0</span>
+          <span class="stat__num" data-count="5">5</span>
           <span class="stat__label">stakeholder markets — PT · RO · PL · FR · ZA</span>
         </div>
       </div>
@@ -109,7 +146,7 @@
 
     <!-- EXPERIENCE -->
     <section class="section section--work" id="work">
-      <div class="section__label reveal"><span>02</span> Experience</div>
+      <div class="section__label reveal"><span>02</span><em>Experience</em><i class="rule"></i></div>
       <ol class="timeline">
         <li class="tl reveal">
           <div class="tl__meta">
@@ -171,47 +208,50 @@
 
     <!-- BUILDING -->
     <section class="section section--building" id="building">
-      <div class="section__label reveal"><span>03</span> Building with AI</div>
+      <div class="section__label reveal"><span>03</span><em>Building with AI</em><i class="rule"></i></div>
       <p class="lead reveal">
         I don't just spec things — I build them. Fluent in the underlying concepts: MCPs, skills,
         agent loops and goals, context windows. Here's what that looks like in practice.
       </p>
       <div class="cards">
-        <article class="card reveal" data-tilt>
-          <div class="card__glow"></div>
+        <article class="card reveal">
           <div class="card__top"><i class="ic" data-icon="swift"></i><span class="card__kicker">macOS · Swift</span></div>
           <h3>Mixd</h3>
           <p>A native per-app volume mixer for macOS, built end-to-end with AI tooling using
             Core Audio process taps. Set Zoom and Spotify to different levels, independently.</p>
           <div class="card__foot"><span>Claude Code</span><span>Core Audio</span></div>
         </article>
-        <article class="card reveal" data-tilt>
-          <div class="card__glow"></div>
-          <div class="card__top"><i class="ic" data-icon="anthropic"></i><span class="card__kicker">Productivity · Agents</span></div>
+        <a class="card card--link reveal" href="pm-os.html">
+          <div class="card__top"><i class="ic" data-icon="anthropic"></i><span class="card__kicker">Knowledge · Agents</span></div>
           <h3>PM-OS</h3>
-          <p>My own productivity system on Claude: ingests meeting transcripts, extracts action items,
-            pulls knowledge-base context, drafts Slack messages for review, and picks the right MCP
-            tools for each analysis.</p>
-          <div class="card__foot"><span>MCP</span><span>Agent loops</span></div>
-        </article>
-        <article class="card reveal" data-tilt>
-          <div class="card__glow"></div>
-          <div class="card__top"><i class="ic" data-icon="users"></i><span class="card__kicker">Enablement</span></div>
-          <h3>AI Workshops</h3>
-          <p>Designed and ran AI-tooling workshops for the company's 90+ PMs. 75% of attendees adopted
-            harnesses into their day-to-day work.</p>
-          <div class="card__foot"><span>Harnesses</span><span>Adoption</span></div>
-        </article>
+          <p>A knowledge base my team's answers live in, kept true by seven scheduled Claude
+            routines: meetings file themselves, durable facts are promoted into the page that owns
+            them, and stale pages are made to admit it.</p>
+          <div class="card__foot"><span>MCP</span><span>Scheduled agents</span></div>
+          <span class="card__more">Know more<i aria-hidden="true">→</i></span>
+        </a>
+        <a class="card card--link reveal" href="tabiya.html">
+          <div class="card__top">
+            <img class="card__mark" src="assets/tabiya/tabiya-mark.svg" alt="" width="18" height="18" />
+            <span class="card__kicker">Chess · AWS</span>
+          </div>
+          <h3>Tabiya</h3>
+          <p>A chess coach that explains every move in plain English — and my first build on AWS.
+            A serverless pipeline downloads my games, analyses them with Stockfish and writes a
+            report the browser reads straight from S3.</p>
+          <div class="card__foot"><span>Lambda</span><span>S3 · CloudFront</span></div>
+          <span class="card__more">Know more<i aria-hidden="true">→</i></span>
+        </a>
       </div>
     </section>
 
     <!-- SKILLS -->
     <section class="section section--skills" id="skills">
-      <div class="section__label reveal"><span>04</span> Toolkit</div>
+      <div class="section__label reveal"><span>04</span><em>Toolkit</em><i class="rule"></i></div>
       <div class="skills">
         <div class="skill reveal">
           <h4>AI-assisted building</h4>
-          <ul class="chips">
+          <ul class="chips" data-stagger>
             <li class="chip"><i class="ic" data-icon="anthropic"></i><span>Claude Code</span></li>
             <li class="chip"><i class="ic" data-icon="cursor"></i><span>Cursor</span></li>
             <li class="chip"><i class="ic" data-icon="heart"></i><span>Lovable</span></li>
@@ -220,7 +260,7 @@
         </div>
         <div class="skill reveal">
           <h4>Data &amp; experimentation</h4>
-          <ul class="chips">
+          <ul class="chips" data-stagger>
             <li class="chip"><i class="ic" data-icon="sql"></i><span>SQL</span></li>
             <li class="chip"><i class="ic" data-icon="googleanalytics"></i><span>GA4</span></li>
             <li class="chip"><i class="ic" data-icon="flask"></i><span>A/B &amp; fake-door</span></li>
@@ -230,7 +270,7 @@
         </div>
         <div class="skill reveal">
           <h4>Delivery &amp; technical</h4>
-          <ul class="chips">
+          <ul class="chips" data-stagger>
             <li class="chip"><i class="ic" data-icon="jira"></i><span>Jira</span></li>
             <li class="chip"><i class="ic" data-icon="atlassian"></i><span>Atlassian</span></li>
             <li class="chip"><i class="ic" data-icon="graphql"></i><span>GraphQL</span></li>
@@ -243,7 +283,7 @@
         </div>
         <div class="skill reveal">
           <h4>CRM &amp; GTM</h4>
-          <ul class="chips">
+          <ul class="chips" data-stagger>
             <li class="chip"><i class="ic" data-icon="message"></i><span>Braze</span></li>
             <li class="chip"><i class="ic" data-icon="intercom"></i><span>Intercom</span></li>
             <li class="chip"><i class="ic" data-icon="globe"></i><span>5 markets</span></li>
@@ -282,20 +322,26 @@
 
     <!-- CONTACT -->
     <section class="section section--contact" id="contact">
-      <div class="section__label reveal"><span>05</span> Contact</div>
-      <h2 class="contact__title reveal">Let's build something<br /><span>worth shipping.</span></h2>
-      <div class="contact__links reveal">
-        <a href="mailto:joaosfvaz@gmail.com" class="contact__link">
+      <div class="section__label reveal"><span>05</span><em>Contact</em><i class="rule"></i></div>
+      <h2 class="contact__title">
+        <span class="hero__line"><span class="hero__line-in" data-split>Let's build something</span></span>
+        <span class="hero__line hero__line--accent"><span class="hero__line-in" data-split>worth shipping.</span></span>
+      </h2>
+      <div class="contact__links">
+        <a href="mailto:joaosfvaz@gmail.com" class="contact__link reveal">
           <span class="contact__link-label">Email</span>
           <span class="contact__link-val">joaosfvaz@gmail.com</span>
+          <span class="contact__link-arrow" aria-hidden="true">→</span>
         </a>
-        <a href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener" class="contact__link">
+        <a href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener" class="contact__link reveal">
           <span class="contact__link-label">LinkedIn</span>
           <span class="contact__link-val">in/joaovaz00</span>
+          <span class="contact__link-arrow" aria-hidden="true">→</span>
         </a>
-        <a href="tel:+351966452685" class="contact__link">
+        <a href="tel:+351966452685" class="contact__link reveal">
           <span class="contact__link-label">Phone</span>
           <span class="contact__link-val">+351 966 452 685</span>
+          <span class="contact__link-arrow" aria-hidden="true">→</span>
         </a>
       </div>
     </section>
@@ -303,20 +349,11 @@
 
   <footer class="footer">
     <span>© 2026 João Vaz</span>
-    <span>Built with Three.js &amp; a little AI</span>
+    <span>Hand-built · no framework · a little AI</span>
   </footer>
 
-  <!-- Three.js via import map -->
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-      }
-    }
-  </script>
   <script src="js/icons.js"></script>
   <script src="js/scroll.js"></script>
   <script src="js/ui.js"></script>
-  <script type="module" src="js/scene.js"></script>
 </body>
 </html>

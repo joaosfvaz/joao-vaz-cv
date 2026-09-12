@@ -1,0 +1,131 @@
+/* ==================================================================
+   Project pages — the shared furniture
+   Everything a case-study page needs that is not specific to one
+   project: the hero, the facts strip, the note grid, the takeaway
+   list. A project stylesheet re-points the accent trio and adds only
+   its own pieces on top. Load order: styles.css, project.css, <page>.css
+   ================================================================== */
+
+/* ---------- Nav ---------- */
+.nav__back {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  transition: color 0.3s var(--ease);
+}
+.nav__back:hover { color: var(--accent-3); }
+
+/* ---------- Hero ---------- */
+.proj {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 150px var(--gut) 90px;
+}
+.proj__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: clamp(11px, 1.3vw, 13px);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent-3);
+  margin-bottom: 32px;
+}
+.proj__eyebrow .dot {
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.js .proj__eyebrow .dot { animation: pulse 2.4s ease-in-out infinite; }
+
+.proj__title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(36px, 6.6vw, 82px);
+  line-height: 0.99;
+  letter-spacing: -0.035em;
+  margin-bottom: 30px;
+}
+.proj__title .hero__line--accent .hero__line-in { color: var(--accent-3); }
+.proj__lede {
+  font-size: clamp(17px, 2vw, 21px);
+  color: var(--ink-dim);
+  max-width: 680px;
+  margin-bottom: 52px;
+}
+
+/* ---------- Facts strip ---------- */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 56px;
+}
+.fact {
+  background: var(--bg);
+  padding: 22px 22px 20px;
+  transition: background 0.4s var(--ease);
+}
+.fact:hover { background: var(--bg-2); }
+.fact dt {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 10px;
+}
+.fact dd { font-size: 14.5px; color: var(--ink); line-height: 1.45; }
+
+/* ---------- Note grid ---------- */
+.notes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.note { background: var(--bg); padding: 28px 26px; transition: background 0.4s var(--ease); }
+.note:hover { background: var(--bg-2); }
+.note h4 { font-family: var(--display); font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+.note p { font-size: 14.5px; color: var(--ink-dim); }
+
+/* ---------- Takeaways ---------- */
+.takeaways {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.takeaways li {
+  background: var(--bg);
+  padding: 24px 26px;
+  font-size: 16px;
+  color: var(--ink-dim);
+  transition: background 0.4s var(--ease);
+}
+.takeaways li:hover { background: var(--bg-2); }
+.takeaways strong { color: var(--ink); font-weight: 600; }
+.takeaways em { color: var(--accent-3); font-style: normal; }
+
+.proj__cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 44px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .proj { padding-top: 128px; }
+  .facts { grid-template-columns: repeat(2, 1fr); }
+  .notes { grid-template-columns: 1fr; }
+  .nav__back { display: none; }
+}
+@media (max-width: 560px) {
+  .facts { grid-template-columns: 1fr; }
+  .proj__cta .btn { flex: 1 1 auto; text-align: center; }
+}

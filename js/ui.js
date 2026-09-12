@@ -1,8 +1,15 @@
 /* ------------------------------------------------------------------ *
- *  UI interactions — scroll reveals, animated counters, nav state,
- *  the scroll-told timeline, and pointer-tracking card tilt/glow.
+ *  Motion layer — reveals, character splits, counters, the marquee,
+ *  the hero instrument, magnetic buttons and the scroll-told timeline.
  *
- *  All scroll-driven motion reads from window.Scroll (js/scroll.js).
+ *  Two rules hold this file together:
+ *
+ *  1. Fail open. The document is written in its finished state; the
+ *     `.js` class on <html> is the only thing that hides anything. Any
+ *     element this file forgets stays readable instead of blank.
+ *  2. One clock. Every scroll-driven effect subscribes to
+ *     window.Scroll (js/scroll.js). Nothing here binds its own
+ *     scroll listener.
  * ------------------------------------------------------------------ */
 (function () {
   "use strict";
@@ -10,128 +17,247 @@
   const S = window.Scroll;
   const reduced = S.reduced;
   const clamp = S.clamp;
-  const lerp = S.lerp;
+  const root = document.documentElement;
 
   /* ------------------------------------------------------------------
-   * Staggered scroll reveal
-   * Siblings inside one group each get an index, so a group arrives as
-   * a run of beats instead of one block.
+   * Character split
+   * Splits a line into per-character spans so the heading rises letter
+   * by letter. Runs before anything paints; the mask in CSS hides the
+   * characters until their line is lit.
+   * ---------------------------------------------------------------- */
+  function split(el) {
+    const text = el.textContent;
+    const frag = document.createDocumentFragment();
+    let i = 0;
+    for (const ch of text) {
+      const span = document.createElement("span");
+      span.className = "char";
+      span.textContent = ch;
+      span.style.setProperty("--d", String(i));
+      frag.appendChild(span);
+      i++;
+    }
+    el.textContent = "";
+    el.appendChild(frag);
+    /* the whole line keeps its text for assistive tech */
+    el.setAttribute("aria-label", text);
+    return i;
+  }
+
+  const splitLines = Array.prototype.slice.call(document.querySelectorAll("[data-split]"));
+  splitLines.forEach((el) => split(el));
+
+  /* The heading itself carries the accessible name. `aria-label` on the
+     role-less wrapper span is not reliably exposed, and without a name
+     on the heading a screen reader can fall back to reading the split
+     characters one at a time. */
+  document.querySelectorAll("h1, h2").forEach((h) => {
+    const lines = Array.prototype.slice.call(h.querySelectorAll("[data-split]"));
+    if (!lines.length) return;
+    h.setAttribute("aria-label", lines.map((l) => l.getAttribute("aria-label")).join(" "));
+  });
+
+  /* The page's own title is lit on load; every other split heading waits
+     for the reading position to reach it. */
+  function light(el, base) {
+    if (el.classList.contains("is-lit")) return;
+    el.style.setProperty("--base", (base || 0) + "ms");
+    el.classList.add("is-lit");
+  }
+  const titleLines = Array.prototype.slice.call(document.querySelectorAll("h1 [data-split]"));
+  titleLines.forEach((el, i) => light(el, 150 + i * 90));
+
+  /* ------------------------------------------------------------------
+   * Reveal on scroll
+   * Driven by the scroll driver rather than IntersectionObserver: an
+   * anchor jump or a fast flick can move an element from below the
+   * viewport to above it without ever crossing a visibility threshold,
+   * which used to leave copy sitting at opacity 0 for good. A position
+   * test on every frame cannot miss that.
    * ---------------------------------------------------------------- */
   const revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
 
-  /* index each element among its revealing siblings */
-  const groups = new Map();
+  /* index each element among its revealing siblings, so a group lands
+     as a run of beats instead of one block */
+  const seen = new Map();
   revealEls.forEach((el) => {
     const parent = el.parentElement;
-    const n = groups.get(parent) || 0;
-    groups.set(parent, n + 1);
+    const n = seen.get(parent) || 0;
+    seen.set(parent, n + 1);
     el.style.setProperty("--i", String(Math.min(n, 6)));
   });
 
-  /* transform must be cleared once a reveal finishes: a lingering
-     transform would become the containing block for sticky children. */
-  const settle = (el) => el.classList.add("is-done");
-
-  if (reduced) {
-    revealEls.forEach((el) => {
-      el.classList.add("is-visible");
-      settle(el);
+  /* groups whose children land one after another */
+  const staggerGroups = Array.prototype.slice.call(document.querySelectorAll("[data-stagger]"));
+  staggerGroups.forEach((group) => {
+    Array.prototype.slice.call(group.children).forEach((child, i) => {
+      child.style.setProperty("--d", String(i));
     });
-  } else {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const el = entry.target;
-          /* above the viewport — the reader jumped past it. Show it at
-             once rather than animating content they already scrolled by. */
-          if (!entry.isIntersecting) {
-            if (entry.boundingClientRect.bottom >= 0) return;
-            io.unobserve(el);
-            el.classList.add("is-visible");
-            settle(el);
-            return;
-          }
-          io.unobserve(el);
-          el.classList.add("is-visible");
-          const delay = 900 + parseInt(el.style.getPropertyValue("--i") || "0", 10) * 80;
-          setTimeout(() => settle(el), delay);
-        });
+  });
+
+  /* everything that waits for the reading position to reach it */
+  const laterLines = splitLines.filter((el) => titleLines.indexOf(el) === -1);
+  const watched = revealEls.concat(staggerGroups).concat(laterLines);
+
+  /* An animation that fills forwards keeps its transform — as an
+     identity matrix, but a transform all the same, and a transformed
+     ancestor becomes the containing block for `.tl__meta`'s sticky
+     dates. So each reveal drops its animation the moment it ends. */
+  function settle(el) {
+    el.addEventListener(
+      "animationend",
+      (ev) => {
+        if (ev.target !== el) return; /* a child's animation, not ours */
+        el.classList.add("is-instant");
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+      { once: true }
     );
-    revealEls.forEach((el) => io.observe(el));
-
-    /* IntersectionObserver never fires for an element the reader skipped
-       outright — a deep link such as /#building jumps on load, and every
-       section above it goes from below the viewport to above it without
-       crossing a visibility threshold. Those would stay at opacity 0 for
-       good, and a `.tl` stuck that way keeps the transform that breaks
-       its sticky date column. The scroll driver catches them. */
-    let passed = [];
-    S.onMeasure(() => {
-      passed = revealEls.map((el) => {
-        const r = el.getBoundingClientRect();
-        return { el: el, bottom: r.top + window.scrollY + r.height };
-      });
-    });
-    S.onScroll((st) => {
-      for (let i = 0; i < passed.length; i++) {
-        const m = passed[i];
-        if (m.bottom >= st.y || m.el.classList.contains("is-visible")) continue;
-        io.unobserve(m.el);
-        m.el.classList.add("is-visible");
-        settle(m.el);
-      }
-    });
   }
 
-  /* ------------------------------------------------------------------
-   * Animated counters — one shot, never scrubbed
-   * ---------------------------------------------------------------- */
-  const counters = document.querySelectorAll(".stat__num");
-  const animateCount = (el) => {
-    const target = parseFloat(el.dataset.target || "0");
-    const prefix = el.dataset.prefix || "";
-    const suffix = el.dataset.suffix || "";
-    const dur = 1400;
-    let start = null;
-    const step = (ts) => {
-      if (start === null) start = ts;
-      const p = Math.min((ts - start) / dur, 1);
-      const val = Math.round(S.easeOutCubic(p) * target);
-      el.textContent = prefix + val + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-  const finalValue = (el) =>
-    (el.dataset.prefix || "") + (el.dataset.target || "") + (el.dataset.suffix || "");
+  function enter(el, instant) {
+    el.classList.add("is-in");
+    if (instant) el.classList.add("is-instant");
+    else settle(el);
+    if (el.hasAttribute("data-split")) light(el, 0);
+  }
+
+  /* Same reason, for the staggered chips: while their animation fills,
+     it outranks the hover transform, and the chips stop lifting. The
+     group drops the animation once its last child has landed. */
+  staggerGroups.forEach((group) => {
+    const total = group.children.length;
+    let landed = 0;
+    group.addEventListener("animationend", (ev) => {
+      if (ev.target.parentElement !== group) return;
+      landed++;
+      if (landed >= total) group.classList.add("is-instant");
+    });
+  });
+
+  function showAll(instant) {
+    watched.forEach((el) => enter(el, instant));
+  }
 
   if (reduced) {
-    counters.forEach((el) => (el.textContent = finalValue(el)));
+    showAll(true);
   } else {
-    /* Driven by the scroll driver, not by IntersectionObserver: an
-       anchor jump can move a stat from below the viewport to above it
-       without ever crossing a visibility threshold, which used to leave
-       the number sitting at zero for good. */
     let marks = [];
     S.onMeasure(() => {
-      /* a re-measure must not replay a counter that already ran */
-      const ran = new Map(marks.map((m) => [m.el, m.done]));
-      marks = Array.prototype.slice.call(counters).map((el) => {
+      const done = new Map(marks.map((m) => [m.el, m.done]));
+      marks = watched.map((el) => {
         const r = el.getBoundingClientRect();
-        return { el: el, top: r.top + window.scrollY, done: ran.get(el) === true };
+        const top = r.top + window.scrollY;
+        return { el: el, top: top, bottom: top + r.height, done: done.get(el) === true };
       });
     });
     S.onScroll((st) => {
       for (let i = 0; i < marks.length; i++) {
         const m = marks[i];
         if (m.done) continue;
-        if (m.top < st.y) {
-          /* scrolled clean past it */
+        if (m.bottom < st.y) {
+          /* scrolled clean past it — show it settled, do not replay */
           m.done = true;
-          m.el.textContent = finalValue(m.el);
-        } else if (m.top < st.y + st.vh * 0.88) {
+          enter(m.el, true);
+        } else if (m.top < st.y + st.vh * 0.9) {
+          m.done = true;
+          enter(m.el, false);
+        }
+      }
+    });
+    /* last resort: whatever is still hidden three seconds after load is
+       a bug in the lines above, and a blank block is worse than a
+       skipped animation. */
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        marks.forEach((m) => {
+          if (m.done || m.top > window.scrollY + window.innerHeight) return;
+          m.done = true;
+          enter(m.el, true);
+        });
+      }, 3000);
+    });
+  }
+
+  /* the instrument is decorative, and arrives with the hero */
+  const dial = document.getElementById("dial");
+  if (dial) dial.classList.add("is-in");
+
+  /* ------------------------------------------------------------------
+   * Marquee
+   * The track is duplicated once and translated by exactly half its
+   * width, so the loop is seamless at any content length, and the
+   * duration is derived from the width to keep the speed constant.
+   * ---------------------------------------------------------------- */
+  if (!reduced) document.querySelectorAll("[data-marquee]").forEach((track) => {
+    const copy = track.cloneNode(true);
+    copy.removeAttribute("data-marquee");
+    copy.setAttribute("aria-hidden", "true");
+    while (copy.firstChild) track.appendChild(copy.firstChild);
+    const half = track.scrollWidth / 2;
+    track.style.setProperty("--half", half + "px");
+    track.style.setProperty("--dur", Math.max(18, half / 55).toFixed(1) + "s");
+  });
+
+  /* ------------------------------------------------------------------
+   * Nav labels — each rides in a mask and swaps for its own copy
+   * ---------------------------------------------------------------- */
+  document.querySelectorAll(".nav__links a:not(.nav__cta) span").forEach((span) => {
+    const label = span.textContent;
+    span.textContent = "";
+    /* the copy that rides in is a real element marked hidden, so the
+       link is never announced twice */
+    const base = document.createElement("i");
+    const hover = document.createElement("i");
+    base.className = "nav__label";
+    hover.className = "nav__label nav__label--hover";
+    hover.setAttribute("aria-hidden", "true");
+    base.textContent = label;
+    hover.textContent = label;
+    span.appendChild(base);
+    span.appendChild(hover);
+  });
+
+  /* ------------------------------------------------------------------
+   * Counters — one shot, never scrubbed. The finished value is already
+   * in the markup; this animates up to it.
+   * ---------------------------------------------------------------- */
+  const counters = Array.prototype.slice.call(document.querySelectorAll("[data-count]"));
+  const finalValue = (el) =>
+    (el.dataset.prefix || "") + (el.dataset.count || "") + (el.dataset.suffix || "");
+
+  function animateCount(el) {
+    const target = parseFloat(el.dataset.count || "0");
+    const prefix = el.dataset.prefix || "";
+    const suffix = el.dataset.suffix || "";
+    const dur = 1300;
+    let start = null;
+    const step = (ts) => {
+      if (start === null) start = ts;
+      const p = Math.min((ts - start) / dur, 1);
+      el.textContent = prefix + Math.round(S.easeOutCubic(p) * target) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = finalValue(el);
+    };
+    requestAnimationFrame(step);
+  }
+
+  if (!reduced) {
+    let marks = [];
+    S.onMeasure(() => {
+      const done = new Map(marks.map((m) => [m.el, m.done]));
+      marks = counters.map((el) => ({
+        el: el,
+        top: el.getBoundingClientRect().top + window.scrollY,
+        done: done.get(el) === true,
+      }));
+    });
+    S.onScroll((st) => {
+      for (let i = 0; i < marks.length; i++) {
+        const m = marks[i];
+        if (m.done) continue;
+        if (m.top < st.y) {
+          m.done = true; /* scrolled past — it already reads right */
+        } else if (m.top < st.y + st.vh * 0.86) {
           m.done = true;
           animateCount(m.el);
         }
@@ -140,18 +266,18 @@
   }
 
   /* ------------------------------------------------------------------
-   * Nav state + scroll progress (cheap, runs on scroll events)
+   * Nav state + scroll progress
    * ---------------------------------------------------------------- */
   const nav = document.getElementById("nav");
   const progress = document.getElementById("scrollProgress");
   S.onScroll((st) => {
     if (nav) nav.classList.toggle("is-scrolled", st.y > 40);
-    if (progress) progress.style.transform = "scaleX(" + st.progress + ")";
+    if (progress) progress.style.transform = "scaleX(" + st.progress.toFixed(4) + ")";
   });
 
   /* ------------------------------------------------------------------
    * Smooth anchor navigation
-   * The global CSS `scroll-behavior: smooth` was removed: it desynced
+   * The global CSS `scroll-behavior: smooth` stays off: it desyncs
    * every scroll-driven effect from the input. Anchors smooth here.
    * ---------------------------------------------------------------- */
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
@@ -166,44 +292,32 @@
   });
 
   /* ------------------------------------------------------------------
-   * Hero — the copy lifts away and dims as the first section leaves
+   * Hero — the copy lifts away, the instrument drifts and turns
    * ---------------------------------------------------------------- */
   const heroInner = document.querySelector(".hero__inner");
   const heroScroll = document.querySelector(".hero__scroll");
-  if (heroInner && !reduced) {
-    S.onFrame(() => {
-      const p = clamp(S.state.y / (S.state.vh * 0.9), 0, 1);
-      const e = S.smoothstep(p);
-      heroInner.style.transform = "translate3d(0," + (e * -70).toFixed(2) + "px,0)";
-      heroInner.style.opacity = (1 - e * 1.05).toFixed(3);
-      if (heroScroll) heroScroll.style.opacity = (1 - p * 2.6).toFixed(3);
-    });
-  }
-
-  /* ------------------------------------------------------------------
-   * Readability veil
-   * The crystal owns the hero and the contact. In between it has to sit
-   * behind the copy, so the veil rises once the hero leaves and eases
-   * back down as the contact section arrives.
-   * ---------------------------------------------------------------- */
-  const veil = document.querySelector(".veil");
-  if (veil && !reduced) {
-    let lastV = -1;
+  if (!reduced && (heroInner || dial)) {
     S.onFrame((st) => {
-      const outOfHero = S.smoothstep(clamp(st.y / (st.vh * 0.85), 0, 1));
-      const intoContact = S.smoothstep(S.enterProgress("contact"));
-      const v = outOfHero * 0.62 * (1 - intoContact * 0.85);
-      if (Math.abs(v - lastV) > 0.004) {
-        veil.style.opacity = v.toFixed(3);
-        lastV = v;
+      const p = clamp(st.y / (st.vh * 0.95), 0, 1);
+      const e = S.smoothstep(p);
+      if (heroInner) {
+        heroInner.style.transform = "translate3d(0," + (e * -64).toFixed(1) + "px,0)";
+        heroInner.style.opacity = (1 - e).toFixed(3);
+      }
+      if (heroScroll) heroScroll.style.opacity = (1 - p * 2.6).toFixed(3);
+      if (dial) {
+        dial.style.setProperty("--dy", (e * 150).toFixed(1) + "px");
+        dial.style.setProperty("--s", (1 - e * 0.28).toFixed(3));
+        /* four looping animations off screen are four animations the
+           phone pays for and nobody sees */
+        dial.classList.toggle("is-idle", st.y > st.vh * 1.1);
       }
     });
   }
 
   /* ------------------------------------------------------------------
-   * Experience — the scroll-told spine
-   * The timeline line draws itself as you read, the meta column sticks
-   * beside its entry, and the role under the reading line lights up.
+   * Experience — the spine draws as you read, and the entry under the
+   * reading line lights up
    * ---------------------------------------------------------------- */
   const timeline = document.querySelector(".timeline");
   const items = Array.prototype.slice.call(document.querySelectorAll(".tl"));
@@ -212,7 +326,7 @@
       timeline.style.setProperty("--tl-fill", "1");
       items.forEach((li) => li.classList.add("is-active"));
     } else {
-      /* absolute document positions, re-read only when layout changes */
+      timeline.style.setProperty("--tl-fill", "0");
       let tops = [];
       let startY = 0;
       let endY = 1;
@@ -228,14 +342,11 @@
       S.onFrame((st) => {
         if (!tops.length) return;
         const readLine = st.y + st.vh * 0.45;
-
         const fill = clamp((readLine - startY) / Math.max(1, endY - startY), 0, 1);
         if (Math.abs(fill - lastFill) > 0.002) {
           timeline.style.setProperty("--tl-fill", fill.toFixed(4));
           lastFill = fill;
         }
-
-        /* the entry the reading line currently sits inside */
         let active = -1;
         for (let i = 0; i < tops.length; i++) {
           if (readLine >= tops[i]) active = i;
@@ -249,30 +360,28 @@
   }
 
   /* ------------------------------------------------------------------
-   * Card tilt + glow following the pointer
+   * Magnetic buttons — the control leans towards the pointer and
+   * springs back when it leaves
    * ---------------------------------------------------------------- */
   if (!reduced && window.matchMedia("(hover: hover)").matches) {
-    document.querySelectorAll("[data-tilt]").forEach((card) => {
-      const strength = 8;
-      card.addEventListener("pointermove", (e) => {
-        const r = card.getBoundingClientRect();
-        const px = (e.clientX - r.left) / r.width;
-        const py = (e.clientY - r.top) / r.height;
-        const rx = (0.5 - py) * strength;
-        const ry = (px - 0.5) * strength;
-        card.style.transform =
-          "perspective(800px) rotateX(" + rx + "deg) rotateY(" + ry + "deg) translateY(-4px)";
-        card.style.setProperty("--mx", px * 100 + "%");
-        card.style.setProperty("--my", py * 100 + "%");
+    document.querySelectorAll("[data-magnetic]").forEach((el) => {
+      const pull = 0.28;
+      el.addEventListener("pointermove", (ev) => {
+        const r = el.getBoundingClientRect();
+        const dx = (ev.clientX - (r.left + r.width / 2)) * pull;
+        const dy = (ev.clientY - (r.top + r.height / 2)) * pull;
+        el.style.transition = "none";
+        el.style.transform = "translate3d(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px,0)";
       });
-      card.addEventListener("pointerleave", () => {
-        card.style.transform = "";
+      el.addEventListener("pointerleave", () => {
+        el.style.transition = "transform 0.5s var(--spring)";
+        el.style.transform = "";
       });
     });
   }
 
   /* ------------------------------------------------------------------
-   * Active nav link highlight
+   * Active nav link
    * ---------------------------------------------------------------- */
   const sections = document.querySelectorAll("section[id], header[id]");
   const navLinks = document.querySelectorAll(".nav__links a");
@@ -291,8 +400,10 @@
   );
   sections.forEach((s) => sio.observe(s));
 
-  /* remeasure once fonts land — metrics shift when they swap in */
+  /* metrics shift when the webfonts swap in */
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => S.measure());
   }
+
+  root.classList.add("is-ready");
 })();

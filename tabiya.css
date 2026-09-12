@@ -1,0 +1,158 @@
+/* ==================================================================
+   Tabiya — project page
+   Built on styles.css + project.css. Only the accent trio is
+   re-pointed, to Tabiya's own Amber and Lapis, so the page reads as
+   the product while keeping the site's structure, motion and grid.
+   Everything below is specific to this project: the lockup, the
+   screenshots, the architecture diagram.
+   ================================================================== */
+
+.page--tabiya {
+  --accent: #f2a03d;     /* Brand Amber — the one highlight */
+  --accent-2: #4a8fd4;   /* Lapis — the secondary */
+  --accent-3: #f8be79;   /* Amber for text on a dark ground */
+}
+
+/* ---------- The lockup ---------- */
+.proj__lockup {
+  display: block;
+  width: clamp(180px, 22vw, 240px);
+  height: auto;
+  margin-bottom: 34px;
+}
+/* the title runs shorter here than the shared default */
+.proj__title { font-size: clamp(34px, 6.2vw, 74px); line-height: 1.0; }
+.proj__lede { max-width: 640px; }
+
+/* ---------- Screenshots ---------- */
+.shot { margin: 0; }
+.shot__frame {
+  position: relative;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  overflow: hidden;
+  line-height: 0;
+}
+/* the corner brackets from the portrait, reused on the frame */
+.shot__frame::before,
+.shot__frame::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 20px; height: 20px;
+  border: 1px solid var(--accent);
+  transition: transform 0.45s var(--ease);
+}
+.shot__frame::before { top: 10px; left: 10px; border-right: 0; border-bottom: 0; }
+.shot__frame::after { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }
+.shot:hover .shot__frame::before { transform: translate(-5px, -5px); }
+.shot:hover .shot__frame::after { transform: translate(5px, 5px); }
+.shot__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.8s var(--ease);
+}
+.shot:hover .shot__frame img { transform: scale(1.015); }
+.shot figcaption {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+.shot--hero .shot__frame { border-color: rgba(242, 160, 61, 0.3); }
+
+/* ---------- Feature blocks ---------- */
+.feat {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(28px, 4.5vw, 64px);
+  align-items: center;
+  padding: clamp(44px, 6vh, 72px) 0;
+  border-top: 1px solid var(--line-soft);
+}
+.feat:first-of-type { border-top: 0; padding-top: 0; }
+.feat--flip .feat__text { order: 2; }
+.feat__no {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.feat__text h2 {
+  font-family: var(--display);
+  font-size: clamp(24px, 3.1vw, 34px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+  margin-bottom: 16px;
+}
+.feat__text p { color: var(--ink-dim); font-size: 15.5px; }
+
+/* ---------- Architecture diagram ---------- */
+.diagram {
+  margin: 44px 0 0;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  padding: clamp(20px, 3.5vw, 40px);
+  overflow-x: auto;
+}
+.diagram svg { width: 100%; min-width: 660px; height: auto; display: block; }
+.diagram figcaption {
+  margin-top: 20px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+.d-box rect { fill: var(--bg); stroke: var(--line); stroke-width: 1; }
+.d-box--fn rect { stroke: rgba(242, 160, 61, 0.55); }
+.d-box--store rect { fill: rgba(242, 160, 61, 0.05); stroke: rgba(242, 160, 61, 0.4); }
+.d-box--out rect { stroke: rgba(74, 143, 212, 0.6); }
+.d-t {
+  fill: var(--ink);
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+.d-s {
+  fill: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-anchor: middle;
+}
+.d-l {
+  fill: var(--accent-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.d-flow path { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+.d-line path { stroke: var(--line); stroke-width: 1; fill: none; stroke-dasharray: 4 4; }
+.d-arrows path { fill: var(--accent); stroke: none; }
+/* the flow draws itself once the diagram arrives */
+.js .diagram .d-flow path,
+.js .diagram .d-line path {
+  stroke-dashoffset: 0;
+}
+.js .diagram.is-in .d-flow path {
+  stroke-dasharray: 120;
+  animation: flowDraw 0.7s var(--ease) both;
+}
+.js .diagram.is-in .d-flow path:nth-child(2) { animation-delay: 0.12s; }
+.js .diagram.is-in .d-flow path:nth-child(3) { animation-delay: 0.24s; }
+.js .diagram.is-in .d-flow path:nth-child(4) { animation-delay: 0.36s; }
+@keyframes flowDraw {
+  from { stroke-dashoffset: 120; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .feat { grid-template-columns: 1fr; gap: 26px; }
+  .feat--flip .feat__text { order: 0; }
+}
