@@ -81,14 +81,6 @@
 }
 .vault figcaption b { color: var(--ink-dim); font-weight: 500; }
 
-.disclaimer {
-  border-left: 2px solid var(--accent);
-  padding: 4px 0 4px 18px;
-  font-size: 14.5px;
-  color: var(--ink-dim);
-  max-width: 760px;
-}
-.disclaimer b { color: var(--ink); font-weight: 600; }
 
 /* ---------- Zones ---------- */
 .zones {

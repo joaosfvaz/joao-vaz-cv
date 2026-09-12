@@ -101,19 +101,12 @@
     <!-- ABOUT -->
     <section class="section section--about" id="about">
       <div class="section__label reveal"><span>01</span><em>About</em><i class="rule"></i></div>
-      <div class="about__text">
-          <p class="lead reveal">
-            Product Manager at <em>OLX Group (Motors, B2B)</em>, part of Prosus. I lead the
-            <strong>Insights &amp; Recommendations</strong> team — 10 people, engineers alongside a
-            product designer and a product analyst, building data and recommendation products for
-            professional dealers.
-          </p>
-          <p class="lead reveal">
-            Rated <strong>above expectations</strong> in every annual review since joining. I care about
-            outcome-driven strategy, honest experimentation, and using the newest tools to move faster
-            than the roadmap says I should.
-          </p>
-      </div>
+      <p class="lead reveal">
+        Product Manager at <em>OLX Group (Motors, B2B)</em>, part of Prosus. I lead the
+        <strong>Insights &amp; Recommendations</strong> team — 10 people, engineers alongside a
+        product designer and a product analyst, building data and recommendation products for
+        professional dealers.
+      </p>
       <!-- Counters read their finished value from the markup; js/ui.js
            animates up to it. If the script never runs, the number is right. -->
       <div class="stats">
@@ -204,6 +197,25 @@
           </div>
         </li>
       </ol>
+
+      <!-- Selection, not a role: it reads differently from the timeline
+           above on purpose. -->
+      <div class="selection reveal">
+        <div class="selection__meta">
+          <span class="selection__now"><i class="dot" aria-hidden="true"></i> Sept 2026 · In progress</span>
+          <span class="selection__where">Amsterdam · 1 month</span>
+        </div>
+        <div class="selection__body">
+          <h3>Prosus AI Accelerator Program</h3>
+          <p>Selected as one of the early-career people across Prosus to join the programme — a
+            month in Amsterdam working on AI, alongside people from other companies in the group.</p>
+          <ul class="tl__tags">
+            <li>Selected</li>
+            <li>Prosus Group</li>
+            <li>AI</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <!-- BUILDING -->
@@ -214,13 +226,15 @@
         agent loops and goals, context windows. Here's what that looks like in practice.
       </p>
       <div class="cards">
-        <article class="card reveal">
-          <div class="card__top"><i class="ic" data-icon="swift"></i><span class="card__kicker">macOS · Swift</span></div>
-          <h3>Mixd</h3>
-          <p>A native per-app volume mixer for macOS, built end-to-end with AI tooling using
-            Core Audio process taps. Set Zoom and Spotify to different levels, independently.</p>
-          <div class="card__foot"><span>Claude Code</span><span>Core Audio</span></div>
-        </article>
+        <a class="card card--link reveal" href="/team-context/">
+          <div class="card__top"><i class="ic" data-icon="plug"></i><span class="card__kicker">MCP · Python</span></div>
+          <h3>Team-context MCP</h3>
+          <p>A read-only MCP server that lets Toqan, the company assistant, answer questions about my
+            team from my own wiki. Six tools, no write path, and a hard allow-list deciding what a
+            caller can ever see.</p>
+          <div class="card__foot"><span>MCP</span><span>Read-only</span></div>
+          <span class="card__more">Know more<i aria-hidden="true">→</i></span>
+        </a>
         <a class="card card--link reveal" href="/pm-os/">
           <div class="card__top"><i class="ic" data-icon="anthropic"></i><span class="card__kicker">Knowledge · Agents</span></div>
           <h3>PM-OS</h3>

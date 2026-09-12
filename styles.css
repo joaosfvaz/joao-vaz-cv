@@ -421,7 +421,6 @@ img { max-width: 100%; }
 .lead em { color: var(--accent); font-style: normal; }
 .lead strong { color: var(--accent-2); font-weight: 500; }
 
-.about__text { display: flex; flex-direction: column; gap: 20px; max-width: 900px; }
 
 /* sized to nest inside the innermost ring, so every ring stays whole */
 .portrait {
@@ -588,6 +587,49 @@ img { max-width: 100%; }
   transition: border-color 0.3s var(--ease), color 0.3s var(--ease);
 }
 .tl__tags li:hover { border-color: var(--accent); color: var(--ink); }
+
+/* ---------- Selection ---------- *
+   A programme, not a job. It sits after the timeline and keeps the same
+   two-column rhythm, but it carries an accent edge and a live marker so
+   it never reads as a fourth role. */
+.selection {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  gap: 40px;
+  margin-top: 8px;
+  padding: 28px 26px 30px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--accent-3);
+  background: rgba(79, 224, 200, 0.035);
+  transition: background 0.4s var(--ease);
+}
+.selection:hover { background: rgba(79, 224, 200, 0.06); }
+.selection__meta { display: flex; flex-direction: column; gap: 8px; padding-top: 3px; }
+.selection__now {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--accent-3);
+}
+.selection__now .dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent-3);
+  flex: 0 0 auto;
+}
+.js .selection__now .dot { animation: pulse 2.4s ease-in-out infinite; }
+.selection__where { font-size: 13px; color: var(--ink-faint); }
+.selection__body h3 {
+  font-family: var(--display);
+  font-size: clamp(20px, 2.4vw, 25px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.selection__body p { color: var(--ink-dim); max-width: 620px; margin-bottom: 16px; font-size: 15.5px; }
 
 /* ---------- Cards ---------- */
 .cards {
@@ -891,6 +933,7 @@ img { max-width: 100%; }
   .edu { grid-template-columns: 1fr; }
   .contact__links { grid-template-columns: 1fr; }
   .tl { grid-template-columns: 1fr; gap: 12px; padding-left: 32px; }
+  .selection { grid-template-columns: 1fr; gap: 14px; }
   .tl__meta { position: static; top: auto; flex-direction: row; align-items: center; gap: 12px; flex-wrap: wrap; }
   .js .tl__body { opacity: 1; }
   .nav__links a:not(.nav__cta) { display: none; }

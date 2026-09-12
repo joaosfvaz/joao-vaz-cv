@@ -129,3 +129,85 @@
   .facts { grid-template-columns: 1fr; }
   .proj__cta .btn { flex: 1 1 auto; text-align: center; }
 }
+
+/* ==================================================================
+   Diagrams
+   Shared by every project page. The boxes and arrows take their colour
+   from the page's own accent trio, so one diagram language serves all
+   of them without any page hard-coding a hex value.
+   ================================================================== */
+.diagram {
+  margin: 44px 0 0;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  padding: clamp(20px, 3.5vw, 40px);
+  overflow-x: auto;
+}
+.diagram svg { width: 100%; min-width: 660px; height: auto; display: block; }
+.diagram figcaption {
+  margin-top: 20px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.d-box rect { fill: var(--bg); stroke: var(--line); stroke-width: 1; }
+.d-box--fn rect { stroke: color-mix(in srgb, var(--accent) 55%, transparent); }
+.d-box--store rect {
+  fill: color-mix(in srgb, var(--accent) 5%, transparent);
+  stroke: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+.d-box--out rect { stroke: color-mix(in srgb, var(--accent-2) 60%, transparent); }
+/* a box the boundary refuses */
+.d-box--off rect { stroke: var(--line); stroke-dasharray: 4 4; fill: transparent; }
+.d-box--off .d-t, .d-box--off .d-s { fill: var(--ink-faint); }
+
+.d-t {
+  fill: var(--ink);
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+.d-s {
+  fill: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 11px;
+  text-anchor: middle;
+}
+.d-l {
+  fill: var(--accent-3);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+}
+.d-flow path { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+.d-line path { stroke: var(--line); stroke-width: 1; fill: none; stroke-dasharray: 4 4; }
+.d-arrows path { fill: var(--accent); stroke: none; }
+/* the path the boundary stops */
+.d-deny path { stroke: var(--ink-faint); stroke-width: 1.5; fill: none; opacity: 0.6; }
+.d-cross path { stroke: var(--ink-faint); stroke-width: 1.5; fill: none; }
+
+/* the flow draws itself once the diagram arrives */
+.js .diagram.is-in .d-flow path {
+  stroke-dasharray: 120;
+  animation: flowDraw 0.7s var(--ease) both;
+}
+.js .diagram.is-in .d-flow path:nth-child(2) { animation-delay: 0.12s; }
+.js .diagram.is-in .d-flow path:nth-child(3) { animation-delay: 0.24s; }
+.js .diagram.is-in .d-flow path:nth-child(4) { animation-delay: 0.36s; }
+@keyframes flowDraw {
+  from { stroke-dashoffset: 120; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* a page that must state what it is deliberately not showing */
+.disclaimer {
+  border-left: 2px solid var(--accent);
+  padding: 4px 0 4px 18px;
+  font-size: 14.5px;
+  color: var(--ink-dim);
+  max-width: 760px;
+}
+.disclaimer b { color: var(--ink); font-weight: 600; }

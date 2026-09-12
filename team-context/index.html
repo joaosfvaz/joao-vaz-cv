@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team-context MCP — João Vaz</title>
+  <meta name="description" content="A read-only MCP server that lets OLX's AI assistant answer questions about my team from my own wiki — with a hard allow-list as the security boundary." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/project.css" />
+  <link rel="stylesheet" href="/team-context.css" />
+  <script>document.documentElement.className += " js";</script>
+</head>
+<body class="page page--mcp">
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <nav class="nav" id="nav">
+    <a href="/" class="nav__mark">JV</a>
+    <div class="nav__links">
+      <a href="/#building" class="nav__back"><span>← Back to the work</span></a>
+      <a href="/pm-os/" class="nav__cta" data-magnetic><span>Next project</span></a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <header class="proj" id="top">
+      <p class="proj__eyebrow reveal">
+        <span class="dot" aria-hidden="true"></span>
+        Proof of concept · MCP · Read-only
+      </p>
+      <h1 class="proj__title">
+        <span class="hero__line"><span class="hero__line-in" data-split>Stop being your team's</span></span>
+        <span class="hero__line hero__line--accent"><span class="hero__line-in" data-split>lookup service.</span></span>
+      </h1>
+      <p class="proj__lede reveal">
+        An MCP server that lets <strong>Toqan</strong>, the company assistant at OLX, answer questions
+        about my team from my own wiki. Six read-only tools, and a hard allow-list deciding what it
+        can ever see.
+      </p>
+      <dl class="facts">
+        <div class="fact reveal"><dt>Built with</dt><dd>Python · FastMCP · streamable HTTP</dd></div>
+        <div class="fact reveal"><dt>Surface</dt><dd>6 tools, all read-only</dd></div>
+        <div class="fact reveal"><dt>Boundary</dt><dd>Allow-list in code, not config</dd></div>
+        <div class="fact reveal"><dt>Status</dt><dd>Proof of concept</dd></div>
+      </dl>
+      <p class="disclaimer reveal">
+        <b>Note.</b> The wiki behind this is internal. Nothing from it appears here — no pages, no
+        names, no numbers. What follows is the interface and the boundary only.
+      </p>
+    </header>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track" data-marquee>
+        <span>Model Context Protocol</span><b>✳</b>
+        <span>Read-only</span><b>✳</b>
+        <span>Allow-list, not deny-list</span><b>✳</b>
+        <span>No writes, ever</span><b>✳</b>
+        <span>The platform's edge is not the edge</span><b>✳</b>
+      </div>
+    </div>
+
+    <!-- WHY -->
+    <section class="section" id="why">
+      <div class="section__label reveal"><span>01</span><em>Why</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        Toqan can reach the tools the platform team connected. It cannot reach
+        <em>my team's context</em> — what we are building, which stage each initiative is at, what a
+        metric means here. So every stakeholder question came to me.
+      </p>
+      <p class="lead reveal">
+        <strong>The edge of the platform is not the edge of what you can build.</strong> MCP is the
+        seam: anything I can reach, my agent can reach. So I put a server in front of the curated
+        half of my wiki and let people ask it directly.
+      </p>
+    </section>
+
+    <!-- TOOLS -->
+    <section class="section" id="tools">
+      <div class="section__label reveal"><span>02</span><em>The surface</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        Six tools. Every one reads; none writes. Each returns JSON, so the assistant gets structure
+        rather than a wall of Markdown to guess at.
+      </p>
+      <ul class="tools">
+        <li class="tool reveal"><code>list_pages()</code><p>Every page the boundary allows. The only way to discover a valid path.</p></li>
+        <li class="tool reveal"><code>read_page(path)</code><p>One page, by a path that <code>list_pages()</code> returned.</p></li>
+        <li class="tool reveal"><code>search_wiki(query)</code><p>Full-text search, scoped to the same allowed set.</p></li>
+        <li class="tool reveal"><code>team_summary()</code><p>Identity, mission, initiatives, metrics and markets in one structured answer.</p></li>
+        <li class="tool reveal"><code>get_okrs()</code><p>Objectives, key results, bets and strategic themes.</p></li>
+        <li class="tool reveal"><code>what_we_are_working_on()</code><p>Initiatives with in-flight work ranked first — the question people actually ask.</p></li>
+      </ul>
+    </section>
+
+    <!-- BOUNDARY -->
+    <section class="section" id="boundary">
+      <div class="section__label reveal"><span>03</span><em>The boundary</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        This is the part that mattered. The wiki holds meeting notes, personal pages and raw
+        transcripts next to the curated pages. Exposing it to the whole company meant deciding, in
+        code, exactly what a caller may ever see.
+      </p>
+
+      <figure class="diagram reveal">
+        <svg viewBox="0 0 880 400" role="img" aria-labelledby="gTitle gDesc">
+          <title id="gTitle">How the boundary works</title>
+          <desc id="gDesc">A colleague asks Toqan. Toqan calls the MCP server over HTTPS with a token
+            header. The server enumerates only an allow-list of curated folders and returns those pages.
+            Meetings, work, raw sources, people pages, the commitments ledger and the agent
+            configuration are never enumerated, so they cannot be returned.</desc>
+
+          <g class="d-box d-box--out">
+            <rect x="16" y="118" width="150" height="62" />
+            <text class="d-t" x="91" y="144">Toqan</text>
+            <text class="d-s" x="91" y="163">a colleague asks</text>
+          </g>
+          <g class="d-flow"><path d="M166 149h88" /></g>
+          <text class="d-l" x="210" y="133" text-anchor="middle">HTTPS · token</text>
+
+          <g class="d-box d-box--fn">
+            <rect x="262" y="106" width="186" height="86" />
+            <text class="d-t" x="355" y="140">MCP server</text>
+            <text class="d-s" x="355" y="160">6 tools · read-only</text>
+            <text class="d-s" x="355" y="178">no write path exists</text>
+          </g>
+
+          <!-- the gate -->
+          <g class="d-line"><path d="M470 22v356" /></g>
+          <text class="d-l" x="438" y="16">allow-list</text>
+
+          <g class="d-flow"><path d="M448 132h68" /></g>
+          <g class="d-box d-box--store">
+            <rect x="524" y="40" width="340" height="112" />
+            <text class="d-t" x="694" y="70">Returned</text>
+            <text class="d-s" x="694" y="94">org · projects · metrics · product · strategy</text>
+            <text class="d-s" x="694" y="114">index.md · markets.md · README.md · SCHEMA.md</text>
+            <text class="d-s" x="694" y="136">enumerated, then read</text>
+          </g>
+
+          <g class="d-deny"><path d="M448 232h42" /></g>
+          <g class="d-cross"><path d="M492 224l16 16M508 224l-16 16" /></g>
+          <g class="d-box d-box--off">
+            <rect x="524" y="196" width="340" height="112" />
+            <text class="d-t" x="694" y="226">Never enumerated</text>
+            <text class="d-s" x="694" y="250">meetings · work · raw · people</text>
+            <text class="d-s" x="694" y="270">commitments · agent configuration</text>
+            <text class="d-s" x="694" y="292">not hidden — unreachable</text>
+          </g>
+
+          <text class="d-s" x="694" y="344">A path outside the list is not refused on request.</text>
+          <text class="d-s" x="694" y="362">It is never walked, so it cannot be named.</text>
+
+          <g class="d-arrows">
+            <path d="M256 149l-8-4v8z" /><path d="M518 132l-8-4v8z" />
+          </g>
+        </svg>
+        <figcaption>Enumeration is allow-list-only. The deny-list exists as a second layer, for clear errors.</figcaption>
+      </figure>
+
+      <div class="gate">
+        <div class="gate__col gate__col--yes reveal">
+          <span class="gate__cap">Reachable</span>
+          <ul>
+            <li>org/</li><li>projects/</li><li>metrics/</li><li>product/</li><li>strategy/</li>
+            <li>index.md</li><li>markets.md</li><li>README.md</li><li>SCHEMA.md</li>
+          </ul>
+          <p class="gate__note">Curated pages only — the half of the wiki that is meant to be the
+            answer to a question.</p>
+        </div>
+        <div class="gate__col gate__col--no reveal">
+          <span class="gate__cap">Unreachable</span>
+          <ul>
+            <li>meetings/</li><li>work/</li><li>raw/</li><li>people/</li>
+            <li>commitments</li><li>agent config</li><li>.git/</li><li>.obsidian/</li>
+          </ul>
+          <p class="gate__note">Transcripts, personal pages, drafts and my own instructions to the
+            agent. None of it is anyone else's business.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEFENCES -->
+    <section class="section" id="defences">
+      <div class="section__label reveal"><span>04</span><em>What stops a clever caller</em><i class="rule"></i></div>
+      <p class="lead reveal">
+        An allow-list only holds if the path that reaches it cannot be bent. Six guards, each for a
+        specific way in.
+      </p>
+      <ul class="guards">
+        <li class="guard reveal">
+          <span class="guard__k">Enumerate, don't traverse</span>
+          <p>The server walks the allowed folders and nothing else. A blocked path is not refused —
+            it is never visited, so it never appears in any result.</p>
+        </li>
+        <li class="guard reveal">
+          <span class="guard__k">Deny-list as a second layer</span>
+          <p>Redundant by design. If the allow-list were ever loosened by mistake, the sensitive
+            names are still rejected outright.</p>
+        </li>
+        <li class="guard reveal">
+          <span class="guard__k">No traversal, no absolutes</span>
+          <p><code>..</code>, leading slashes, Windows drive letters and backslashes are all rejected
+            before the filesystem is touched at all.</p>
+        </li>
+        <li class="guard reveal">
+          <span class="guard__k">Case-folded matching</span>
+          <p>macOS filesystems are case-insensitive. Without folding, a different capitalisation is a
+            bypass. Every comparison is folded.</p>
+        </li>
+        <li class="guard reveal">
+          <span class="guard__k">Symlinks refused, roots checked</span>
+          <p>Symlinks are skipped, and every resolved path is re-checked against the wiki root — so a
+            link cannot walk out of the allowed tree.</p>
+        </li>
+        <li class="guard reveal">
+          <span class="guard__k">Filtering at paragraph level</span>
+          <p>The summary tools read allowed pages, but an allowed page can quote a blocked one. Any
+            paragraph referencing an excluded source is dropped before the answer is built.</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- WHAT IT SHOWED -->
+    <section class="section" id="result">
+      <div class="section__label reveal"><span>05</span><em>What it showed</em><i class="rule"></i></div>
+      <ul class="takeaways">
+        <li class="reveal"><strong>A PM can extend the platform.</strong> The assistant the company
+          gives you is not the limit of what it can answer. MCP is the seam, and it is a
+          <em>200-line Python file</em>, not a project.</li>
+        <li class="reveal"><strong>The hard part is not the protocol.</strong> Standing the server up
+          took an afternoon. Deciding what a stranger's agent may read from your team's notes took
+          longer, and is the part worth reviewing.</li>
+        <li class="reveal"><strong>Read-only is a feature.</strong> With no write path in the code,
+          the worst case is a wrong answer rather than a changed system.</li>
+        <li class="reveal"><strong>It is a proof of concept, not a product.</strong> It runs on my
+          laptop behind a tunnel. It exists to show the shape of the thing — the platform team owns
+          what happens next.</li>
+      </ul>
+
+      <div class="proj__cta reveal">
+        <a class="btn btn--primary" href="/#building" data-magnetic><span>Back to the work</span></a>
+        <a class="btn btn--ghost" href="/pm-os/" data-magnetic><span>See PM-OS</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 João Vaz</span>
+    <span>Team-context MCP · read-only by design</span>
+  </footer>
+
+  <script src="/js/icons.js"></script>
+  <script src="/js/scroll.js"></script>
+  <script src="/js/ui.js"></script>
+</body>
+</html>
