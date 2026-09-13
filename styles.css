@@ -288,7 +288,7 @@ img { max-width: 100%; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 112px var(--gut) 104px;
+  padding: 96px var(--gut) 76px;
   overflow: hidden;
 }
 
@@ -477,7 +477,7 @@ img { max-width: 100%; }
   line-height: 0.98;
   letter-spacing: -0.035em;
   color: #fff;
-  margin-bottom: 44px;
+  margin-bottom: 40px;
 }
 .hero__line--role {
   font-weight: 400;
@@ -495,6 +495,7 @@ img { max-width: 100%; }
 .hero__title .hero__line { padding: 0.02em 0.12em 0.12em; margin: 0 -0.12em; }
 .hero__line-in { display: block; }
 .char { display: inline-block; white-space: pre; }
+.word { display: inline-block; white-space: nowrap; }
 .js .char { transform: translate3d(0, 108%, 0); }
 .js .is-lit .char {
   animation: charUp 0.95s var(--spring) both;
@@ -669,50 +670,20 @@ img { max-width: 100%; }
 .hero__figure {
   position: relative;
   z-index: 1;
-  width: clamp(84px, 9vw, 108px);
+  width: clamp(76px, 8vw, 96px);
   aspect-ratio: 1;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   padding: 5px;
   border-radius: 50%;
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.04) 45%, rgba(255, 255, 255, 0.2));
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 18px 40px -16px rgba(0, 0, 0, 0.8);
 }
 
-.hero__scroll {
-  position: absolute;
-  z-index: 2;
-  bottom: 34px;
-  left: 50%;
-  translate: -50% 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-.hero__scroll-line {
-  width: 72px; height: 1px;
-  background: var(--line);
-  position: relative;
-  overflow: hidden;
-}
-.hero__scroll-line::after {
-  content: "";
-  position: absolute;
-  top: 0; left: -34%;
-  width: 34%; height: 100%;
-  background: var(--accent);
-}
-.js .hero__scroll-line::after { animation: runner 2.2s ease-in-out infinite; }
-@keyframes runner { 0% { left: -34%; } 100% { left: 108%; } }
-
 /* ---------- Ticker ---------- */
 .ticker {
   position: relative;
   z-index: 2;
+  width: 100%;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(255, 255, 255, 0.03);
@@ -736,6 +707,15 @@ img { max-width: 100%; }
 .js .ticker__track { animation: marquee var(--dur, 34s) linear infinite; }
 @keyframes marquee { to { transform: translate3d(calc(-1 * var(--half, 50%)), 0, 0); } }
 .ticker:hover .ticker__track { animation-play-state: paused; }
+/* on the landing page the ticker is the hero's footer */
+.hero .ticker {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  background: rgba(5, 6, 8, 0.35);
+  border-bottom: 0;
+}
 
 /* ---------- About ---------- */
 .lead {
@@ -1225,7 +1205,7 @@ img { max-width: 100%; }
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   body::before { background-image: repeating-linear-gradient(90deg, var(--line-soft) 0 1px, transparent 1px calc(100% / 3)); }
-  .hero { padding-top: 104px; padding-bottom: 96px; }
+  .hero { padding-top: 96px; padding-bottom: 72px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .cards { grid-template-columns: 1fr; }
   .skills { grid-template-columns: 1fr; }

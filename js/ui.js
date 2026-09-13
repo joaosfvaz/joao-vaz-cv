@@ -29,12 +29,25 @@
     const text = el.textContent;
     const frag = document.createDocumentFragment();
     let i = 0;
+    /* characters sit inside a word that will not break, so a narrow
+       screen wraps between words and never in the middle of one */
+    let word = null;
     for (const ch of text) {
       const span = document.createElement("span");
       span.className = "char";
       span.textContent = ch;
       span.style.setProperty("--d", String(i));
-      frag.appendChild(span);
+      if (/\s/.test(ch)) {
+        word = null;
+        frag.appendChild(span);
+      } else {
+        if (!word) {
+          word = document.createElement("span");
+          word.className = "word";
+          frag.appendChild(word);
+        }
+        word.appendChild(span);
+      }
       i++;
     }
     el.textContent = "";
@@ -293,7 +306,6 @@
    * is js/scene.js.
    * ---------------------------------------------------------------- */
   const heroInner = document.querySelector(".hero__inner");
-  const heroScroll = document.querySelector(".hero__scroll");
   if (!reduced && heroInner) {
     S.onFrame((st) => {
       const p = clamp(st.y / (st.vh * 0.95), 0, 1);
@@ -302,7 +314,6 @@
         heroInner.style.transform = "translate3d(0," + (e * -64).toFixed(1) + "px,0)";
         heroInner.style.opacity = (1 - e).toFixed(3);
       }
-      if (heroScroll) heroScroll.style.opacity = (1 - p * 2.6).toFixed(3);
     });
   }
 
