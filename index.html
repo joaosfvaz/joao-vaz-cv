@@ -218,7 +218,12 @@
         I don't just spec things — I build them. Fluent in the underlying concepts: MCPs, skills,
         agent loops and goals, context windows. Here's what that looks like in practice.
       </p>
-      <div class="cards">
+      <!-- A 3D carousel: the track scrolls sideways (trackpad, shift-wheel,
+           swipe, arrows) and js/carousel.js magnifies the project nearest
+           the centre. Without the script it is a plain sideways-scrolling row. -->
+      <div class="carousel" data-carousel>
+        <div class="carousel__track" tabindex="0" aria-label="Projects — scroll sideways">
+        <div class="carousel__slide">
         <a class="card card--link reveal" href="/team-context/">
           <div class="card__top"><i class="ic" data-icon="plug"></i><span class="card__kicker">MCP · Python</span></div>
           <h3>Team-context MCP</h3>
@@ -228,6 +233,19 @@
           <div class="card__foot"><span>MCP</span><span>ngrok</span></div>
           <span class="card__more">Know more<i aria-hidden="true">→</i></span>
         </a>
+        </div>
+        <div class="carousel__slide" data-start>
+        <a class="card card--link reveal" href="https://joaosfvaz.github.io/portugal-explicado/" target="_blank" rel="noopener">
+          <div class="card__top"><i class="ic" data-icon="ptflag"></i><span class="card__kicker">Civic · Next.js</span></div>
+          <h3>Portugal Explicado</h3>
+          <p>Taxes, Parliament, laws and the economy of Portugal explained in plain Portuguese —
+            every number linked to an official source, with Parliament and economy data imported
+            from open data every day.</p>
+          <div class="card__foot"><span>Next.js</span><span>Open data</span></div>
+          <span class="card__more">Visit the site<i aria-hidden="true">↗</i></span>
+        </a>
+        </div>
+        <div class="carousel__slide">
         <a class="card card--link reveal" href="/pm-os/">
           <div class="card__top"><i class="ic" data-icon="anthropic"></i><span class="card__kicker">Knowledge · Agents</span></div>
           <h3>PM-OS</h3>
@@ -237,6 +255,8 @@
           <div class="card__foot"><span>MCP</span><span>Scheduled agents</span></div>
           <span class="card__more">Know more<i aria-hidden="true">→</i></span>
         </a>
+        </div>
+        <div class="carousel__slide">
         <a class="card card--link reveal" href="/tabiya/">
           <div class="card__top">
             <img class="card__mark" src="/assets/tabiya/tabiya-mark.svg" alt="" width="18" height="18" />
@@ -249,6 +269,13 @@
           <div class="card__foot"><span>Lambda</span><span>S3 · CloudFront</span></div>
           <span class="card__more">Know more<i aria-hidden="true">→</i></span>
         </a>
+        </div>
+        </div>
+        <div class="carousel__nav">
+          <button class="carousel__btn liquid-glass" type="button" data-dir="-1" aria-label="Previous project">←</button>
+          <div class="carousel__dots" aria-hidden="true"></div>
+          <button class="carousel__btn liquid-glass" type="button" data-dir="1" aria-label="Next project">→</button>
+        </div>
       </div>
     </section>
 
@@ -358,5 +385,6 @@
   <script src="/js/scroll.js"></script>
   <script src="/js/scene.js"></script>
   <script src="/js/ui.js"></script>
+  <script src="/js/carousel.js"></script>
 </body>
 </html>

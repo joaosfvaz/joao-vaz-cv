@@ -928,12 +928,6 @@ img { max-width: 100%; }
 .selection__body p { color: var(--ink-dim); max-width: 620px; margin-bottom: 16px; font-size: 15.5px; }
 
 /* ---------- Cards ---------- */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: 52px;
-}
 .card {
   position: relative;
   padding: 30px 28px 28px;
@@ -999,6 +993,91 @@ img { max-width: 100%; }
 }
 .card--link:hover .card__more i { transform: translateX(7px); }
 .card--link:hover .card__more { color: var(--ink); }
+
+/* ---------- Project carousel ---------- */
+/* A sideways-scrolling track that shows three slides and snaps one to the
+   centre. js/carousel.js reads each slide's distance from the centre on
+   every scroll frame and turns it into --d (signed, in slides) and --f
+   (focus, 1 at the centre, 0 one slide away): the centre slide is
+   magnified, its neighbours turn towards it and sink back. The track
+   padding is one slide wide so the first and last projects can reach
+   the centre too. */
+.carousel {
+  container-type: inline-size;
+  margin-top: 52px;
+  --slide: calc(100cqi / 3);
+}
+.carousel__track {
+  position: relative;
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 48px var(--slide);
+  margin: -48px 0 0;
+  outline: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.carousel__track::-webkit-scrollbar { display: none; }
+.carousel__slide {
+  --d: 0;
+  --f: 1;
+  flex: 0 0 var(--slide);
+  display: flex;
+  padding: 0 7px;
+  scroll-snap-align: center;
+  transform:
+    perspective(1100px)
+    translate3d(0, 0, calc((var(--f) - 1) * 150px))
+    rotateY(calc(var(--d) * -24deg))
+    scale(calc(0.9 + var(--f) * 0.14));
+  opacity: calc(0.45 + var(--f) * 0.55);
+  will-change: transform;
+}
+.carousel__slide > .card { width: 100%; }
+/* the magnified project catches the accent: a lit edge and a soft glow */
+.carousel__slide.is-active > .card {
+  background-color: var(--glass-fill-hi);
+  box-shadow: var(--glass-shine), 0 24px 70px -30px color-mix(in srgb, var(--accent-2) 55%, transparent);
+}
+.carousel__slide.is-active > .card::after { transform: none; }
+/* a side slide is a step towards the centre, not a link yet */
+.js .carousel__slide:not(.is-active) > .card { cursor: pointer; }
+.carousel__track:focus-visible .carousel__slide.is-active > .card {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.carousel__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 26px;
+}
+.carousel__btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--ink);
+  font: 500 16px/1 var(--mono);
+  cursor: pointer;
+  transition: background-color 0.3s var(--ease), opacity 0.3s var(--ease);
+}
+.carousel__btn:hover { background-color: rgba(255, 255, 255, 0.08); }
+.carousel__btn:disabled { opacity: 0.3; cursor: default; }
+.carousel__dots { display: flex; gap: 8px; }
+.carousel__dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  transition: width 0.45s var(--spring), background-color 0.3s var(--ease);
+}
+.carousel__dots i.is-on { width: 22px; background: var(--accent-2); }
 
 /* ---------- Icons ---------- */
 .ic {
@@ -1207,7 +1286,9 @@ img { max-width: 100%; }
   body::before { background-image: repeating-linear-gradient(90deg, var(--line-soft) 0 1px, transparent 1px calc(100% / 3)); }
   .hero { padding-top: 96px; padding-bottom: 72px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
-  .cards { grid-template-columns: 1fr; }
+  /* one project fills most of the width, a sliver of each neighbour shows */
+  .carousel { --slide: 76cqi; }
+  .carousel__track { padding-inline: calc((100cqi - var(--slide)) / 2); }
   .skills { grid-template-columns: 1fr; }
   .edu { grid-template-columns: 1fr; }
   .contact__links { grid-template-columns: 1fr; }
@@ -1248,4 +1329,6 @@ img { max-width: 100%; }
   .js .tl__body { opacity: 1; }
   .tl__meta { position: static; }
   .timeline { --tl-fill: 1; }
+  /* the carousel still scrolls and snaps, but nothing turns or grows */
+  .carousel__slide { transform: none; }
 }

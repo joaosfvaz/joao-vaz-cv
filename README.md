@@ -33,7 +33,16 @@ hero — came later.
 - **One scroll driver** — `js/scroll.js` is the only reader of scroll position. It samples
   `scrollY` once per animation frame, caches layout metrics and section anchors on resize, and
   runs a single `requestAnimationFrame` loop that every effect subscribes to. Nothing else binds a
-  scroll listener for motion.
+  scroll listener for motion. The one exception is the project carousel, which listens to its own
+  sideways track, not the page.
+- **Project carousel** — the Building section is a 3D carousel. The track is a native sideways
+  scroller with centre snapping, so a trackpad, shift-wheel, a swipe, the arrow keys and the arrow
+  buttons all move it; the vertical wheel is never taken over. Three projects show at once (one on
+  a phone). `js/carousel.js` writes each slide's distance from the centre into `--d` and `--f`, and
+  CSS turns that into the magnified centre project and the neighbours turning towards it. Clicking
+  a side project brings it to the centre; only the centre one follows its link. It opens on the
+  slide marked `data-start`. Without the script it is a plain sideways row; under reduced motion it
+  still snaps but nothing turns or grows.
 - **Fail-open reveals** — the document is written in its finished state. An inline script in the
   `<head>` adds `.js` to `<html>`, and that class is the only thing that hides anything; `js/ui.js`
   puts it back as the reading position arrives. A reveal that never fires shows readable copy
@@ -76,6 +85,10 @@ this is the only way to get clean paths.
 | `/team-context/` | `team-context/index.html` | A read-only MCP server that opens the team wiki to the company assistant |
 | `/pm-os/` | `pm-os/index.html` | A knowledge base a crew of scheduled Claude routines keeps current |
 | `/tabiya/` | `tabiya/index.html` | A chess coach, and the AWS pipeline behind it |
+
+Portugal Explicado has no page here: its card links straight out to the live app at
+[joaosfvaz.github.io/portugal-explicado](https://joaosfvaz.github.io/portugal-explicado/), which
+is built and hosted from its own repository.
 
 Because the pages sit at different depths, **every stylesheet, script and asset reference is
 root-relative**. A relative path would resolve differently per page. This is safe because the site
@@ -132,6 +145,7 @@ js/scene.js     # couples the glass bands to the scroll, and raises the veil
 js/ui.js        # reveals, character splits, counters, marquee, timeline, magnetics, the hero CTA
 js/graph.js     # the generated Obsidian-style graph on the PM-OS page (that page only)
 js/icons.js     # inline-SVG icon system (brand marks + custom badges)
+js/carousel.js  # the 3D project carousel in the Building section (loads after js/ui.js)
 dev-server.py   # no-cache static server for development
 ```
 
