@@ -38,7 +38,9 @@ hero — came later.
 - **Project carousel** — the Building section is a 3D carousel. The track is a native sideways
   scroller with centre snapping, so a trackpad, shift-wheel, a swipe, the arrow keys and the arrow
   buttons all move it; the vertical wheel is never taken over. Three projects show at once (one on
-  a phone). `js/carousel.js` writes each slide's distance from the centre into `--d` and `--f`, and
+  a phone), and it loops with no end: the projects are copied once before and once after, and when
+  the track comes to rest on a copy it jumps by exactly one set to the same project among the
+  originals, which draws the same frame. The copies are `aria-hidden` and out of the tab order. `js/carousel.js` writes each slide's distance from the centre into `--d` and `--f`, and
   CSS turns that into the magnified centre project and the neighbours turning towards it. Clicking
   a side project brings it to the centre; only the centre one follows its link. It opens on the
   slide marked `data-start`. Without the script it is a plain sideways row; under reduced motion it
