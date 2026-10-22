@@ -82,6 +82,9 @@ code is not.
   evals, traces, mandates, automation classes, MCP tools, context, human review — each in a pane.
 - **The accelerator gallery** — three photos under the Prosus AI Accelerator entry, desaturated a
   little until hovered.
+- **Cache busting** — GitHub Pages lets browsers keep a file for ten minutes, so a deploy could
+  pair a new page with the old stylesheet. Every CSS and JS link carries a `?v=` stamp; change it
+  on every page whenever `styles.css`, a page stylesheet or a script changes.
 - **Fail-open reveals** — the document is written in its finished state. An inline script in the
   `<head>` adds `.js` to `<html>`, and that class is the only thing that hides anything; `js/ui.js`
   puts it back as the reading position arrives. A reveal that never fires shows readable copy
