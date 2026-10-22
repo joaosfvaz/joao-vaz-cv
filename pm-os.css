@@ -1,20 +1,20 @@
 /* ==================================================================
    PM-OS — project page
-   Built on styles.css + project.css. The accent trio moves to violet
-   for the curated core and teal for what feeds it; the zone colours
-   below are read by both the page and js/graph.js's legend.
+   Built on home.css + project.css. The accent moves to violet for the
+   curated core; the second colour stays the site's orange. The zone
+   colours below use only those two plus grey, and js/graph.js draws
+   the same four.
    Everything else here is specific to this project: the graph view,
    the zone panes, the routine list.
    ================================================================== */
 
 .page--pmos {
-  --accent: #8b7cf6;     /* the curated core */
-  --accent-2: #4fe0c8;   /* what feeds it */
-  --accent-3: #c0b4ff;   /* accent text on a dark ground */
-  --z-curated: #8b7cf6;
-  --z-meetings: #4fe0c8;
-  --z-work: #6ea8fe;
-  --z-raw: #6c7284;
+  --accent: #8b7cf6;       /* the curated core */
+  --accent-soft: #c0b4ff;  /* accent text on a dark ground */
+  --z-curated: var(--accent);
+  --z-meetings: var(--accent-2);
+  --z-work: var(--accent-soft);
+  --z-raw: #5f6576;
 }
 
 /* the title runs longer here than the shared default */
@@ -25,12 +25,9 @@
 .vault { margin: 0 0 26px; }
 .vault__frame {
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--line);
   border-radius: var(--r);
-  box-shadow: var(--glass-shine);
-  background:
-    radial-gradient(72% 62% at 50% 46%, rgba(139, 124, 246, 0.09), transparent 70%),
-    rgba(255, 255, 255, 0.025);
+  background: rgba(255, 255, 255, 0.02);
   aspect-ratio: 16 / 8;
   min-height: 300px;
   overflow: hidden;
@@ -137,7 +134,7 @@
   margin-top: 14px;
   padding: 26px 24px;
 }
-.rule-row { background-color: rgba(139, 124, 246, 0.06); }
+.rule-row { background-color: color-mix(in srgb, var(--accent) 6%, transparent); }
 .rule-row__k {
   font-family: var(--mono);
   font-size: 11px;
@@ -153,17 +150,15 @@
 .routines {
   list-style: none;
   margin-top: 34px;
-  overflow: hidden;
 }
 .routine {
   display: grid;
   grid-template-columns: 230px 1fr;
   gap: 28px;
-  padding: 28px 26px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  position: relative;
+  padding: 26px 0;
   transition: background 0.4s var(--ease);
 }
-.routine:first-child { border-top: 0; }
 .routine:hover { background: rgba(255, 255, 255, 0.03); }
 .routine__when {
   font-family: var(--mono);

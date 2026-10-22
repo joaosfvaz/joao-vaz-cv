@@ -1,23 +1,30 @@
 # João Vaz — Personal Website
 
 A personal site built from my CV. Flat: a deep ground, a bold grotesque for display (Bricolage
-Grotesque), Geist for text and Geist Mono for labels, hairline dividers instead of panels, and one
-colour. A single blue carries every accent — section numbers, highlighted words, rules, active
-states, the photo block, the dot field. Coral appears only as a warning mark inside the trace (a
-human check, a refusal). No gradients, no glass. No framework, no build step, no runtime dependency.
+Grotesque), Geist for text and Geist Mono for labels, hairline dividers instead of panels, and two
+colours on top of white and grey. Blue (`--accent`) carries the accents — section numbers,
+highlighted words, rules, active states, the photo block. Orange (`--accent-2`) is the second
+voice, used sparingly — the second underline in the hero, the square on the photo, the strip's
+stars, half the project cards, the contact heading, the ripple in the dot field, the warning marks
+in the trace. No gradients, no glass. No framework, no build step, no runtime dependency.
+
+Every page — the home page and the three project pages — runs on the same system: `home.css`,
+`js/scroll.js` and `js/home.js`. A project page only swaps the main colour: PM-OS is violet,
+Team-context green, Tabiya its own amber (with its brand's lapis as the second colour instead of
+orange).
 
 The movement is kept to a few places on purpose, so each one is noticed:
 
 - **The dot field** — a flat grid of dots behind the hero, drawn on a canvas by `js/home.js`. Dots
-  rise and turn blue under the pointer (a lighter blue in a ripple), a ripple runs out from the photo once it lands, and a click
+  rise and take the accent colour under the pointer (orange in a ripple), a ripple runs out from the photo once it lands, and a click
   or a tap on the hero sends another. The loop runs only while something moves; at rest it costs
   nothing. Under reduced motion it draws once and stays still.
 - **The name and the photo** — the name rises letter by letter out of its two lines; the photo is
-  wiped in from the bottom over a flat blue block that leans away from the pointer, settles from a
+  wiped in from the bottom over a flat blue block that leans away from the pointer (a small orange square leans the other way), settles from a
   slight zoom, then drifts a little against the scroll inside the overscan it keeps.
 - **The load sequence** — one pass on arrival, choreographed in `home.css` (`--delay` on the hero's
   reveals): the bar drops in, the label, the name letter by letter, the line "I build tools for
-  12,000+ car dealers and 10M+ visitors" with each number then underlined in blue, the pitch and
+  12,000+ car dealers and 10M+ visitors" with the numbers then underlined, one blue and one orange, the pitch and
   the buttons; the blue block, then the photo; then the figures left to right.
 - **Headings** — every section heading rises word by word out of its own masks when it arrives
   (`js/home.js` wraps the words; words inside the blue `<em>` stay in it).
@@ -36,7 +43,8 @@ The movement is kept to a few places on purpose, so each one is noticed:
   off-topic question the guardrail refuses) and the run plays out: routing, tool calls, the
   mandate check, the answer, the evals. It is labelled illustrative. The markup holds the first run
   finished; the script takes over.
-- **Projects** — flat cards that fill with blue under the pointer, wiped in from the bottom.
+- **Projects** — flat cards that fill with colour under the pointer (blue and orange in a
+  checkerboard), wiped in from the bottom.
 
 ## Navigation
 
@@ -70,11 +78,13 @@ Because the pages sit at different depths, **every stylesheet, script and asset 
 root-relative**. A relative path would resolve differently per page. This is safe because the site
 is served from the domain root, set by the `CNAME` file.
 
-The home page loads only `home.css`, `js/scroll.js` and `js/home.js`. A project page loads
-`styles.css`, then `project.css`, then its own sheet, and reuses `js/scroll.js` and `js/ui.js`
-unchanged. The **Flat** block at the end of `project.css` takes the older glass system down to the
-home page's look — the scene hidden, panes without gradients or shadows, hairline borders, the
-display grotesque and Geist — while each page keeps its own accent trio.
+The home page loads `home.css`, `js/scroll.js` and `js/home.js`. A project page loads the same
+three, plus `project.css` and its own sheet (and PM-OS adds `js/graph.js`). So a project page has
+the home page's bar, section index, dock, type, hairlines and motion: its sections are whatever
+its `data-nav` links point at, its section labels are the home page's numbered `.meta` labels, its
+title rises word by word, and its ticker is the same word strip. Its own sheet sets `--accent`,
+`--accent-soft` and, where a brand needs it, `--accent-2` and `--on` (dark text when the accent is
+too light for white).
 
 - `project.css` holds everything every case study needs: the hero, the facts strip, the note grid,
   the takeaway list, the disclaimer, and the **diagram language** (`.d-box`, `.d-flow`, `.d-line`,
@@ -111,26 +121,25 @@ browser runs. Any other static server works too. Only the webfonts come from the
 ```
 CNAME             # the custom domain GitHub Pages serves from
 index.html        # the home page: markup + content (from the CV)
-home.css          # the home page's whole stylesheet
-js/home.js        # the home page's behaviour: reveals, hero, counters, accordions, trace, nav
+home.css          # the system: tokens, type, bar, dock, index, sections, motion — every page
+js/home.js        # every page's behaviour: reveals, hero, counters, strip, accordions, trace, nav
 tabiya/           # /tabiya/  — the chess coach and its AWS diagram
 pm-os/            # /pm-os/   — the zones, the routines, the graph view
 team-context/     # /team-context/ — the MCP tool surface and its security boundary
-styles.css        # the project pages' base system (the older glass system)
-project.css       # the furniture every project page shares, diagrams included, and the Flat block
+project.css       # what every project page adds on top of home.css: header, facts, leads, notes, diagrams
 tabiya.css        # what Tabiya adds: accents, lockup, screenshots
 pm-os.css         # what PM-OS adds: accents, graph frame, zone cards, routine list
 team-context.css  # what the MCP page adds: accents, tool grid, the allow/deny gate
 js/scroll.js      # the single scroll driver: metrics, anchors, progress, one rAF loop
-js/ui.js          # project pages: reveals, character splits, counters, marquee, magnetics
-js/scene.js       # project pages: the (now hidden) glass scene
 js/graph.js       # the generated Obsidian-style graph on the PM-OS page (that page only)
-js/icons.js       # project pages: inline-SVG icon system
 dev-server.py     # no-cache static server for development
 ```
 
-`js/scroll.js` must load before any script that consumes `window.Scroll`. Its `SECTION_IDS` list
-is the home page's sections; the navigation reads their anchors from it.
+`js/scroll.js` must load before any script that consumes `window.Scroll`. It builds `SECTION_IDS`
+from the page's own `data-nav` links, so each page declares its sections in its markup.
+
+`styles.css`, `js/ui.js`, `js/scene.js`, `js/icons.js`, `js/carousel.js` and `assets/portrait.jpg`
+belong to the older glass design. No page loads them any more.
 
 ## Rules to keep
 
@@ -149,9 +158,10 @@ is the home page's sections; the navigation reads their anchors from it.
 
 ## Editing content
 
-All copy lives in the HTML. The palette is the block of variables at the top of `home.css`: `--blue`
-(the one accent), `--blue-2` (its lighter step), `--coral` (the trace's warning mark) and `--on`,
-the text colour on a blue fill. Change `--blue` and the whole page follows.
+All copy lives in the HTML. The palette is the block of variables at the top of `home.css`:
+`--accent` (blue), `--accent-soft` (its lighter step), `--accent-2` (orange) and `--on`, the text
+colour on an accent fill. Change `--accent` and the whole page follows; a project page overrides
+them on its `body` class.
 The trace's three runs are the `RUNS` table in `js/home.js`.
 
 ## Tuning the motion

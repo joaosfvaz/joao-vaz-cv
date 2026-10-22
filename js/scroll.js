@@ -11,7 +11,13 @@
   "use strict";
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const SECTION_IDS = ["top", "products", "ai", "work", "projects", "contact"];
+  /* the page's sections: "top", then every section its own links point
+     at (data-nav), in order. Each page declares its own. */
+  const SECTION_IDS = ["top"].concat(
+    Array.prototype.slice.call(document.querySelectorAll("[data-nav]"))
+      .map((a) => a.getAttribute("data-nav"))
+      .filter((id, i, all) => id && all.indexOf(id) === i)
+  );
 
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
   const lerp = (a, b, t) => a + (b - a) * t;

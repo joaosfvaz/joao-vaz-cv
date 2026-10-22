@@ -1,14 +1,15 @@
 /* ==================================================================
    Team-context MCP — project page
-   Built on styles.css + project.css. The page needs almost nothing of
-   its own: green for the accent, and a title that runs a little
-   shorter than the shared default. Everything else is the system.
+   Built on home.css + project.css. The page needs almost nothing of
+   its own: green for the accent (the second colour stays the site's
+   orange), and a title that runs a little shorter than the shared
+   default. Everything else is the system.
    ================================================================== */
 
 .page--mcp {
-  --accent: #38d39f;     /* the server and its answers */
-  --accent-2: #6ea8fe;   /* the caller */
-  --accent-3: #7ceec0;   /* accent text on a dark ground */
+  --accent: #38d39f;       /* the server and its answers */
+  --accent-soft: #7ceec0;  /* accent text on a dark ground */
+  --on: #0c0e13;           /* dark text on green, which is too light for white */
 }
 
 .proj__title { font-size: clamp(36px, 6.4vw, 80px); }

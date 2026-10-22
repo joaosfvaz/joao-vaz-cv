@@ -1,16 +1,17 @@
 /* ==================================================================
    Tabiya — project page
-   Built on styles.css + project.css. Only the accent trio is
-   re-pointed, to Tabiya's own Amber and Lapis, so the page reads as
-   the product while keeping the site's structure, motion and grid.
+   Built on home.css + project.css. Both accents are re-pointed, to
+   Tabiya's own Amber and Lapis, so the page reads as the product while
+   keeping the site's structure, motion and grid.
    Everything below is specific to this project: the lockup, the
    screenshots, the architecture diagram.
    ================================================================== */
 
 .page--tabiya {
-  --accent: #f2a03d;     /* Brand Amber — the one highlight */
-  --accent-2: #4a8fd4;   /* Lapis — the secondary */
-  --accent-3: #f8be79;   /* Amber for text on a dark ground */
+  --accent: #f2a03d;       /* Brand Amber — the one highlight */
+  --accent-soft: #f8be79;  /* Amber for text on a dark ground */
+  --accent-2: #4a8fd4;     /* Lapis — the secondary */
+  --on: #0c0e13;           /* dark text on amber, which is too light for white */
 }
 
 /* ---------- The lockup ---------- */
@@ -28,23 +29,11 @@
 .shot { margin: 0; }
 .shot__frame {
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--line);
   border-radius: var(--r);
   background: var(--bg-2);
-  box-shadow: var(--glass-shine);
   overflow: hidden;
   line-height: 0;
-}
-/* a glass sheen across the top of the screenshot */
-.shot__frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  pointer-events: none;
-  background: linear-gradient(170deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 32%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .shot__frame img {
   display: block;

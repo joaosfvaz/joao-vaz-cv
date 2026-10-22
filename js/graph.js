@@ -23,8 +23,8 @@
      raw at the rim. That is the trust gradient, drawn. */
   const ZONES = [
     { key: "curated", n: 26, r: 0.3, colour: "#8b7cf6", size: 4.6, alpha: 1 },
-    { key: "meetings", n: 20, r: 0.62, colour: "#4fe0c8", size: 3.3, alpha: 0.85 },
-    { key: "work", n: 18, r: 0.74, colour: "#6ea8fe", size: 3.3, alpha: 0.8 },
+    { key: "meetings", n: 20, r: 0.62, colour: "#ff7a3d", size: 3.3, alpha: 0.85 },
+    { key: "work", n: 18, r: 0.74, colour: "#c0b4ff", size: 3.3, alpha: 0.8 },
     { key: "raw", n: 16, r: 0.92, colour: "#5f6576", size: 2.6, alpha: 0.7 },
   ];
 

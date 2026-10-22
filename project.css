@@ -1,237 +1,222 @@
 /* ==================================================================
    Project pages — the shared furniture
-   Everything a case-study page needs that is not specific to one
-   project: the hero, the facts strip, the note grid, the takeaway
-   list. A project stylesheet re-points the accent trio and adds only
-   its own pieces on top. Load order: styles.css, project.css, <page>.css
+   Built on home.css, so a project page has the home page's bar, dock,
+   section index, type, hairlines and motion. This sheet adds what every
+   case study needs: the header, the facts strip, the lead paragraphs,
+   the notes, the takeaways, the disclaimer and the diagram language.
+   A page's own sheet sets its --accent (and --accent-2 when its brand
+   needs one) and adds only its own pieces.
+   Load order: home.css, project.css, <page>.css
    ================================================================== */
 
-/* ---------- Nav ---------- */
-.nav__back {
-  color: rgba(255, 255, 255, 0.8);
-  transition: color 0.3s var(--ease);
+/* the names the page sheets were written against, pointed at home.css */
+.page {
+  --accent-3: var(--accent-soft);
+  --ink-dim: var(--dim);
+  --ink-faint: var(--faint);
+  --bg-2: var(--surface);
+  --line-soft: rgba(255, 255, 255, 0.045);
+  --glass-shine: none;
+  --maxw: var(--wrap);
+  --r: 10px;
+  --r-sm: 6px;
 }
-.nav__back:hover { color: var(--accent-3); }
 
-/* ---------- Hero ---------- */
-.proj {
-  max-width: var(--maxw);
-  margin: 0 auto;
-  padding: 150px var(--gut) 90px;
-}
-.proj__eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--mono);
-  font-size: clamp(11px, 1.3vw, 13px);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--accent-3);
-  margin-bottom: 32px;
-}
-.proj__eyebrow .dot {
-  width: 7px; height: 7px;
-  background: var(--accent);
-  border-radius: 50%;
-  flex: 0 0 auto;
-}
-.js .proj__eyebrow .dot { animation: pulse 2.4s ease-in-out infinite; }
+/* project sections hold their content directly, so they carry the
+   content width themselves */
+.page .section, .proj { width: min(var(--wrap), 100% - 2 * var(--gut)); margin-inline: auto; }
 
+/* the way back to the home page, in the bar */
+.bar__back { font-size: 14px; color: var(--dim); white-space: nowrap; transition: color 0.2s ease; }
+.bar__back:hover { color: var(--ink); }
+@media (max-width: 767px) { .bar__back { display: none; } }
+
+/* ---------- Header ---------- */
+.proj { padding: clamp(112px, 16vh, 150px) 0 clamp(48px, 7vh, 72px); }
+.proj__eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+.proj__eyebrow .dot { width: 8px; height: 8px; border-radius: 2px; background: var(--accent); flex: 0 0 auto; }
 .proj__title {
   font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(36px, 6.6vw, 82px);
-  line-height: 0.99;
-  letter-spacing: -0.035em;
-  margin-bottom: 30px;
+  font-weight: 800;
+  font-size: clamp(44px, 7.2vw, 104px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  max-width: 13em;
+  margin-bottom: 28px;
 }
-.proj__title .hero__line--accent .hero__line-in { color: var(--accent-3); }
-.proj__lede {
-  font-size: clamp(17px, 2vw, 21px);
-  color: var(--ink-dim);
-  max-width: 680px;
-  margin-bottom: 52px;
-}
+.proj__title em { font-style: normal; color: var(--accent); }
+.proj__lede { max-width: 38em; font-size: clamp(17px, 1.8vw, 20px); color: var(--dim); margin-bottom: 48px; }
+.proj__lede strong { color: var(--ink); font-weight: 600; }
 
 /* ---------- Facts strip ---------- */
+/* the same hairline grid as the home page's figures */
 .facts {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 56px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 48px;
 }
-.fact { padding: 22px 22px 20px; }
+.facts::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 1px; background: var(--line);
+  transform-origin: 0 50%;
+}
+.fact { padding: 20px 18px 22px; border-left: 1px solid var(--line); }
+.fact:first-child { border-left: 0; padding-left: 0; }
 .fact dt {
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink-faint);
-  margin-bottom: 10px;
+  color: var(--accent);
+  margin-bottom: 8px;
 }
-.fact dd { font-size: 14.5px; color: var(--ink); line-height: 1.45; }
+.fact dd { font-size: 15px; line-height: 1.45; }
 
-/* ---------- Note grid ---------- */
-.notes {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+/* ---------- Lead paragraphs ---------- */
+/* a project section opens with one or two big sentences instead of a
+   heading; coloured words take the accent, a strong phrase the second
+   colour */
+.lead {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(23px, 2.8vw, 36px);
+  line-height: 1.22;
+  letter-spacing: -0.03em;
+  max-width: 28em;
 }
-.note { padding: 28px 26px; }
-.note h4 { font-family: var(--display); font-size: 17px; font-weight: 600; margin-bottom: 10px; }
-.note p { font-size: 14.5px; color: var(--ink-dim); }
+.lead + .lead { margin-top: 22px; }
+.lead em { font-style: normal; color: var(--accent); }
+.lead strong { font-weight: 600; color: var(--accent-2); }
+
+/* ---------- Notes ---------- */
+.notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; margin-top: 40px; }
+.note { position: relative; padding: 20px 0 6px; }
+.note h4 { font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 8px; }
+.note p { font-size: 14.5px; color: var(--dim); }
 
 /* ---------- Takeaways ---------- */
-.takeaways {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.takeaways { counter-reset: tk; margin-top: 8px; }
+/* each rule carries its number in the accent, in the left margin */
 .takeaways li {
-  padding: 24px 26px;
-  font-size: 16px;
-  color: var(--ink-dim);
+  position: relative;
+  counter-increment: tk;
+  padding: 20px 0 22px 56px;
+  font-size: 17px;
+  color: var(--dim);
+}
+.takeaways li::after {
+  content: counter(tk, decimal-leading-zero);
+  position: absolute; left: 0; top: 25px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--accent);
 }
 .takeaways strong { color: var(--ink); font-weight: 600; }
-.takeaways em { color: var(--accent-3); font-style: normal; }
+.takeaways em { color: var(--accent-soft); font-style: normal; }
 
-.proj__cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 44px; }
+/* every row-like piece draws its top rule as it arrives, the way the
+   home page's rows do */
+.note::before, .takeaways li::before, .routine::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 1px; background: var(--line);
+  transform-origin: 0 50%;
+}
+.js :is(.note, .takeaways li, .routine).rv::before { transform: scaleX(0); }
+.js :is(.note, .takeaways li, .routine).rv.is-in::before {
+  transform: none;
+  transition: transform 1s var(--ease) calc(var(--i, 0) * 70ms + 100ms);
+}
+.js .facts::before { transform: scaleX(0); transition: transform 1.2s var(--wipe); }
+.js .facts:has(.is-in)::before { transform: none; }
 
-/* ---------- Responsive ---------- */
-@media (max-width: 900px) {
-  .proj { padding-top: 128px; }
-  .facts { grid-template-columns: repeat(2, 1fr); }
-  .notes { grid-template-columns: 1fr; }
-  .nav__back { display: none; }
-}
-@media (max-width: 560px) {
-  .facts { grid-template-columns: 1fr; }
-  .proj__cta .btn { flex: 1 1 auto; text-align: center; }
-}
+.proj__cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 44px; }
 
-/* ==================================================================
-   Diagrams
-   Shared by every project page. The boxes and arrows take their colour
-   from the page's own accent trio, so one diagram language serves all
-   of them without any page hard-coding a hex value.
-   ================================================================== */
-.diagram {
-  margin: 44px 0 0;
-  padding: clamp(20px, 3.5vw, 40px);
-  overflow-x: auto;
-}
-.diagram svg { width: 100%; min-width: 660px; height: auto; display: block; }
-.diagram figcaption {
-  margin-top: 20px;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.06em;
-  color: var(--ink-faint);
-}
-
-.d-box rect { fill: rgba(255, 255, 255, 0.03); stroke: rgba(255, 255, 255, 0.16); stroke-width: 1; rx: 10px; }
-.d-box--fn rect { stroke: color-mix(in srgb, var(--accent) 55%, transparent); }
-.d-box--store rect {
-  fill: color-mix(in srgb, var(--accent) 5%, transparent);
-  stroke: color-mix(in srgb, var(--accent) 40%, transparent);
-}
-.d-box--out rect { stroke: color-mix(in srgb, var(--accent-2) 60%, transparent); }
-/* a box the boundary refuses */
-.d-box--off rect { stroke: var(--line); stroke-dasharray: 4 4; fill: transparent; }
-.d-box--off .d-t, .d-box--off .d-s { fill: var(--ink-faint); }
-
-.d-t {
-  fill: var(--ink);
-  font-family: var(--display);
-  font-size: 15px;
-  font-weight: 600;
-  text-anchor: middle;
-}
-.d-s {
-  fill: var(--ink-faint);
-  font-family: var(--mono);
-  font-size: 11px;
-  text-anchor: middle;
-}
-.d-l {
-  fill: var(--accent-3);
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-}
-.d-flow path { stroke: var(--accent); stroke-width: 1.5; fill: none; }
-.d-line path { stroke: var(--line); stroke-width: 1; fill: none; stroke-dasharray: 4 4; }
-.d-arrows path { fill: var(--accent); stroke: none; }
-/* the path the boundary stops */
-.d-deny path { stroke: var(--ink-faint); stroke-width: 1.5; fill: none; opacity: 0.6; }
-.d-cross path { stroke: var(--ink-faint); stroke-width: 1.5; fill: none; }
-
-/* the flow draws itself once the diagram arrives */
-.js .diagram.is-in .d-flow path {
-  stroke-dasharray: 120;
-  animation: flowDraw 0.7s var(--ease) both;
-}
-.js .diagram.is-in .d-flow path:nth-child(2) { animation-delay: 0.12s; }
-.js .diagram.is-in .d-flow path:nth-child(3) { animation-delay: 0.24s; }
-.js .diagram.is-in .d-flow path:nth-child(4) { animation-delay: 0.36s; }
-@keyframes flowDraw {
-  from { stroke-dashoffset: 120; }
-  to { stroke-dashoffset: 0; }
+/* flat cards for the pieces that stand alone on a page */
+.zone, .rule-row {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: transparent;
 }
 
 /* a page that must state what it is deliberately not showing */
 .disclaimer {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--r-sm);
-  background: rgba(255, 255, 255, 0.03);
-  box-shadow: inset 3px 0 0 var(--accent), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  padding: 16px 20px 16px 22px;
-  font-size: 14.5px;
-  color: var(--ink-dim);
   max-width: 760px;
+  padding: 14px 18px;
+  border-left: 3px solid var(--accent-2);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 6px 6px 0;
+  font-size: 14.5px;
+  color: var(--dim);
 }
 .disclaimer b { color: var(--ink); font-weight: 600; }
 
 /* ==================================================================
-   Flat — the project pages follow the home page (home.css): no glass
-   scene, no blur on panes, hairline borders, Bricolage Grotesque for
-   display and Geist for text. Each page keeps its own accent trio.
+   Diagrams
+   Boxes and arrows take their colour from the page's accents, so one
+   diagram language serves every page without a page hard-coding a hex
+   value.
    ================================================================== */
-.page {
-  --bg: #0c0e13;
-  --bg-2: #151925;
-  --ink: #f3f4f7;
-  --ink-dim: #a7adbb;
-  --ink-faint: #687083;
-  --line: rgba(255, 255, 255, 0.09);
-  --line-soft: rgba(255, 255, 255, 0.045);
-  --display: "Bricolage Grotesque", "Helvetica Neue", system-ui, sans-serif;
-  --mono: "Geist Mono", ui-monospace, monospace;
-  --glass-fill: transparent;
-  --glass-fill-hi: rgba(255, 255, 255, 0.03);
-  --glass-shine: none;
-  --glass-edge: var(--line);
-  --r: 10px;
-  --r-sm: 6px;
-  font-family: "Geist", "Helvetica Neue", system-ui, sans-serif;
-  background: var(--bg);
+.diagram {
+  margin: 40px 0 0;
+  padding: clamp(20px, 3.5vw, 36px);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow-x: auto;
 }
-.page::before, .page .scene { display: none; }
-.page :is(.stat, .card, .skill, .edu__block, .contact__link, .selection, .diagram,
-.fact, .note, .takeaways li, .zone, .rule-row, .routines) {
-  background-image: none;
-  box-shadow: none;
+.diagram svg { width: 100%; min-width: 660px; height: auto; display: block; }
+.diagram figcaption {
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  color: var(--faint);
 }
-.page .liquid-glass {
-  background: transparent;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-  box-shadow: none;
+
+.d-box rect { fill: rgba(255, 255, 255, 0.02); stroke: rgba(255, 255, 255, 0.16); stroke-width: 1; rx: 6px; }
+.d-box--fn rect { stroke: var(--accent); }
+.d-box--store rect {
+  fill: color-mix(in srgb, var(--accent) 8%, transparent);
+  stroke: color-mix(in srgb, var(--accent) 50%, transparent);
 }
-.page .liquid-glass::before { background: var(--line); }
-.page .nav { border-radius: 12px; }
-.page .nav.is-scrolled { background-color: rgba(12, 14, 19, 0.86); }
-.page :is(.nav__cta, .nav__icon, .nav__cta-fill) { border-radius: 6px; }
-.page .ticker { background: transparent; box-shadow: none; }
+.d-box--out rect { stroke: var(--accent-2); }
+/* a box the boundary refuses */
+.d-box--off rect { stroke: var(--line); stroke-dasharray: 4 4; fill: transparent; }
+.d-box--off .d-t, .d-box--off .d-s { fill: var(--faint); }
+
+.d-t { fill: var(--ink); font-family: var(--display); font-size: 15px; font-weight: 600; text-anchor: middle; }
+.d-s { fill: var(--faint); font-family: var(--mono); font-size: 11px; text-anchor: middle; }
+.d-l { fill: var(--accent-soft); font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; }
+.d-flow path { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+.d-line path { stroke: var(--line); stroke-width: 1; fill: none; stroke-dasharray: 4 4; }
+.d-arrows path { fill: var(--accent); stroke: none; }
+/* the path the boundary stops */
+.d-deny path { stroke: var(--faint); stroke-width: 1.5; fill: none; opacity: 0.6; }
+.d-cross path { stroke: var(--accent-2); stroke-width: 1.5; fill: none; }
+
+/* the flow draws itself once the diagram arrives */
+.js .diagram.is-in .d-flow path { stroke-dasharray: 120; animation: flowDraw 0.8s var(--ease) 0.2s both; }
+.js .diagram.is-in .d-flow path:nth-child(2) { animation-delay: 0.32s; }
+.js .diagram.is-in .d-flow path:nth-child(3) { animation-delay: 0.44s; }
+.js .diagram.is-in .d-flow path:nth-child(4) { animation-delay: 0.56s; }
+@keyframes flowDraw { from { stroke-dashoffset: 120; } to { stroke-dashoffset: 0; } }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fact:nth-child(3) { border-left: 0; padding-left: 0; }
+  .fact:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  .notes { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .facts { grid-template-columns: minmax(0, 1fr); }
+  .fact { border-left: 0; padding-left: 0; }
+  .fact:nth-child(n + 2) { border-top: 1px solid var(--line); }
+  .takeaways li { padding-left: 40px; font-size: 16px; }
+  .proj__cta .btn { flex: 1 1 auto; justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js :is(.note, .takeaways li, .routine).rv::before, .js .facts::before { transform: none; }
+}

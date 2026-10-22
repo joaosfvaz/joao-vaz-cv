@@ -1,8 +1,10 @@
 /* ------------------------------------------------------------------ *
- *  Home page — reveals, word-by-word headings, the hero (name, photo,
+ *  The site's behaviour — the home page and the project pages run the
+ *  same file: reveals, word-by-word headings, the hero (name, photo,
  *  dot field, scroll depth), counters, the word strip, the accordions,
  *  the playable trace, the copy button and the navigation (bar, section
- *  index, dock).
+ *  index, dock). Every part looks for its own markup and skips itself
+ *  when the page has none.
  *
  *  The same two rules as the rest of the site:
  *
@@ -44,7 +46,7 @@
    * word by word when it reveals. Words inside an <em> stay inside it
    * and keep its colour. The text itself is unchanged.
    * ---------------------------------------------------------------- */
-  $$(".head h2, .contact__title").forEach((h) => {
+  $$(".head h2, .contact__title, .proj__title").forEach((h) => {
     let wi = 0;
     function walk(src, dest) {
       Array.prototype.slice.call(src.childNodes).forEach((n) => {
@@ -207,6 +209,14 @@
   const cv = $(".hero__field");
   if (hero && cv && cv.getContext) {
     const ctx = cv.getContext("2d");
+    /* the two accent colours, read from the stylesheet as "r, g, b" */
+    const rgb = (name) => {
+      const hex = getComputedStyle(document.body).getPropertyValue(name).trim().replace("#", "");
+      const n = parseInt(hex.length === 3 ? hex.replace(/./g, "$&$&") : hex, 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255].join(", ");
+    };
+    const POINTER = rgb("--accent");
+    const RIPPLE = rgb("--accent-2");
     const GAP = 26;
     const REACH = 170;
     let W = 0, H = 0, dots = [], raf = 0;
@@ -268,12 +278,11 @@
       }
       ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
       ctx.fill();
-      /* lit dots turn blue: full blue under the pointer, a lighter blue
-         in a ripple */
+      /* lit dots take colour: the accent under the pointer, the second
+         colour in a ripple */
       for (let i = 0; i < lit.length; i++) {
         const d = lit[i];
-        const rgb = d.r ? "169, 188, 255" : "77, 124, 255";
-        ctx.fillStyle = "rgba(" + rgb + ", " + (0.25 + d.v * 0.75 * d.f).toFixed(3) + ")";
+        ctx.fillStyle = "rgba(" + (d.r ? RIPPLE : POINTER) + ", " + (0.25 + d.v * 0.75 * d.f).toFixed(3) + ")";
         ctx.beginPath();
         ctx.arc(d.x, d.y, 1 + d.v * 2.4, 0, 6.2832);
         ctx.fill();
@@ -528,7 +537,8 @@
   const bar = $("#bar");
   const rail = $(".rail");
   const navLinks = $$("[data-nav]");
-  const ids = ["products", "ai", "work", "projects", "contact"];
+  /* the sections are whatever the page's own links point at, in order */
+  const ids = navLinks.map((a) => a.dataset.nav).filter((id, i, all) => all.indexOf(id) === i);
   const railFills = {};
   $$(".rail a").forEach((a) => { railFills[a.dataset.nav] = $("i", a); });
   let active = "";
@@ -543,7 +553,7 @@
       if (railFills[id]) railFills[id].style.setProperty("--f", clamp((line - an.top) / an.height, 0, 1).toFixed(3));
     });
     /* the last section is short: at the very bottom it is the one */
-    if (st.y >= st.max - 4) next = "contact";
+    if (st.y >= st.max - 4 && ids.length) next = ids[ids.length - 1];
     if (next !== active) {
       active = next;
       navLinks.forEach((a) => {
@@ -560,7 +570,7 @@
     /* the index stays out of the hero and the word strip, where the bar
        already shows the sections; the dock is always there, under the
        thumb */
-    const first = S.anchors.products;
+    const first = S.anchors[ids[0]];
     if (rail) rail.classList.toggle("is-hidden", st.y < (first ? first.top - st.vh * 0.4 : st.vh * 0.5));
   }
   S.onScroll(sync);
