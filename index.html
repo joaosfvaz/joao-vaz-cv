@@ -4,575 +4,419 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>João Vaz — Product Manager · AI &amp; data products</title>
-  <meta name="description" content="João Vaz — Product Manager at OLX Group Motors B2B (Prosus). Data, pricing ML and AI-agent products for 12k+ car dealers: evals, traces, MCP tools and AI-assisted building." />
+  <meta name="description" content="João Vaz — Product Manager at OLX Group Motors B2B (Prosus). I build tools for 12,000+ car dealers and 10M+ visitors: data products, AI agents with evals and traces, MCP tools and AI-assisted building." />
+  <meta name="theme-color" content="#0c0e13" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=2026-10-22c" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-22g" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
-       renders finished if this never runs. -->
+       renders finished if the scripts never run. -->
   <script>document.documentElement.className += " js";</script>
 </head>
 <body>
-  <!-- The glass scene sits behind every page, header to footer. CSS keeps
-       it floating on its own; js/scene.js couples it to the scroll. Decorative only. -->
-  <div class="scene" id="scene" aria-hidden="true">
-    <div class="scene__aura">
-      <i class="aura__blob aura__blob--1"></i>
-      <i class="aura__blob aura__blob--2"></i>
-      <i class="aura__blob aura__blob--3"></i>
-      <i class="aura__blob aura__blob--4"></i>
-    </div>
-    <div class="scene__band scene__band--back"><div class="scene__tilt"><i class="scene__flow"></i></div></div>
-    <div class="scene__band scene__band--front"><div class="scene__tilt"><i class="scene__flow"></i></div></div>
-    <div class="scene__veil"></div>
-  </div>
-  <!-- Progress bar -->
-  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+  <a class="skip" href="#products">Skip to the work</a>
 
-  <!-- Nav -->
-  <nav class="nav liquid-glass" id="nav">
-    <a href="#top" class="nav__mark">JV</a>
-    <div class="nav__links">
-      <!-- One highlight slides between these five; js/ui.js builds it. -->
-      <div class="nav__tabs" data-tabs>
-        <a href="#products"><span>Products</span></a>
-        <a href="#ai"><span>AI</span></a>
-        <a href="#work"><span>Experience</span></a>
-        <a href="#building"><span>Building</span></a>
-        <a href="#skills"><span>Skills</span></a>
-      </div>
-      <a href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener" class="nav__icon liquid-glass" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg></a>
-      <a href="#contact" class="nav__cta liquid-glass" data-magnetic><span>Contact</span></a>
+  <!-- Top bar: the name, the four sections, contact. A hairline under it
+       fills with the reading position. -->
+  <header class="bar" id="bar">
+    <a class="bar__name" href="#top">João Vaz</a>
+    <nav class="bar__links" aria-label="Sections">
+      <a href="#products" data-nav="products">Products</a>
+      <a href="#ai" data-nav="ai">AI</a>
+      <a href="#work" data-nav="work">Experience</a>
+      <a href="#projects" data-nav="projects">Projects</a>
+    </nav>
+    <div class="bar__end">
+      <a class="bar__icon" href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg></a>
+      <a class="btn btn--ink btn--sm" href="#contact" data-nav="contact">Contact</a>
     </div>
+    <i class="bar__progress" aria-hidden="true"></i>
+  </header>
+
+  <!-- Wide screens: an index down the left edge. Each number is a link;
+       the line beside it fills as the section is read. -->
+  <nav class="rail" aria-label="Section index">
+    <a href="#products" data-nav="products"><b>01</b><span>Products</span><i></i></a>
+    <a href="#ai" data-nav="ai"><b>02</b><span>AI</span><i></i></a>
+    <a href="#work" data-nav="work"><b>03</b><span>Experience</span><i></i></a>
+    <a href="#projects" data-nav="projects"><b>04</b><span>Projects</span><i></i></a>
+    <a href="#contact" data-nav="contact"><b>05</b><span>Contact</span><i></i></a>
+  </nav>
+
+  <!-- Phones: the same sections in a dock at the bottom, under the thumb. -->
+  <nav class="dock" aria-label="Sections">
+    <a href="#products" data-nav="products"><b>01</b>Products</a>
+    <a href="#ai" data-nav="ai"><b>02</b>AI</a>
+    <a href="#work" data-nav="work"><b>03</b>Work</a>
+    <a href="#projects" data-nav="projects"><b>04</b>Projects</a>
+    <a href="#contact" data-nav="contact"><b>05</b>Contact</a>
   </nav>
 
   <main>
     <!-- HERO -->
-    <header class="hero" id="top">
-      <div class="hero__inner">
-        <!-- The portrait is the hero's anchor: a tall glass slab that leans
-             towards the pointer (js/ui.js writes --rx/--ry), with a sweep of
-             light across it and three facts floating on its edges. -->
-        <div class="hero__figure reveal" data-tilt>
-          <figure class="portrait">
-            <div class="portrait__frame">
-              <img src="/assets/joao-stage.jpg" alt="João Vaz on stage with a microphone at the Prosus AI Accelerator in Amsterdam" width="1120" height="1400" fetchpriority="high" />
-              <i class="portrait__glare" aria-hidden="true"></i>
-            </div>
-            <figcaption class="portrait__cap">On stage · Prosus AI Accelerator · Amsterdam 2026</figcaption>
-          </figure>
-          <span class="float float--a liquid-glass" aria-hidden="true"><b>12k+</b> car dealers served</span>
-          <span class="float float--b liquid-glass" aria-hidden="true"><i class="float__dot"></i>evals · traces · mandates</span>
-          <span class="float float--c liquid-glass" aria-hidden="true"><b>+150%</b> weekly engagement</span>
-        </div>
-
+    <section class="hero" id="top">
+      <!-- A field of dots that rises under the pointer and ripples out
+           from the photo once on arrival. Decorative; js/home.js draws it. -->
+      <canvas class="hero__field" aria-hidden="true"></canvas>
+      <div class="hero__grid wrap">
         <div class="hero__copy">
-          <p class="hero__eyebrow reveal"><i class="dot" aria-hidden="true"></i> Product Manager · OLX Group · Prosus</p>
-          <h1 class="hero__title">
-            <span class="hero__line"><span class="hero__line-in" data-split>João Vaz</span></span>
-            <span class="hero__line hero__line--role reveal"><span class="hero__line-in">Data, ML &amp; AI-agent products</span></span>
+          <p class="meta rv">Product Manager · OLX Group · Prosus</p>
+          <h1 class="hero__name" aria-label="João Vaz">
+            <span class="line"><span data-split>João</span></span>
+            <span class="line"><span data-split>Vaz</span><span class="ch name-dot" style="--d:7" aria-hidden="true">.</span></span>
           </h1>
-          <p class="hero__pitch reveal">I lead the product strategy for a 10-person team building data
-            and pricing products for 12,000+ professional car dealers, and bringing AI into them. I build
-            my own agents along the way.</p>
-
-          <div class="hero__actions">
-            <!-- Without the script this is a plain link to the contact section. -->
-            <div class="hero__cta reveal" data-cta data-email="joaosfvaz@gmail.com">
-              <a class="cta-btn" href="#contact" data-cta-open>Get in touch</a>
-              <div class="cta-pill" data-cta-pill hidden>
-                <a class="cta-pill__text" href="mailto:joaosfvaz@gmail.com" data-cta-text></a>
-                <button class="cta-pill__go" type="button" data-cta-copy aria-label="Copy the email address">
-                  <svg class="cta-pill__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                  <svg class="cta-pill__check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
-                </button>
-              </div>
-              <span class="sr-only" aria-live="polite" data-cta-status></span>
-            </div>
-            <a class="hero__link reveal" href="#products">See the products <i aria-hidden="true">↓</i></a>
+          <!-- The two numbers are underlined in blue, one after the other,
+               once the line has landed. -->
+          <p class="hero__line rv">I build tools for <b>12,000+ car dealers</b> and <b>10M+ visitors</b>.</p>
+          <p class="hero__pitch rv">Product Manager at OLX Group (Motors, B2B), part of Prosus. I set
+            the strategy for a 10-person team, and I build my own agents along the way.</p>
+          <div class="hero__actions rv">
+            <!-- A mail link that the script turns into "copy the address";
+                 without the script it still opens the mail app. -->
+            <a class="btn btn--ink" href="mailto:joaosfvaz@gmail.com" data-copy="joaosfvaz@gmail.com">
+              <span data-copy-label>Copy my email</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+            <a class="btn btn--line" href="#products">See the work</a>
+            <span class="sr-only" aria-live="polite" data-copy-status></span>
           </div>
         </div>
+        <figure class="hero__photo rv">
+          <div class="hero__frame">
+            <img src="/assets/joao-stage.jpg" alt="João Vaz on stage with a microphone at the Prosus AI Accelerator in Amsterdam" width="1120" height="1400" fetchpriority="high" />
+          </div>
+          <figcaption class="meta">On stage · Prosus AI Accelerator · Amsterdam 2026</figcaption>
+        </figure>
       </div>
 
-      <!-- The ticker is the landing screen's footer: pinned to the floor of
-           the hero, so it is in the first view. -->
-      <div class="ticker" aria-hidden="true">
-        <div class="ticker__track" data-marquee>
-          <span>Product strategy</span><b>✳</b>
-          <span>AI agents</span><b>✳</b>
-          <span>Evals &amp; traces</span><b>✳</b>
-          <span>MCP</span><b>✳</b>
-          <span>Pricing ML</span><b>✳</b>
-          <span>Experimentation</span><b>✳</b>
-          <span>12k+ dealers</span><b>✳</b>
-          <span>PT · PL · RO</span><b>✳</b>
-          <span>Built with Claude</span><b>✳</b>
-        </div>
-      </div>
-    </header>
-
-    <!-- ABOUT -->
-    <section class="section section--about" id="about">
-      <div class="section__label reveal"><span>01</span><em>About</em><i class="rule"></i></div>
-      <p class="lead" data-fill>
-        Product Manager at <em>OLX Group (Motors, B2B)</em>, part of Prosus. I set the strategy for a
-        10-person team — engineers, a product designer and a product analyst — building
-        <strong>data, pricing and AI products</strong> for professional car dealers on Otomoto,
-        Autovit and Standvirtual. I ship with AI coding tools when a fix can't wait.
-      </p>
-      <!-- Counters read their finished value from the markup; js/ui.js
-           animates up to it. If the script never runs, the number is right. -->
-      <div class="stats">
-        <div class="stat reveal">
-          <span class="stat__num" data-count="150" data-prefix="+" data-suffix="%">+150%</span>
-          <span class="stat__label">avg weekly engagement lift across 3 data products, in under 18 months</span>
-        </div>
-        <div class="stat reveal">
-          <span class="stat__num" data-count="12" data-suffix="k+">12k+</span>
-          <span class="stat__label">professional car dealers served in Portugal, Poland and Romania</span>
-        </div>
-        <div class="stat reveal">
-          <span class="stat__num" data-count="40" data-suffix="+">40+</span>
-          <span class="stat__label">experiments run — A/B, AA &amp; fake-door</span>
-        </div>
-        <div class="stat reveal">
-          <span class="stat__num" data-count="50" data-suffix="+">50+</span>
-          <span class="stat__label">in-person dealer interviews across PT · RO · PL</span>
-        </div>
-        <div class="stat reveal">
-          <span class="stat__num" data-count="1195">1,195</span>
-          <span class="stat__label">dealer feedback conversations analysed across 3 markets, in 4 languages</span>
-        </div>
-        <div class="stat reveal">
-          <span class="stat__num" data-count="90" data-suffix="+">90+</span>
-          <span class="stat__label">PMs trained on AI tooling — 75% now use it day to day</span>
-        </div>
-      </div>
+      <!-- Counters read their finished value from the markup; js/home.js
+           counts up to it. If the script never runs, the number is right. -->
+      <dl class="figures wrap">
+        <div class="rv"><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement across 3 data products, in 18 months</dd></div>
+        <div class="rv"><dt data-count="12" data-suffix="k+">12k+</dt><dd>professional car dealers in PT · PL · RO</dd></div>
+        <div class="rv"><dt data-count="40" data-suffix="+">40+</dt><dd>experiments — A/B, AA &amp; fake-door</dd></div>
+        <div class="rv"><dt data-count="50" data-suffix="+">50+</dt><dd>in-person dealer interviews</dd></div>
+        <div class="rv"><dt data-count="1195">1,195</dt><dd>dealer conversations analysed, 4 languages</dd></div>
+        <div class="rv"><dt data-count="90" data-suffix="+">90+</dt><dd>PMs trained on AI tooling</dd></div>
+      </dl>
     </section>
 
+    <!-- A strip of big type that runs sideways and speeds up with the
+         scroll; it turns round when the scroll does. Decorative. -->
+    <div class="strip" aria-hidden="true">
+      <div class="strip__track" data-strip>
+        <span>AI agents</span><b>✳</b><span>Evals</span><b>✳</b><span>Traces</span><b>✳</b><span>MCP</span><b>✳</b><span>Data products</span><b>✳</b><span>Experimentation</span><b>✳</b><span>Dealer research</span><b>✳</b>
+      </div>
+    </div>
+
     <!-- PRODUCTS -->
-    <!-- A bento of the products I lead, each explained by what it does for
-         a dealer rather than by its name in the app. The wide tiles
-         alternate sides; the assistant leads. -->
-    <section class="section section--products" id="products">
-      <div class="section__label reveal"><span>02</span><em>Products</em><i class="rule"></i></div>
-      <h2 class="section__title reveal">The products I lead <span>for car dealers</span></h2>
-      <p class="section__intro reveal">Six products with one job: help a dealer buy the right cars,
-        price them well and sell them faster. I own the strategy and the roadmap across them, from
-        the data pipelines underneath to the screens dealers use.</p>
-      <div class="bento">
-        <article class="tile tile--wide tile--ai reveal">
-          <div class="tile__top"><span class="tile__tag"><i class="dot" aria-hidden="true"></i> AI assistant</span><span class="tile__when">Live in Poland</span></div>
-          <h3>An assistant dealers can ask anything</h3>
-          <p>A chat assistant inside the dealer's account that answers questions about their
-            listings, their prices and the market — in plain language, from the dealer's own data.
-            I define what it may do in my domain, put our pricing and performance data behind MCP
-            tools it can call, and test it with test questions, evals and trace reviews.</p>
-          <ul class="tile__chips"><li>Agent specs</li><li>MCP tools</li><li>Evals</li><li>Traces</li></ul>
-        </article>
-        <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Machine learning</span></div>
-          <h3>Fair-price estimates</h3>
-          <p>A machine-learning estimate of what each car is worth from its specs, and how long cars
-            like it take to sell — shown next to the dealer's asking price, and behind the price
-            label buyers see.</p>
-          <ul class="tile__chips"><li>ML model</li><li>Price-to-market</li><li>Time to sell</li></ul>
-        </article>
-        <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Analytics</span></div>
-          <h3>Listing performance</h3>
-          <p>Views, clicks, saves, messages and calls for every car and for the whole stock,
-            benchmarked against similar cars — the one analytics product every dealer gets, on every
-            plan.</p>
-          <ul class="tile__chips"><li>Funnel metrics</li><li>Benchmarks</li></ul>
-        </article>
-        <article class="tile tile--wide reveal">
-          <div class="tile__top"><span class="tile__tag">Market intelligence</span></div>
-          <h3>A live view of the car market</h3>
-          <p>Supply, demand, prices and selling speed for every segment of the market, down to the
-            individual competing listings in it — so a dealer can decide what to buy next and how to
-            price what is already on the lot.</p>
-          <ul class="tile__chips"><li>Supply &amp; demand</li><li>Days of supply</li><li>Competitor listings</li></ul>
-        </article>
-        <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Home screen</span></div>
-          <h3>The business at a glance</h3>
-          <p>The first screen a dealer sees: how the dealership is doing, the health of its stock and
-            alerts that lead straight to the cars that need action — across every branch of a group.</p>
-          <ul class="tile__chips"><li>Stock health</li><li>Alerts</li><li>Multi-branch</li></ul>
-        </article>
-        <article class="tile tile--wide tile--wide-desk reveal">
-          <div class="tile__top"><span class="tile__tag">Next-best action</span></div>
-          <h3>Recommendations on every listing</h3>
-          <p>One concrete next step per car — renew it before it expires, raise an underpriced car
-            towards its market value, or give it more visibility — from an engine that combines the
-            signals of every product above.</p>
-          <ul class="tile__chips"><li>Pricing</li><li>Renewal</li><li>Visibility</li></ul>
-        </article>
+    <!-- An accordion: one product open at a time. Without the script every
+         panel is open, so nothing is ever hidden behind a broken button. -->
+    <section class="section" id="products">
+      <div class="wrap">
+        <header class="head">
+          <p class="meta rv"><b>01</b> Products</p>
+          <h2 class="rv">The products I lead <em>for car dealers.</em></h2>
+          <p class="head__intro rv">Six products with one job: help a dealer buy the right cars, price
+            them well and sell them faster. I own the strategy and the roadmap across them, from the data
+            pipelines underneath to the screens dealers use.</p>
+        </header>
+
+        <div class="acc" data-acc>
+          <div class="acc__item rv is-open">
+            <h3><button class="acc__head" type="button" aria-expanded="true">
+              <span class="acc__n">01</span>
+              <span class="acc__title">An assistant dealers can ask anything</span>
+              <span class="tag">AI assistant</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <p>A chat assistant inside the dealer's account that answers questions about their
+                listings, their prices and the market — in plain language, from the dealer's own data.
+                It is live in Poland. I define what it may do in my domain, put our pricing and
+                performance data behind MCP tools it can call, and test it with test questions, evals
+                and trace reviews.</p>
+              <ul class="keys"><li>Agent specs</li><li>MCP tools</li><li>Evals</li><li>Traces</li></ul>
+            </div></div>
+          </div>
+          <div class="acc__item rv">
+            <h3><button class="acc__head" type="button" aria-expanded="false">
+              <span class="acc__n">02</span>
+              <span class="acc__title">Fair-price estimates</span>
+              <span class="tag">Machine learning</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <p>A machine-learning estimate of what each car is worth from its specs, and how long
+                cars like it take to sell — shown next to the dealer's asking price, and behind the
+                price label buyers see.</p>
+              <ul class="keys"><li>ML model</li><li>Price-to-market</li><li>Time to sell</li></ul>
+            </div></div>
+          </div>
+          <div class="acc__item rv">
+            <h3><button class="acc__head" type="button" aria-expanded="false">
+              <span class="acc__n">03</span>
+              <span class="acc__title">A live view of the car market</span>
+              <span class="tag">Market intelligence</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <p>Supply, demand, prices and selling speed for every segment of the market, down to the
+                individual competing listings in it — so a dealer can decide what to buy next and how
+                to price what is already on the lot.</p>
+              <ul class="keys"><li>Supply &amp; demand</li><li>Days of supply</li><li>Competitor listings</li></ul>
+            </div></div>
+          </div>
+          <div class="acc__item rv">
+            <h3><button class="acc__head" type="button" aria-expanded="false">
+              <span class="acc__n">04</span>
+              <span class="acc__title">Listing performance</span>
+              <span class="tag">Analytics</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <p>Views, clicks, saves, messages and calls for every car and for the whole stock,
+                benchmarked against similar cars — the one analytics product every dealer gets, on
+                every plan.</p>
+              <ul class="keys"><li>Funnel metrics</li><li>Benchmarks</li></ul>
+            </div></div>
+          </div>
+          <div class="acc__item rv">
+            <h3><button class="acc__head" type="button" aria-expanded="false">
+              <span class="acc__n">05</span>
+              <span class="acc__title">The business at a glance</span>
+              <span class="tag">Home screen</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <p>The first screen a dealer sees: how the dealership is doing, the health of its stock
+                and alerts that lead straight to the cars that need action — across every branch of a
+                group.</p>
+              <ul class="keys"><li>Stock health</li><li>Alerts</li><li>Multi-branch</li></ul>
+            </div></div>
+          </div>
+          <div class="acc__item rv">
+            <h3><button class="acc__head" type="button" aria-expanded="false">
+              <span class="acc__n">06</span>
+              <span class="acc__title">Recommendations on every listing</span>
+              <span class="tag">Next-best action</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <p>One concrete next step per car — renew it before it expires, raise an underpriced car
+                towards its market value, or give it more visibility — from an engine that combines the
+                signals of every product above.</p>
+              <ul class="keys"><li>Pricing</li><li>Renewal</li><li>Visibility</li></ul>
+            </div></div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- AI -->
-    <!-- The signature section: an illustrative agent run plays out as a
-         trace when it arrives (CSS, keyed on .is-in from the reveal), and
-         beside it the vocabulary I work in. -->
-    <section class="section section--ai" id="ai">
-      <div class="section__label reveal"><span>03</span><em>AI &amp; agents</em><i class="rule"></i></div>
-      <h2 class="section__title reveal">I don't just spec agents. <span>I read their traces.</span></h2>
-      <div class="ai">
-        <figure class="trace reveal" aria-label="An illustrative agent run, shown as a trace">
-          <div class="trace__bar">
-            <i></i><i></i><i></i>
-            <span>trace · dealer-assistant · illustrative run</span>
-          </div>
-          <p class="trace__ask"><span>dealer</span>“Why isn't my Audi A4 getting leads?”</p>
-          <ol class="trace__spans">
-            <li style="--s:0;--w:14"><span class="trace__name">route → pricing &amp; performance agent</span><span class="trace__ms">38 ms</span></li>
-            <li style="--s:8;--w:30" class="is-tool"><span class="trace__name">tool · listing_performance(car)</span><span class="trace__ms">212 ms</span></li>
-            <li style="--s:10;--w:26" class="is-tool"><span class="trace__name">tool · fair_price(car)</span><span class="trace__ms">187 ms</span></li>
-            <li style="--s:40;--w:6" class="is-check"><span class="trace__name">mandate · assist · read-only ✓</span><span class="trace__ms">2 ms</span></li>
-            <li style="--s:46;--w:44"><span class="trace__name">answer · grounded in 2 tool results</span><span class="trace__ms">1.4 s</span></li>
-          </ol>
-          <p class="trace__answer">“It's priced 9% above similar A4s and views fell after day 12.
-            Cars like it sell in ~24 days at market price.”</p>
-          <div class="trace__evals">
-            <span><b>✓</b> correctness</span>
-            <span><b>✓</b> groundedness</span>
-            <span><b>✓</b> scope</span>
-            <span><b>✓</b> plain language</span>
-          </div>
-          <figcaption class="trace__cap">Illustrative — the shape of the runs I review, not real data.</figcaption>
-        </figure>
+    <!-- A playable trace: pick a dealer question and the run plays out —
+         routing, tool calls, the mandate check, the answer, the evals.
+         The markup holds the first run finished; js/home.js takes over. -->
+    <section class="section" id="ai">
+      <div class="wrap">
+        <header class="head">
+          <p class="meta rv"><b>02</b> AI &amp; agents</p>
+          <h2 class="rv">I don't just spec agents. <em>I read their traces.</em></h2>
+        </header>
 
-        <dl class="concepts">
-          <div class="concept reveal">
-            <dt><i class="ic" data-icon="flask"></i> Evals</dt>
-            <dd>Test questions with known answers for my domain, graded on correctness, groundedness,
-              scope and refusals — so a change is judged on evidence, not on a demo.</dd>
-          </div>
-          <div class="concept reveal">
-            <dt><i class="ic" data-icon="nodes"></i> Traces</dt>
-            <dd>I read agent runs span by span to catch invented values, routing errors and the
-              same question getting two different answers — then fix the prompt or the tool.</dd>
-          </div>
-          <div class="concept reveal">
-            <dt><i class="ic" data-icon="shield"></i> Mandates &amp; safety tiers</dt>
-            <dd>What an agent may do for a user: read-only or acting, whether an action can be
-              reverted, and when a human must confirm.</dd>
-          </div>
-          <div class="concept reveal">
-            <dt><i class="ic" data-icon="board"></i> Automation classes</dt>
-            <dd>Assist, one-click, two-turn and scheduled — each capability gets the lightest class
-              its risk allows.</dd>
-          </div>
-          <div class="concept reveal">
-            <dt><i class="ic" data-icon="plug"></i> Tools &amp; MCP</dt>
-            <dd>Domain data behind MCP tools the agent calls, so answers come from the source, not
-              from the model's memory.</dd>
-          </div>
-          <div class="concept reveal">
-            <dt><i class="ic" data-icon="message"></i> Context &amp; prompts</dt>
-            <dd>Personas, playbooks under a token budget, what an agent is not for and where it
-              hands over, and a glossary so it speaks the dealer's language.</dd>
-          </div>
-          <div class="concept reveal">
-            <dt><i class="ic" data-icon="eye"></i> Human-in-the-loop</dt>
-            <dd>Human review on critical paths until there are enough traces to trust an LLM judge.</dd>
-          </div>
-          <div class="concept reveal">
-            <dt><i class="ic" data-icon="anthropic"></i> Skills for other PMs</dt>
-            <dd>I wrote the Claude skills rolled out to every PM in our unit, to define their
-              domain's agent and to decide when a change needs a spec.</dd>
-          </div>
-        </dl>
+        <div class="ai">
+          <figure class="trace rv" data-trace>
+            <div class="trace__chrome"><i></i><i></i><i></i><span>trace · illustrative</span></div>
+            <div class="trace__asks" role="tablist" aria-label="Pick a dealer question">
+              <button type="button" role="tab" aria-selected="true" data-run="0">Why no leads?</button>
+              <button type="button" role="tab" aria-selected="false" data-run="1">Change my price</button>
+              <button type="button" role="tab" aria-selected="false" data-run="2">Off-topic</button>
+            </div>
+            <div class="trace__run" data-trace-run aria-live="polite">
+              <p class="trace__q"><span>dealer</span>“Why isn't my Audi A4 getting leads?”</p>
+              <ol class="trace__spans">
+                <li style="--s:0;--w:14"><span>route → pricing &amp; performance agent</span><em>38 ms</em></li>
+                <li style="--s:8;--w:30" class="is-tool"><span>tool · listing_performance(car)</span><em>212 ms</em></li>
+                <li style="--s:10;--w:26" class="is-tool"><span>tool · fair_price(car)</span><em>187 ms</em></li>
+                <li style="--s:40;--w:6" class="is-check"><span>mandate · assist · read-only ✓</span><em>2 ms</em></li>
+                <li style="--s:46;--w:44"><span>answer · grounded in 2 tool results</span><em>1.4 s</em></li>
+              </ol>
+              <p class="trace__a"><span>assistant</span>“It's priced 9% above similar A4s and views fell after day 12. Cars like it sell in about 24 days at market price.”</p>
+              <ul class="trace__evals"><li>correctness</li><li>groundedness</li><li>scope</li><li>plain language</li></ul>
+            </div>
+            <figcaption><button class="trace__again" type="button" data-again hidden>Run again ↻</button><span>Illustrative runs that show the concepts — not the product, not real data.</span></figcaption>
+          </figure>
+
+          <dl class="concepts">
+            <div class="rv"><dt>Evals</dt><dd>Test questions with known answers for my domain, graded on correctness, groundedness, scope and refusals — so a change is judged on evidence, not on a demo.</dd></div>
+            <div class="rv"><dt>Traces</dt><dd>I read agent runs span by span to catch invented values, routing errors and the same question getting two different answers.</dd></div>
+            <div class="rv"><dt>Mandates</dt><dd>What an agent may do for a user: read-only or acting, whether an action can be reverted, and when a human must confirm.</dd></div>
+            <div class="rv"><dt>Automation classes</dt><dd>Assist, one-click, two-turn and scheduled — each capability gets the lightest class its risk allows.</dd></div>
+            <div class="rv"><dt>Tools &amp; MCP</dt><dd>Domain data behind MCP tools the agent calls, so answers come from the source, not from the model's memory.</dd></div>
+            <div class="rv"><dt>Context</dt><dd>Personas, playbooks under a token budget, what an agent is not for and where it hands over.</dd></div>
+            <div class="rv"><dt>Human-in-the-loop</dt><dd>Human review on critical paths until there are enough traces to trust an LLM judge.</dd></div>
+            <div class="rv"><dt>Skills for PMs</dt><dd>I wrote the Claude skills rolled out to every PM in our unit, to define their domain's agent and to decide when a change needs a spec.</dd></div>
+          </dl>
+        </div>
       </div>
     </section>
 
     <!-- EXPERIENCE -->
-    <section class="section section--work" id="work">
-      <div class="section__label reveal"><span>04</span><em>Experience</em><i class="rule"></i></div>
-      <ol class="timeline">
-        <li class="tl reveal">
-          <div class="tl__meta">
-            <span class="tl__date">Mar 2025 — Present</span>
-            <span class="tl__org"><i class="ic logo logo--olx" data-icon="olx"></i> Prosus</span>
-          </div>
-          <div class="tl__body">
-            <h3>Product Manager <span>— Motors, B2B</span></h3>
-            <p>Own the product strategy for the team behind dealer insights, pricing and
-              recommendations. Define outcome-driven quarterly OKRs (~72% average completion over
-              2.5 years) and steer the roadmap end to end, from upstream data pipelines to
-              downstream microservices.</p>
-            <p>Bring AI into the product: define the dealer assistant's capabilities for my domain,
-              write its test questions, review its traces and own its domain evals. Wrote the
-              Claude skills other PMs use to do the same.</p>
-            <p>Co-designed a two-day product workshop for ~100 people in 8 teams, and built the
-              8 Claude skills that take each team from dealer interviews to pains, ideas, scored bets
-              and a roadmap. Lead a data-trust plan for the numbers dealers see.</p>
-            <p>Manage CRM, Marketing, GTM, Sales, BI and PMM stakeholders across five markets
-              (PT, RO, PL, FR, ZA) through dedicated sessions and shared OKRs.</p>
-            <ul class="tl__tags">
-              <li>Strategy &amp; OKRs</li>
-              <li>AI agents</li>
-              <li>ML products</li>
-              <li>Experimentation</li>
-              <li>Data architecture</li>
-              <li>Stakeholders · 5 markets</li>
-            </ul>
-          </div>
-        </li>
-        <li class="tl reveal">
-          <div class="tl__meta">
-            <span class="tl__date">Mar 2024 — Mar 2025</span>
-            <span class="tl__org"><i class="ic logo logo--olx" data-icon="olx"></i> Prosus</span>
-          </div>
-          <div class="tl__body">
-            <h3>Associate Product Manager <span>— Motors, B2B</span></h3>
-            <p>Same team and scope, promoted to PM in Mar 2025. Owned the product application of
-              data-science models — vehicle price estimation and expected time-to-sell, based on
-              vehicle specs — and ran 50+ in-person dealer interviews across PL, RO and PT.</p>
-            <ul class="tl__tags">
-              <li>Price estimation</li>
-              <li>Time-to-sell</li>
-              <li>Dealer research</li>
-            </ul>
-          </div>
-        </li>
-        <li class="tl reveal">
-          <div class="tl__meta">
-            <span class="tl__date">Sept 2023 — Feb 2024</span>
-            <span class="tl__org"><i class="ic logo logo--olx" data-icon="olx"></i></span>
-          </div>
-          <div class="tl__body">
-            <h3>Product Management Trainee</h3>
-            <p>Led product discovery on dealer lead generation; ran A/B experiments with Data Science
-              on recommendation types tied to exposure services.</p>
-            <ul class="tl__tags">
-              <li>Discovery</li>
-              <li>Lead generation</li>
-            </ul>
-          </div>
-        </li>
-      </ol>
+    <section class="section" id="work">
+      <div class="wrap">
+        <header class="head">
+          <p class="meta rv"><b>03</b> Experience</p>
+          <h2 class="rv">Three years on one problem: <em>helping dealers sell cars.</em></h2>
+        </header>
 
-      <!-- Selection, not a role: it reads differently from the timeline
-           above on purpose, and carries the photos from the programme. -->
-      <div class="selection reveal">
-        <div class="selection__meta">
-          <span class="selection__now"><i class="dot" aria-hidden="true"></i> Sept 2026 · Completed</span>
-          <span class="selection__where">Amsterdam · 1 month</span>
+        <div class="acc acc--roles" data-acc>
+          <div class="acc__item rv is-open">
+            <h3><button class="acc__head" type="button" aria-expanded="true">
+              <span class="acc__n">2025 —</span>
+              <span class="acc__title">Product Manager <small>OLX Group · Prosus · Motors B2B</small></span>
+              <span class="acc__when">Mar 2025 — now</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <ul class="points">
+                <li>Own the product strategy for the team behind dealer insights, pricing and
+                  recommendations. Outcome-driven quarterly OKRs, ~72% average completion over 2.5 years,
+                  and a roadmap from upstream data pipelines to downstream microservices.</li>
+                <li>Bring AI into the product: define the dealer assistant's capabilities for my
+                  domain, write its test questions, review its traces and own its domain evals.</li>
+                <li>Co-designed a two-day product workshop for ~100 people in 8 teams, and built the
+                  8 Claude skills that take each team from dealer interviews to pains, ideas, scored
+                  bets and a roadmap.</li>
+                <li>Work with CRM, Marketing, GTM, Sales, BI and PMM across five markets — PT, RO, PL,
+                  FR and ZA.</li>
+              </ul>
+            </div></div>
+          </div>
+          <div class="acc__item rv">
+            <h3><button class="acc__head" type="button" aria-expanded="false">
+              <span class="acc__n">2024</span>
+              <span class="acc__title">Associate Product Manager <small>OLX Group · Prosus · Motors B2B</small></span>
+              <span class="acc__when">Mar 2024 — Mar 2025</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <ul class="points">
+                <li>Same team and scope; promoted to Product Manager in March 2025.</li>
+                <li>Owned the product side of two data-science models: vehicle price estimation and
+                  expected time to sell, from a car's specs.</li>
+                <li>Ran 50+ in-person dealer interviews across Poland, Romania and Portugal.</li>
+              </ul>
+            </div></div>
+          </div>
+          <div class="acc__item rv">
+            <h3><button class="acc__head" type="button" aria-expanded="false">
+              <span class="acc__n">2023</span>
+              <span class="acc__title">Product Management Trainee <small>OLX Group</small></span>
+              <span class="acc__when">Sep 2023 — Feb 2024</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <ul class="points">
+                <li>Led product discovery on dealer lead generation.</li>
+                <li>Ran A/B experiments with Data Science on recommendation types tied to exposure
+                  services.</li>
+              </ul>
+            </div></div>
+          </div>
+          <div class="acc__item rv">
+            <h3><button class="acc__head" type="button" aria-expanded="false">
+              <span class="acc__n">2026</span>
+              <span class="acc__title">Prosus AI Accelerator <small>Selected · Amsterdam · 1 month</small></span>
+              <span class="acc__when">Sep 2026</span>
+              <i class="acc__icon" aria-hidden="true"></i>
+            </button></h3>
+            <div class="acc__panel"><div class="acc__body">
+              <p>A month-long AI programme in Amsterdam, co-created by Prosus and the THNK School of
+                Creative Leadership, with people from companies across the group. My team built and
+                demoed a prototype: a seller inbox with an AI assistant that screens out buyers who
+                aren't serious.</p>
+              <div class="photos">
+                <img src="/assets/accelerator/demo.jpg" alt="João presenting his team's prototype on stage" width="1200" height="900" loading="lazy" />
+                <img src="/assets/accelerator/panel.jpg" alt="João asking a question into a microphone" width="900" height="1065" loading="lazy" />
+                <img src="/assets/accelerator/cohort.jpg" alt="The accelerator cohort on a canal-side quay in Amsterdam" width="1200" height="800" loading="lazy" />
+              </div>
+            </div></div>
+          </div>
         </div>
-        <div class="selection__body">
-          <h3>Prosus AI Accelerator Program</h3>
-          <p>Selected to join a month-long AI programme in Amsterdam, co-created by Prosus and the
-            THNK School of Creative Leadership, with people from companies across the group. My team
-            built and demoed a prototype: a seller inbox with an AI assistant that screens out
-            buyers who aren't serious.</p>
-          <ul class="tl__tags">
-            <li>Selected</li>
-            <li>Prosus Group</li>
-            <li>AI prototyping</li>
-          </ul>
-        </div>
-        <div class="gallery">
-          <img src="/assets/accelerator/demo.jpg" alt="João presenting his team's prototype on stage" width="1200" height="900" loading="lazy" />
-          <img src="/assets/accelerator/panel.jpg" alt="João asking a question into a microphone" width="900" height="1065" loading="lazy" />
-          <img src="/assets/accelerator/cohort.jpg" alt="The accelerator cohort on a canal-side quay in Amsterdam" width="1200" height="800" loading="lazy" />
-        </div>
+
+        <!-- The toolkit and the rest of the CV as plain definition rows. -->
+        <dl class="kit">
+          <div class="rv"><dt>Agentic AI</dt><dd>Evals &amp; test sets · Tracing &amp; observability · Mandates &amp; permissions · Guardrails &amp; refusals · MCP servers &amp; tools · Agent routing &amp; handover · Context engineering · LLM-as-judge · Human-in-the-loop</dd></div>
+          <div class="rv"><dt>AI-assisted building</dt><dd>Claude Code · Cursor · Lovable · Claude skills · Scheduled agents · Video with HyperFrames</dd></div>
+          <div class="rv"><dt>Data &amp; experimentation</dt><dd>SQL · GA4 · A/B, AA &amp; fake-door tests · Maze · Usability testing</dd></div>
+          <div class="rv"><dt>Delivery &amp; technical</dt><dd>Jira &amp; Atlassian · LaunchDarkly · New Relic SLIs/SLOs · Postman · GraphQL · Event-driven &amp; microservices · Sprints &amp; kanban</dd></div>
+          <div class="rv"><dt>CRM &amp; GTM</dt><dd>Braze · Intercom · Five markets</dd></div>
+          <div class="rv"><dt>Education</dt><dd>MSc Industrial Engineering &amp; Management — University of Minho &amp; TU Graz, 2021–2023</dd></div>
+          <div class="rv"><dt>Languages</dt><dd>Portuguese (native) · English (C2)</dd></div>
+        </dl>
       </div>
     </section>
 
-    <!-- BUILDING -->
-    <section class="section section--building" id="building">
-      <div class="section__label reveal"><span>05</span><em>Building with AI</em><i class="rule"></i></div>
-      <p class="lead" data-fill>
-        A selection of projects I've designed and built myself, from the first idea to a working
-        product: MCP servers, scheduled agents and live apps. Scroll sideways to browse them.
-      </p>
-      <!-- A 3D carousel: the track scrolls sideways (trackpad, shift-wheel,
-           swipe, arrows) and js/carousel.js magnifies the project nearest
-           the centre. Without the script it is a plain sideways-scrolling row. -->
-      <div class="carousel" data-carousel>
-        <div class="carousel__track" tabindex="0" aria-label="Projects — scroll sideways">
-        <div class="carousel__slide">
-        <a class="card card--link reveal" href="/team-context/">
-          <div class="card__top"><i class="ic" data-icon="plug"></i><span class="card__kicker">MCP · Python</span></div>
-          <h3>Team-context MCP</h3>
-          <p>A read-only MCP server that lets the company's internal AI assistant answer
-            stakeholders' questions about what my team is working on — served from my laptop
-            through a free tunnel.</p>
-          <div class="card__foot"><span>MCP</span><span>ngrok</span></div>
-          <span class="card__more">Know more<i aria-hidden="true">→</i></span>
-        </a>
-        </div>
-        <div class="carousel__slide" data-start>
-        <a class="card card--link reveal" href="https://joaosfvaz.github.io/portugal-explicado/" target="_blank" rel="noopener">
-          <div class="card__top"><i class="ic" data-icon="ptflag"></i><span class="card__kicker">Civic · Next.js</span></div>
-          <h3>Portugal Explicado</h3>
-          <p>Taxes, Parliament, laws and the economy of Portugal explained in plain Portuguese —
-            every number linked to an official source, with Parliament and economy data imported
-            from open data every day.</p>
-          <div class="card__foot"><span>Next.js</span><span>Open data</span></div>
-          <span class="card__more">Visit the site<i aria-hidden="true">↗</i></span>
-        </a>
-        </div>
-        <div class="carousel__slide">
-        <a class="card card--link reveal" href="/pm-os/">
-          <div class="card__top"><i class="ic" data-icon="anthropic"></i><span class="card__kicker">Knowledge · Agents</span></div>
-          <h3>PM-OS</h3>
-          <p>A knowledge base my team's answers live in, kept true by seven scheduled Claude
-            routines: meetings file themselves, durable facts are promoted into the page that owns
-            them, and stale pages are made to admit it.</p>
-          <div class="card__foot"><span>MCP</span><span>Scheduled agents</span></div>
-          <span class="card__more">Know more<i aria-hidden="true">→</i></span>
-        </a>
-        </div>
-        <div class="carousel__slide">
-        <a class="card card--link reveal" href="/tabiya/">
-          <div class="card__top">
-            <img class="card__mark" src="/assets/tabiya/tabiya-mark.svg" alt="" width="18" height="18" />
-            <span class="card__kicker">Chess · AWS</span>
-          </div>
-          <h3>Tabiya</h3>
-          <p>A chess coach that explains every move in plain English — and my first build on AWS.
-            A serverless pipeline downloads my games, analyses them with Stockfish and writes a
-            report the browser reads straight from S3.</p>
-          <div class="card__foot"><span>Lambda</span><span>S3 · CloudFront</span></div>
-          <span class="card__more">Know more<i aria-hidden="true">→</i></span>
-        </a>
-        </div>
-        </div>
-        <div class="carousel__nav">
-          <button class="carousel__btn liquid-glass" type="button" data-dir="-1" aria-label="Previous project">←</button>
-          <div class="carousel__dots" aria-hidden="true"></div>
-          <button class="carousel__btn liquid-glass" type="button" data-dir="1" aria-label="Next project">→</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- SKILLS -->
-    <section class="section section--skills" id="skills">
-      <div class="section__label reveal"><span>06</span><em>Toolkit</em><i class="rule"></i></div>
-      <div class="skills">
-        <div class="skill skill--wide reveal">
-          <h4>Agentic AI</h4>
-          <ul class="chips" data-stagger>
-            <li class="chip"><i class="ic" data-icon="flask"></i><span>Evals &amp; test sets</span></li>
-            <li class="chip"><i class="ic" data-icon="nodes"></i><span>Tracing &amp; observability</span></li>
-            <li class="chip"><i class="ic" data-icon="flag"></i><span>Mandates &amp; permissions</span></li>
-            <li class="chip"><i class="ic" data-icon="shield"></i><span>Guardrails &amp; refusals</span></li>
-            <li class="chip"><i class="ic" data-icon="plug"></i><span>MCP servers &amp; tools</span></li>
-            <li class="chip"><i class="ic" data-icon="board"></i><span>Agent routing &amp; handover</span></li>
-            <li class="chip"><i class="ic" data-icon="message"></i><span>Context engineering</span></li>
-            <li class="chip"><i class="ic" data-icon="check"></i><span>LLM-as-judge</span></li>
-            <li class="chip"><i class="ic" data-icon="eye"></i><span>Human-in-the-loop</span></li>
-            <li class="chip"><i class="ic" data-icon="anthropic"></i><span>Skills &amp; agent loops</span></li>
-          </ul>
-        </div>
-        <div class="skill reveal">
-          <h4>AI-assisted building</h4>
-          <ul class="chips" data-stagger>
-            <li class="chip"><i class="ic" data-icon="anthropic"></i><span>Claude Code</span></li>
-            <li class="chip"><i class="ic" data-icon="cursor"></i><span>Cursor</span></li>
-            <li class="chip"><i class="ic" data-icon="heart"></i><span>Lovable</span></li>
-            <li class="chip"><i class="ic" data-icon="clock"></i><span>Scheduled agents</span></li>
-            <li class="chip"><i class="ic" data-icon="play"></i><span>Video with HyperFrames</span></li>
-          </ul>
-        </div>
-        <div class="skill reveal">
-          <h4>Data &amp; experimentation</h4>
-          <ul class="chips" data-stagger>
-            <li class="chip"><i class="ic" data-icon="sql"></i><span>SQL</span></li>
-            <li class="chip"><i class="ic" data-icon="googleanalytics"></i><span>GA4</span></li>
-            <li class="chip"><i class="ic" data-icon="flask"></i><span>A/B &amp; fake-door</span></li>
-            <li class="chip"><i class="ic" data-icon="maze"></i><span>Maze</span></li>
-            <li class="chip"><i class="ic" data-icon="eye"></i><span>Usability testing</span></li>
-          </ul>
-        </div>
-        <div class="skill reveal">
-          <h4>Delivery &amp; technical</h4>
-          <ul class="chips" data-stagger>
-            <li class="chip"><i class="ic" data-icon="jira"></i><span>Jira</span></li>
-            <li class="chip"><i class="ic" data-icon="atlassian"></i><span>Atlassian</span></li>
-            <li class="chip"><i class="ic" data-icon="graphql"></i><span>GraphQL</span></li>
-            <li class="chip"><i class="ic" data-icon="flag"></i><span>LaunchDarkly</span></li>
-            <li class="chip"><i class="ic" data-icon="newrelic"></i><span>New Relic · SLIs/SLOs</span></li>
-            <li class="chip"><i class="ic" data-icon="postman"></i><span>Postman</span></li>
-            <li class="chip"><i class="ic" data-icon="nodes"></i><span>Event-driven &amp; microservices</span></li>
-            <li class="chip"><i class="ic" data-icon="board"></i><span>Sprints &amp; kanban</span></li>
-          </ul>
-        </div>
-        <div class="skill reveal">
-          <h4>CRM &amp; GTM</h4>
-          <ul class="chips" data-stagger>
-            <li class="chip"><i class="ic" data-icon="message"></i><span>Braze</span></li>
-            <li class="chip"><i class="ic" data-icon="intercom"></i><span>Intercom</span></li>
-            <li class="chip"><i class="ic" data-icon="globe"></i><span>5 markets</span></li>
-          </ul>
-        </div>
-      </div>
-      <div class="edu">
-        <div class="edu__block reveal">
-          <span class="edu__cap"><i class="ic" data-icon="cap"></i> MSc · Industrial Engineering &amp; Management · 2021–2023</span>
-          <div class="unis">
-            <div class="uni">
-              <i class="ic logo logo--uni" data-icon="minho"></i>
-              <div><h4>University of Minho</h4><span>Braga, Portugal</span></div>
-            </div>
-            <div class="uni">
-              <i class="ic logo logo--uni" data-icon="tugraz"></i>
-              <div><h4>TU Graz</h4><span>Graz, Austria</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="edu__block reveal">
-          <span class="edu__cap">Languages</span>
-          <div class="langs">
-            <div class="lang">
-              <i class="ic ic--lg" data-icon="ptflag"></i>
-              <div><h4>Portuguese</h4><span>Native</span></div>
-            </div>
-            <div class="lang">
-              <i class="ic ic--lg" data-icon="enflag"></i>
-              <div><h4>English</h4><span>C2 · Proficient</span></div>
-            </div>
-          </div>
+    <!-- PROJECTS -->
+    <section class="section" id="projects">
+      <div class="wrap">
+        <header class="head">
+          <p class="meta rv"><b>04</b> Projects</p>
+          <h2 class="rv">Things I built myself, <em>from idea to working product.</em></h2>
+        </header>
+        <div class="projects">
+          <a class="project rv" href="/pm-os/">
+            <span class="meta">Knowledge · Scheduled agents</span>
+            <h3>PM-OS</h3>
+            <p>A knowledge base my team's answers live in, kept true by seven scheduled Claude
+              routines: meetings file themselves and stale pages are made to admit it.</p>
+            <span class="project__go">Read more <i aria-hidden="true">→</i></span>
+          </a>
+          <a class="project rv" href="/team-context/">
+            <span class="meta">MCP · Python</span>
+            <h3>Team-context MCP</h3>
+            <p>A read-only MCP server that lets the company's internal AI assistant answer
+              stakeholders' questions about my team's work — served from a laptop through a tunnel.</p>
+            <span class="project__go">Read more <i aria-hidden="true">→</i></span>
+          </a>
+          <a class="project rv" href="https://joaosfvaz.github.io/portugal-explicado/" target="_blank" rel="noopener">
+            <span class="meta">Civic · Next.js · Open data</span>
+            <h3>Portugal Explicado</h3>
+            <p>Taxes, Parliament, laws and the economy of Portugal in plain Portuguese — every number
+              linked to an official source, with open data imported every day.</p>
+            <span class="project__go">Visit the site <i aria-hidden="true">↗</i></span>
+          </a>
+          <a class="project rv" href="/tabiya/">
+            <span class="meta">Chess · AWS serverless</span>
+            <h3>Tabiya</h3>
+            <p>A chess coach that explains every move in plain English: a serverless pipeline
+              downloads my games, analyses them with Stockfish and writes a report.</p>
+            <span class="project__go">Read more <i aria-hidden="true">→</i></span>
+          </a>
         </div>
       </div>
     </section>
 
     <!-- CONTACT -->
     <section class="section section--contact" id="contact">
-      <div class="section__label reveal"><span>07</span><em>Contact</em><i class="rule"></i></div>
-      <h2 class="contact__title">
-        <span class="hero__line"><span class="hero__line-in" data-split>Let's build something</span></span>
-        <span class="hero__line hero__line--accent"><span class="hero__line-in" data-split>worth shipping.</span></span>
-      </h2>
-      <div class="contact__links">
-        <a href="mailto:joaosfvaz@gmail.com" class="contact__link reveal">
-          <span class="contact__link-label">Email</span>
-          <span class="contact__link-val">joaosfvaz@gmail.com</span>
-          <span class="contact__link-arrow" aria-hidden="true">→</span>
-        </a>
-        <a href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener" class="contact__link reveal">
-          <span class="contact__link-label">LinkedIn</span>
-          <span class="contact__link-val">in/joaovaz00</span>
-          <span class="contact__link-arrow" aria-hidden="true">→</span>
-        </a>
+      <div class="wrap">
+        <p class="meta rv"><b>05</b> Contact</p>
+        <h2 class="contact__title rv">Let's build something <em>worth shipping.</em></h2>
+        <div class="contact__rows">
+          <a class="contact__row rv" href="mailto:joaosfvaz@gmail.com"><span class="meta">Email</span><strong>joaosfvaz@gmail.com</strong><i aria-hidden="true">→</i></a>
+          <a class="contact__row rv" href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener"><span class="meta">LinkedIn</span><strong>in/joaovaz00</strong><i aria-hidden="true">↗</i></a>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="foot wrap">
     <span>© 2026 João Vaz</span>
     <span>Hand-built · no framework · a little AI</span>
   </footer>
 
-  <script src="/js/icons.js?v=2026-10-22c"></script>
-  <script src="/js/scroll.js?v=2026-10-22c"></script>
-  <script src="/js/scene.js?v=2026-10-22c"></script>
-  <script src="/js/ui.js?v=2026-10-22c"></script>
-  <script src="/js/carousel.js?v=2026-10-22c"></script>
+  <script src="/js/scroll.js?v=2026-10-22g"></script>
+  <script src="/js/home.js?v=2026-10-22g"></script>
 </body>
 </html>

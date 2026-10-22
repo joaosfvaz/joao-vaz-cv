@@ -193,3 +193,45 @@
   max-width: 760px;
 }
 .disclaimer b { color: var(--ink); font-weight: 600; }
+
+/* ==================================================================
+   Flat — the project pages follow the home page (home.css): no glass
+   scene, no blur on panes, hairline borders, Bricolage Grotesque for
+   display and Geist for text. Each page keeps its own accent trio.
+   ================================================================== */
+.page {
+  --bg: #0c0e13;
+  --bg-2: #151925;
+  --ink: #f3f4f7;
+  --ink-dim: #a7adbb;
+  --ink-faint: #687083;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-soft: rgba(255, 255, 255, 0.045);
+  --display: "Bricolage Grotesque", "Helvetica Neue", system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, monospace;
+  --glass-fill: transparent;
+  --glass-fill-hi: rgba(255, 255, 255, 0.03);
+  --glass-shine: none;
+  --glass-edge: var(--line);
+  --r: 10px;
+  --r-sm: 6px;
+  font-family: "Geist", "Helvetica Neue", system-ui, sans-serif;
+  background: var(--bg);
+}
+.page::before, .page .scene { display: none; }
+.page :is(.stat, .card, .skill, .edu__block, .contact__link, .selection, .diagram,
+.fact, .note, .takeaways li, .zone, .rule-row, .routines) {
+  background-image: none;
+  box-shadow: none;
+}
+.page .liquid-glass {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.page .liquid-glass::before { background: var(--line); }
+.page .nav { border-radius: 12px; }
+.page .nav.is-scrolled { background-color: rgba(12, 14, 19, 0.86); }
+.page :is(.nav__cta, .nav__icon, .nav__cta-fill) { border-radius: 6px; }
+.page .ticker { background: transparent; box-shadow: none; }
