@@ -50,7 +50,7 @@
         <span class="hero__line hero__line--accent"><span class="hero__line-in" data-split>lookup service.</span></span>
       </h1>
       <p class="proj__lede reveal">
-        An MCP server that lets <strong>Toqan</strong>, the company assistant at OLX, answer
+        An MCP server that lets <strong>the company's internal AI assistant</strong> answer
         stakeholders' questions about what my team is working on — served straight from my laptop
         through a free tunnel.
       </p>
@@ -74,12 +74,12 @@
     <!-- WHY -->
     <section class="section" id="why">
       <div class="section__label reveal"><span>01</span><em>Why</em><i class="rule"></i></div>
-      <p class="lead reveal">
+      <p class="lead" data-fill>
         Stakeholders ask the same question all week: <em>what is your team actually working on?</em>
-        Toqan can reach the tools the platform team connected, but it cannot see my team's context —
+        The assistant can reach the tools the platform team connected, but it cannot see my team's context —
         so every one of those questions came to me.
       </p>
-      <p class="lead reveal">
+      <p class="lead" data-fill>
         <strong>The edge of the platform is not the edge of what you can build.</strong> MCP is the
         seam. Anything I can reach, the assistant can reach — so I put a small server in front of my
         team's pages and let people ask it instead of me.
@@ -89,21 +89,21 @@
     <!-- HOW -->
     <section class="section" id="how">
       <div class="section__label reveal"><span>02</span><em>How it works</em><i class="rule"></i></div>
-      <p class="lead reveal">
+      <p class="lead" data-fill>
         No hosting and no deployment. The server runs on my laptop, and a free
-        <strong>ngrok</strong> tunnel gives it a public address that Toqan can call as a connector.
+        <strong>ngrok</strong> tunnel gives it a public address that the assistant can call as a connector.
       </p>
 
       <figure class="diagram reveal">
         <svg viewBox="0 0 880 266" role="img" aria-labelledby="gTitle gDesc">
           <title id="gTitle">How it works</title>
-          <desc id="gDesc">A colleague asks Toqan. Toqan calls a free ngrok tunnel, which reaches a
+          <desc id="gDesc">A colleague asks the company assistant. The assistant calls a free ngrok tunnel, which reaches a
             read-only MCP server on a laptop. The server answers from the team's curated pages.
             Everything else is never exposed.</desc>
 
           <g class="d-box d-box--out">
             <rect x="16" y="50" width="186" height="76" />
-            <text class="d-t" x="109" y="82">Toqan</text>
+            <text class="d-t" x="109" y="82">AI assistant</text>
             <text class="d-s" x="109" y="103">a colleague asks</text>
           </g>
           <g class="d-flow"><path d="M202 88h44" /></g>

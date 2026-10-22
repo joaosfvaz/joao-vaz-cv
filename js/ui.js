@@ -192,6 +192,91 @@
   }
 
   /* ------------------------------------------------------------------
+   * Reading fill
+   * A lead paragraph is split into words, and the reading position
+   * writes `--lit` — how far into the paragraph the reader is. CSS
+   * turns that number into each word's colour. The split only runs
+   * with motion allowed; under reduced motion the paragraph keeps its
+   * own markup and its own colour, and without scripts nothing here
+   * touches it at all.
+   * ---------------------------------------------------------------- */
+  const fillEls = Array.prototype.slice.call(document.querySelectorAll("[data-fill]"));
+
+  if (!reduced && fillEls.length) {
+    /* walk the paragraph rather than its text: an <em> or a <strong>
+       keeps its element, so it keeps its accent colour */
+    function splitWords(node, count) {
+      Array.prototype.slice.call(node.childNodes).forEach((kid) => {
+        if (kid.nodeType === 3) {
+          const parts = kid.textContent.split(/(\s+)/);
+          const frag = document.createDocumentFragment();
+          parts.forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(part));
+              return;
+            }
+            const w = document.createElement("span");
+            w.className = "fw";
+            w.style.setProperty("--i", String(count.n++));
+            w.textContent = part;
+            frag.appendChild(w);
+          });
+          node.replaceChild(frag, kid);
+        } else if (kid.nodeType === 1) {
+          splitWords(kid, count);
+        }
+      });
+    }
+
+    const words = new Map();
+    fillEls.forEach((el) => {
+      const count = { n: 0 };
+      splitWords(el, count);
+      el.classList.add("fill");
+      words.set(el, Math.max(1, count.n));
+    });
+
+    let marks = [];
+    S.onMeasure(() => {
+      marks = fillEls.map((el) => {
+        const r = el.getBoundingClientRect();
+        const top = r.top + window.scrollY;
+        return { el: el, top: top, bottom: top + r.height, n: words.get(el), lit: -1 };
+      });
+    });
+
+    S.onFrame((st) => {
+      for (let i = 0; i < marks.length; i++) {
+        const m = marks[i];
+        /* the paragraph fills between its first line arriving low in
+           the window and its last line reaching the middle of it */
+        const from = m.top - st.vh * 0.88;
+        const to = Math.max(m.bottom - st.vh * 0.46, from + 1);
+        /* the few words of overshoot land the last one before the end */
+        const lit = S.invLerp(from, to, st.y) * (m.n + 5);
+        if (Math.abs(lit - m.lit) < 0.02) continue;
+        m.lit = lit;
+        m.el.style.setProperty("--lit", lit.toFixed(2));
+      }
+    });
+
+    /* last resort, the same one the reveals take: a paragraph the loop
+       never reached would sit dim, and dim copy is worse than copy
+       that never filled. A page opened in a background tab is not
+       that case — the frame loop is only paused there, and it writes
+       the first value as soon as the tab is looked at. */
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        if (document.hidden) return;
+        fillEls.forEach((el) => {
+          if (!el.style.getPropertyValue("--lit")) el.classList.add("is-done");
+        });
+      }, 3000);
+    });
+  }
+
+  /* ------------------------------------------------------------------
    * Marquee
    * The track is duplicated once and translated by exactly half its
    * width, so the loop is seamless at any content length, and the
@@ -224,6 +309,32 @@
     hover.textContent = label;
     span.appendChild(base);
     span.appendChild(hover);
+  });
+
+  /* ------------------------------------------------------------------
+   * Call to action — the arrow fill
+   * Built from the button's own label, the way the nav labels above
+   * are. The copy the fill shows is marked hidden, so the link is
+   * never announced twice, and a page without scripts keeps the plain
+   * glass pill.
+   * ---------------------------------------------------------------- */
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  document.querySelectorAll(".nav__cta").forEach((cta) => {
+    const label = cta.querySelector("span");
+    if (!label) return;
+    const fill = document.createElement("i");
+    fill.className = "nav__cta-fill";
+    fill.setAttribute("aria-hidden", "true");
+    fill.appendChild(document.createTextNode(label.textContent));
+    const svg = document.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("class", "nav__cta-arrow");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    const path = document.createElementNS(SVG_NS, "path");
+    path.setAttribute("d", "M5 12h14M13 6l6 6-6 6");
+    svg.appendChild(path);
+    fill.appendChild(svg);
+    cta.appendChild(fill);
+    cta.classList.add("has-fill");
   });
 
   /* ------------------------------------------------------------------
@@ -307,8 +418,16 @@
    * ---------------------------------------------------------------- */
   const heroInner = document.querySelector(".hero__inner");
   if (!reduced && heroInner) {
+    /* on a phone the stacked hero is taller than the window: the fade
+       waits until its foot is on screen, and ends as it leaves */
+    let from = 0, to = 0;
+    S.onMeasure((st) => {
+      const h = heroInner.parentElement.offsetHeight;
+      from = Math.max(0, h - st.vh);
+      to = Math.max(st.vh, h) * 0.95;
+    });
     S.onFrame((st) => {
-      const p = clamp(st.y / (st.vh * 0.95), 0, 1);
+      const p = to > from ? clamp((st.y - from) / (to - from), 0, 1) : clamp(st.y / (st.vh * 0.95), 0, 1);
       const e = S.smoothstep(p);
       if (heroInner) {
         heroInner.style.transform = "translate3d(0," + (e * -64).toFixed(1) + "px,0)";
@@ -316,6 +435,48 @@
       }
     });
   }
+
+  /* ------------------------------------------------------------------
+   * Portrait tilt — the slab leans towards the pointer anywhere over
+   * the hero. Only two numbers are written, --rx and --ry in degrees;
+   * the CSS turns them into the lean, the parallax of the photo and the
+   * glare. A fine pointer only: a phone keeps the slab still.
+   * ---------------------------------------------------------------- */
+  const tilt = document.querySelector("[data-tilt]");
+  const hero = document.querySelector(".hero");
+  if (!reduced && tilt && hero && window.matchMedia("(pointer: fine)").matches) {
+    let rx = 0, ry = 0, tx = 0, ty = 0, running = false;
+    function step() {
+      rx += (tx - rx) * 0.12;
+      ry += (ty - ry) * 0.12;
+      tilt.style.setProperty("--rx", rx.toFixed(2));
+      tilt.style.setProperty("--ry", ry.toFixed(2));
+      if (Math.abs(tx - rx) > 0.01 || Math.abs(ty - ry) > 0.01) requestAnimationFrame(step);
+      else running = false;
+    }
+    function aim(x, y) {
+      tx = x;
+      ty = y;
+      if (!running) { running = true; requestAnimationFrame(step); }
+    }
+    hero.addEventListener("pointermove", (ev) => {
+      const r = tilt.getBoundingClientRect();
+      const dx = (ev.clientX - (r.left + r.width / 2)) / window.innerWidth;
+      const dy = (ev.clientY - (r.top + r.height / 2)) / window.innerHeight;
+      aim(clamp(-dy * 16, -9, 9), clamp(dx * 16, -9, 9));
+    });
+    hero.addEventListener("pointerleave", () => aim(0, 0));
+  }
+
+  /* Shipped tiles: a soft light follows the pointer across each one.
+     Two custom properties per move; CSS draws the light. */
+  if (!reduced) document.querySelectorAll(".tile").forEach((tile) => {
+    tile.addEventListener("pointermove", (ev) => {
+      const r = tile.getBoundingClientRect();
+      tile.style.setProperty("--mx", (ev.clientX - r.left).toFixed(0) + "px");
+      tile.style.setProperty("--my", (ev.clientY - r.top).toFixed(0) + "px");
+    });
+  });
 
   /* ------------------------------------------------------------------
    * Hero call to action
@@ -480,24 +641,92 @@
   }
 
   /* ------------------------------------------------------------------
-   * Active nav link
+   * Nav tabs — the magnet
+   * One highlight for the whole row: it follows the pointer over the
+   * tabs, and rests on the section being read when the pointer is
+   * away. The section comes from the one scroll driver, like every
+   * other effect here. An IntersectionObserver used to do this, and a
+   * section taller than the window never reached its threshold — so
+   * the nav could sit on the wrong link for a whole screen.
    * ---------------------------------------------------------------- */
-  const sections = document.querySelectorAll("section[id], header[id]");
-  const navLinks = document.querySelectorAll(".nav__links a");
-  const linkFor = (id) =>
-    Array.prototype.slice.call(navLinks).find((a) => a.getAttribute("href") === "#" + id);
-  const sio = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        navLinks.forEach((a) => a.classList.remove("is-active"));
-        const link = linkFor(entry.target.id);
-        if (link) link.classList.add("is-active");
+  const tabRow = document.querySelector("[data-tabs]");
+  const tabs = tabRow
+    ? Array.prototype.slice.call(tabRow.querySelectorAll('a[href^="#"]'))
+    : [];
+
+  if (tabRow && tabs.length) {
+    const magnet = document.createElement("i");
+    magnet.className = "nav__magnet";
+    magnet.setAttribute("aria-hidden", "true");
+    tabRow.insertBefore(magnet, tabRow.firstChild);
+
+    let boxes = [];   /* each tab's place inside the row */
+    let spans = [];   /* the stretch of page each tab stands for */
+    let active = -1;  /* the tab for the section being read */
+    let hovered = -1; /* the tab under the pointer */
+
+    function place(i, anchored) {
+      if (i < 0 || !boxes[i]) {
+        magnet.classList.remove("is-on");
+        return;
+      }
+      magnet.style.setProperty("--x", boxes[i].x + "px");
+      magnet.style.setProperty("--w", boxes[i].w + "px");
+      magnet.classList.add("is-on");
+      magnet.classList.toggle("is-anchored", anchored);
+    }
+
+    /* the pointer wins while it is over the row; the hairline only
+       shows when the highlight is back on the section being read */
+    function paint() {
+      place(hovered >= 0 ? hovered : active, hovered < 0);
+    }
+
+    S.onMeasure(() => {
+      const row = tabRow.getBoundingClientRect();
+      boxes = tabs.map((a) => {
+        const r = a.getBoundingClientRect();
+        return { x: Math.round(r.left - row.left), w: Math.round(r.width) };
       });
-    },
-    { threshold: 0.5 }
-  );
-  sections.forEach((s) => sio.observe(s));
+      spans = tabs.map((a) => {
+        const el = document.getElementById(a.getAttribute("href").slice(1));
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        const top = r.top + window.scrollY;
+        return { top: top, bottom: top + r.height };
+      });
+      paint();
+    });
+
+    /* the section under the reading line, a third of the way down the
+       window. Both clocks call this: the scroll event carries it under
+       reduced motion, where the frame loop never runs, and the frame
+       loop carries it when a scroll event is coalesced away. */
+    function sync(st) {
+      const line = st.y + st.vh * 0.34;
+      let next = -1;
+      for (let i = 0; i < spans.length; i++) {
+        const sp = spans[i];
+        if (sp && line >= sp.top && line < sp.bottom) {
+          next = i;
+          break;
+        }
+      }
+      if (next === active) return;
+      active = next;
+      tabs.forEach((a, i) => a.classList.toggle("is-active", i === active));
+      paint();
+    }
+    S.onScroll(sync);
+    S.onFrame(sync);
+
+    tabs.forEach((a, i) => {
+      a.addEventListener("pointerenter", () => { hovered = i; paint(); });
+      a.addEventListener("focus", () => { hovered = i; paint(); });
+      a.addEventListener("blur", () => { hovered = -1; paint(); });
+    });
+    tabRow.addEventListener("pointerleave", () => { hovered = -1; paint(); });
+  }
 
   /* metrics shift when the webfonts swap in */
   if (document.fonts && document.fonts.ready) {

@@ -36,6 +36,10 @@
     board: '<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9.2 4.5v15M14.8 4.5v15"/><path d="M5.4 8h2M11 8h2M16.6 8h2"/>',
     eye: '<path d="M2.5 12S6 6.2 12 6.2 21.5 12 21.5 12S18 17.8 12 17.8 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.6"/>',
     globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.2 2.3 3.4 5.3 3.4 8.5S14.2 18.2 12 20.5c-2.2-2.3-3.4-5.3-3.4-8.5S9.8 5.8 12 3.5Z"/>',
+    check: '<circle cx="12" cy="12" r="8.5"/><path d="M8 12.4l2.7 2.7L16.2 9.4"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    play: '<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M10.5 9.3v5.4l4.4-2.7Z"/>',
+    shield: '<path d="M12 3.5 19 6v5.6c0 4.3-3 7.4-7 8.9-4-1.5-7-4.6-7-8.9V6Z"/><path d="M9 12l2.2 2.2L15.4 10"/>',
   };
 
   // Rich badges (own colours / text / viewBox).

@@ -10,6 +10,12 @@ springy staggers) and the typographic discipline from [wodniack.dev](https://wod
 (display scale, numbered section rules, a ticker strip). The glass — the pill nav, the buttons, the
 hero — came later.
 
+Three components are ported from [ObsidianUI](https://www.obsidianui.dev/components) (MIT): the
+nav magnet, the reading fill and the arrow-fill call to action. ObsidianUI ships React, Tailwind
+and Motion; this site has no framework and no build step, so the three are rewritten in plain CSS
+and in `js/ui.js`, against `window.Scroll` like every other effect here. The idea is theirs, the
+code is not.
+
 ## Highlights
 
 - **The liquid scene** — soft accent light drifting behind two wide glass bands that run off both
@@ -26,6 +32,19 @@ hero — came later.
   - **Reduced motion:** nothing runs and the scene holds its first frame.
 - **Reveals** — glass settles out of a blur as the reading position reaches it, and panes catch a
   sweep of light as they land.
+- **The nav magnet** — one highlight slides between the five section links. It follows the pointer
+  over the row, and rests on the section being read when the pointer leaves — with an accent
+  hairline under the label, so "where am I" and "where would this take me" never look the same.
+  The section comes from the one scroll driver. An `IntersectionObserver` used to do that job, and
+  a section taller than the window never reached its 0.5 threshold, so the nav could sit on the
+  wrong link for a whole screen.
+- **The reading fill** — a lead paragraph is split into words, and the reading position fills them:
+  dim ahead of the reader, an accent beat as the line arrives, the paragraph's own colour behind
+  it. The colour is one `color-mix` on `currentColor`, so a word inside an accented `<em>` fills to
+  that accent and not to ink. `js/ui.js` writes one number, `--lit`; CSS does the rest.
+- **The arrow-fill call to action** — the nav button carries a light disc with an arrow at its
+  right edge; on hover the disc opens across the whole pill and the label repeats in the dark ink
+  of the page. Pure CSS behind one layer that `js/ui.js` builds from the button's own label.
 - **Get in touch** — the hero button opens into a pill that types the email address in, one
   character every 60ms. The arrow copies it and the pill confirms; four seconds later the button
   comes back. There is no form and nothing is collected. Without the script it is a link to the
@@ -45,6 +64,24 @@ hero — came later.
   a side project brings it to the centre; only the centre one follows its link. It opens on the
   slide marked `data-start`. Without the script it is a plain sideways row; under reduced motion it
   still snaps but nothing turns or grows.
+- **The hero slab** — the hero is split: the name, a one-line pitch and the call to action on the
+  left, a tall glass-rimmed portrait on the right (stacked above the name on a phone). A conic halo
+  of the three accents turns slowly behind it. On a fine pointer the slab leans towards the cursor
+  anywhere over the hero: `js/ui.js` eases two numbers, `--rx` and `--ry`, and CSS turns them into
+  the lean, a small parallax of the photo inside the frame and a glare that moves against it. Three
+  facts float on the slab's edges, each on its own clock. On a phone the stacked hero is taller
+  than the window, so the copy only starts to fade once the hero's foot is on screen.
+- **Shipped** — a bento of launched features, each tile with what it is and when it shipped. Only
+  launched or piloted work is here. A soft light follows the pointer across each tile (`--mx`,
+  `--my`). The AI assistant tile is the wide one and wears the violet light.
+- **The trace** — the AI section plays an illustrative agent run once it lands: the dealer's
+  question, then each span draws its bar on a shared timeline (route, two tool calls, a mandate
+  check, the answer), then the reply and its eval results. It is CSS only, keyed on the `.is-in`
+  class the reveal already sets, and the markup is the finished trace. It is labelled as
+  illustrative: it shows the shape of the runs, not real data. Beside it, the concepts I work in —
+  evals, traces, mandates, automation classes, MCP tools, context, human review — each in a pane.
+- **The accelerator gallery** — three photos under the Prosus AI Accelerator entry, desaturated a
+  little until hovered.
 - **Fail-open reveals** — the document is written in its finished state. An inline script in the
   `<head>` adds `.js` to `<html>`, and that class is the only thing that hides anything; `js/ui.js`
   puts it back as the reading position arrives. A reveal that never fires shows readable copy
@@ -187,6 +224,11 @@ All copy lives in `index.html`. Accent colours are CSS variables at the top of `
   how dark the scene gets under the copy is `VEIL_TO`.
 - **The light** — the `drift1`–`drift4` keyframes on `.aura__blob--*`.
 - **The ticker** — the pixels-per-second divisor in the marquee block of `js/ui.js`.
+- **The reading fill** — the window it fills over (`0.88` and `0.46` of the viewport height) and
+  the word overshoot (`+ 5`) in the reading-fill block of `js/ui.js`; how sharp each word snaps is
+  the `2.4` in `.js .fill .fw`, and how dark it starts is `--fill-dim`.
+- **The nav magnet** — the reading line it tests, `0.34` of the viewport height, in the nav-tabs
+  block of `js/ui.js`; the slide is the `--spring` transition on `.nav__magnet`.
 - **The PM-OS graph** — the zone table at the top of `js/graph.js` (how many nodes each zone has
   and how far out it sits), and the beat interval at the bottom. It runs only while it is on
   screen and never in a hidden tab.

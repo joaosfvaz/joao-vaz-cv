@@ -1,3 +1,8 @@
 .DS_Store
 node_modules/
 .claude/
+
+# Avatar working files — sources and reference, never published
+avatar/reference/
+avatar/render/
+avatar/*.blend1
