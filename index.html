@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css?v=2026-10-22b" />
+  <link rel="stylesheet" href="/styles.css?v=2026-10-22c" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if this never runs. -->
   <script>document.documentElement.className += " js";</script>
@@ -36,7 +36,7 @@
     <div class="nav__links">
       <!-- One highlight slides between these five; js/ui.js builds it. -->
       <div class="nav__tabs" data-tabs>
-        <a href="#shipped"><span>Shipped</span></a>
+        <a href="#products"><span>Products</span></a>
         <a href="#ai"><span>AI</span></a>
         <a href="#work"><span>Experience</span></a>
         <a href="#building"><span>Building</span></a>
@@ -90,7 +90,7 @@
               </div>
               <span class="sr-only" aria-live="polite" data-cta-status></span>
             </div>
-            <a class="hero__link reveal" href="#shipped">See what I've shipped <i aria-hidden="true">↓</i></a>
+            <a class="hero__link reveal" href="#products">See the products <i aria-hidden="true">↓</i></a>
           </div>
         </div>
       </div>
@@ -151,77 +151,64 @@
       </div>
     </section>
 
-    <!-- SHIPPED -->
-    <!-- A bento of what reached dealers. Only launched work is here, and
-         each tile says when it shipped; the assistant is the wide one. -->
-    <section class="section section--shipped" id="shipped">
-      <div class="section__label reveal"><span>02</span><em>Shipped</em><i class="rule"></i></div>
-      <h2 class="section__title reveal">Features I helped bring <span>to dealers</span></h2>
+    <!-- PRODUCTS -->
+    <!-- A bento of the products I lead, each explained by what it does for
+         a dealer rather than by its name in the app. The wide tiles
+         alternate sides; the assistant leads. -->
+    <section class="section section--products" id="products">
+      <div class="section__label reveal"><span>02</span><em>Products</em><i class="rule"></i></div>
+      <h2 class="section__title reveal">The products I lead <span>for car dealers</span></h2>
+      <p class="section__intro reveal">Six products with one job: help a dealer buy the right cars,
+        price them well and sell them faster. I own the strategy and the roadmap across them, from
+        the data pipelines underneath to the screens dealers use.</p>
       <div class="bento">
         <article class="tile tile--wide tile--ai reveal">
-          <div class="tile__top"><span class="tile__tag"><i class="dot" aria-hidden="true"></i> Live in Poland</span><span class="tile__when">AI · 2026</span></div>
-          <h3>An AI assistant for car dealers</h3>
-          <p>A chat assistant in the dealer portal that answers questions about ad performance,
-            pricing and the market. I define what it may do in my domain, moved our pricing and
-            statistics data behind MCP tools it can call, and test it — test questions, evals and
-            trace reviews.</p>
+          <div class="tile__top"><span class="tile__tag"><i class="dot" aria-hidden="true"></i> AI assistant</span><span class="tile__when">Live in Poland</span></div>
+          <h3>An assistant dealers can ask anything</h3>
+          <p>A chat assistant inside the dealer's account that answers questions about their
+            listings, their prices and the market — in plain language, from the dealer's own data.
+            I define what it may do in my domain, put our pricing and performance data behind MCP
+            tools it can call, and test it with test questions, evals and trace reviews.</p>
           <ul class="tile__chips"><li>Agent specs</li><li>MCP tools</li><li>Evals</li><li>Traces</li></ul>
         </article>
         <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Pricing ML</span><span class="tile__when">2024 →</span></div>
-          <h3>Price evaluation &amp; time-to-sell</h3>
-          <p>The product side of two data-science models: a car's fair market price and its
-            expected time to sell, from its specs — shown to dealers on their own ads.</p>
+          <div class="tile__top"><span class="tile__tag">Machine learning</span></div>
+          <h3>Fair-price estimates</h3>
+          <p>A machine-learning estimate of what each car is worth from its specs, and how long cars
+            like it take to sell — shown next to the dealer's asking price, and behind the price
+            label buyers see.</p>
+          <ul class="tile__chips"><li>ML model</li><li>Price-to-market</li><li>Time to sell</li></ul>
         </article>
         <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Feedback loop</span><span class="tile__when">Jun 2026</span></div>
-          <h3>Price-estimate feedback</h3>
-          <p>Dealers rate the price estimate with a thumb; a thumbs-down asks why. I wrote the first
-            version of the code myself, so we learn where the model is wrong.</p>
+          <div class="tile__top"><span class="tile__tag">Analytics</span></div>
+          <h3>Listing performance</h3>
+          <p>Views, clicks, saves, messages and calls for every car and for the whole stock,
+            benchmarked against similar cars — the one analytics product every dealer gets, on every
+            plan.</p>
+          <ul class="tile__chips"><li>Funnel metrics</li><li>Benchmarks</li></ul>
+        </article>
+        <article class="tile tile--wide reveal">
+          <div class="tile__top"><span class="tile__tag">Market intelligence</span></div>
+          <h3>A live view of the car market</h3>
+          <p>Supply, demand, prices and selling speed for every segment of the market, down to the
+            individual competing listings in it — so a dealer can decide what to buy next and how to
+            price what is already on the lot.</p>
+          <ul class="tile__chips"><li>Supply &amp; demand</li><li>Days of supply</li><li>Competitor listings</li></ul>
         </article>
         <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Redesign</span><span class="tile__when">Jul 2026</span></div>
-          <h3>Market insights, rebuilt</h3>
-          <p>A full desktop and mobile redesign of the market table — demand, supply, prices and
-            days of supply for every car segment, with simpler filters.</p>
+          <div class="tile__top"><span class="tile__tag">Home screen</span></div>
+          <h3>The business at a glance</h3>
+          <p>The first screen a dealer sees: how the dealership is doing, the health of its stock and
+            alerts that lead straight to the cars that need action — across every branch of a group.</p>
+          <ul class="tile__chips"><li>Stock health</li><li>Alerts</li><li>Multi-branch</li></ul>
         </article>
-        <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">A/B tested</span><span class="tile__when">Jul 2026</span></div>
-          <h3>Market data on the dashboard</h3>
-          <p>A new entry point on the dealer dashboard, run as a non-inferiority test before it went
-            to everyone. Web engagement with market data roughly doubled at launch.</p>
-        </article>
-        <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Drill-down</span><span class="tile__when">Aug 2026</span></div>
-          <h3>Segment detail</h3>
-          <p>From one market segment straight to the live ads in it: price, mileage, version, days on
-            market and price-to-market, with sorting and filters in every market.</p>
-        </article>
-        <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Data trust</span><span class="tile__when">Aug 2026</span></div>
-          <h3>One source of truth for statistics</h3>
-          <p>Moved ad statistics to a new data source, so leads count the same in the product, in
-            sales reports, in BI and in the ROI calculator.</p>
-        </article>
-        <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag">Statistics</span><span class="tile__when">Apr 2026</span></div>
-          <h3>Promotion history on ad charts</h3>
-          <p>Dealers see when each paid promotion ran, right on the performance chart of the ad —
-            so they can tell what the money did.</p>
-        </article>
-        <article class="tile reveal">
-          <div class="tile__top"><span class="tile__tag"><i class="dot" aria-hidden="true"></i> Pilot</span><span class="tile__when">Oct 2026</span></div>
-          <h3>Multi-dealership dashboard</h3>
-          <p>One view across every branch of a dealer group, with a filter per dealership. In pilot
-            with the first group.</p>
-        </article>
-        <article class="tile tile--wide tile--code reveal">
-          <div class="tile__top"><span class="tile__tag">Hands-on</span><span class="tile__when">2026</span></div>
-          <h3>Code I shipped myself</h3>
-          <p>I don't only write the ticket. With AI coding tools I've taken my own changes through
-            code review into production — on price-to-market and cost-to-market logic in the backend,
-            and on the dealer web app.</p>
-          <ul class="tile__chips"><li>Claude Code</li><li>Go</li><li>TypeScript</li><li>Code review</li></ul>
+        <article class="tile tile--wide tile--wide-desk reveal">
+          <div class="tile__top"><span class="tile__tag">Next-best action</span></div>
+          <h3>Recommendations on every listing</h3>
+          <p>One concrete next step per car — renew it before it expires, raise an underpriced car
+            towards its market value, or give it more visibility — from an engine that combines the
+            signals of every product above.</p>
+          <ul class="tile__chips"><li>Pricing</li><li>Renewal</li><li>Visibility</li></ul>
         </article>
       </div>
     </section>
@@ -242,8 +229,8 @@
           <p class="trace__ask"><span>dealer</span>“Why isn't my Audi A4 getting leads?”</p>
           <ol class="trace__spans">
             <li style="--s:0;--w:14"><span class="trace__name">route → pricing &amp; performance agent</span><span class="trace__ms">38 ms</span></li>
-            <li style="--s:8;--w:30" class="is-tool"><span class="trace__name">tool · ad_statistics(ad)</span><span class="trace__ms">212 ms</span></li>
-            <li style="--s:10;--w:26" class="is-tool"><span class="trace__name">tool · price_evaluation(ad)</span><span class="trace__ms">187 ms</span></li>
+            <li style="--s:8;--w:30" class="is-tool"><span class="trace__name">tool · listing_performance(car)</span><span class="trace__ms">212 ms</span></li>
+            <li style="--s:10;--w:26" class="is-tool"><span class="trace__name">tool · fair_price(car)</span><span class="trace__ms">187 ms</span></li>
             <li style="--s:40;--w:6" class="is-check"><span class="trace__name">mandate · assist · read-only ✓</span><span class="trace__ms">2 ms</span></li>
             <li style="--s:46;--w:44"><span class="trace__name">answer · grounded in 2 tool results</span><span class="trace__ms">1.4 s</span></li>
           </ol>
@@ -582,10 +569,10 @@
     <span>Hand-built · no framework · a little AI</span>
   </footer>
 
-  <script src="/js/icons.js?v=2026-10-22b"></script>
-  <script src="/js/scroll.js?v=2026-10-22b"></script>
-  <script src="/js/scene.js?v=2026-10-22b"></script>
-  <script src="/js/ui.js?v=2026-10-22b"></script>
-  <script src="/js/carousel.js?v=2026-10-22b"></script>
+  <script src="/js/icons.js?v=2026-10-22c"></script>
+  <script src="/js/scroll.js?v=2026-10-22c"></script>
+  <script src="/js/scene.js?v=2026-10-22c"></script>
+  <script src="/js/ui.js?v=2026-10-22c"></script>
+  <script src="/js/carousel.js?v=2026-10-22c"></script>
 </body>
 </html>

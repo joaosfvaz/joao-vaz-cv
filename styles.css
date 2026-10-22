@@ -1547,6 +1547,13 @@ img { max-width: 100%; }
   max-width: 16em;
   margin-bottom: 48px;
 }
+.section__intro {
+  max-width: 40em;
+  font-size: clamp(15.5px, 1.4vw, 17.5px);
+  line-height: 1.6;
+  color: var(--ink-dim);
+  margin: -24px 0 44px;
+}
 .section__title span {
   background: linear-gradient(90deg, var(--accent), var(--accent-2) 60%, var(--accent-3));
   -webkit-background-clip: text;
@@ -1554,7 +1561,7 @@ img { max-width: 100%; }
   color: transparent;
 }
 
-/* ---------- Shipped — the bento ---------- */
+/* ---------- Products — the bento ---------- */
 .bento {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1630,10 +1637,19 @@ img { max-width: 100%; }
 .tile--ai .tile__tag { color: var(--accent-2); }
 .tile--ai h3 { font-size: clamp(24px, 2.6vw, 32px); }
 .tile--ai p { font-size: 15.5px; max-width: 36em; }
-.tile--code .tile__tag { color: var(--accent); }
-.tile--code .tile__chips li { border-color: rgba(110, 168, 254, 0.35); background: rgba(110, 168, 254, 0.08); }
 .tile__chips { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 22px; }
-.tile__chips li {
+/* chips on the plain tiles stay quiet; only the assistant's are lit */
+.tile:not(.tile--ai) .tile__chips li {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  color: var(--ink-faint);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+}
+.tile--ai .tile__chips li {
   font-family: var(--mono);
   font-size: 11px;
   letter-spacing: 0.06em;
@@ -1832,6 +1848,8 @@ img { max-width: 100%; }
   .carousel__track { padding-inline: calc((100cqi - var(--slide)) / 2); }
   .skills { grid-template-columns: 1fr; }
   .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* two columns: only the assistant and the market tile stay wide */
+  .tile--wide-desk { grid-column: auto; }
   .ai { grid-template-columns: 1fr; }
   .trace { position: relative; top: auto; }
   .edu { grid-template-columns: 1fr; }

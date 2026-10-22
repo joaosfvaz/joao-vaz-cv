@@ -11,7 +11,7 @@
   "use strict";
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const SECTION_IDS = ["top", "about", "shipped", "ai", "work", "building", "skills", "contact"];
+  const SECTION_IDS = ["top", "about", "products", "ai", "work", "building", "skills", "contact"];
 
   const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
   const lerp = (a, b, t) => a + (b - a) * t;

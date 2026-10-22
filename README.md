@@ -71,9 +71,10 @@ code is not.
   the lean, a small parallax of the photo inside the frame and a glare that moves against it. Three
   facts float on the slab's edges, each on its own clock. On a phone the stacked hero is taller
   than the window, so the copy only starts to fade once the hero's foot is on screen.
-- **Shipped** — a bento of launched features, each tile with what it is and when it shipped. Only
-  launched or piloted work is here. A soft light follows the pointer across each tile (`--mx`,
-  `--my`). The AI assistant tile is the wide one and wears the violet light.
+- **Products** — a bento of the six products I lead, each explained by what it does for a dealer
+  rather than by its name in the app. The wide tiles alternate sides (on two columns only the
+  assistant and the market tile stay wide). A soft light follows the pointer across each tile
+  (`--mx`, `--my`). The AI assistant tile leads and wears the violet light.
 - **The trace** — the AI section plays an illustrative agent run once it lands: the dealer's
   question, then each span draws its bar on a shared timeline (route, two tool calls, a mandate
   check, the answer), then the reply and its eval results. It is CSS only, keyed on the `.is-in`

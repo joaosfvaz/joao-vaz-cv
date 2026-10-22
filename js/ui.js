@@ -468,7 +468,7 @@
     hero.addEventListener("pointerleave", () => aim(0, 0));
   }
 
-  /* Shipped tiles: a soft light follows the pointer across each one.
+  /* Product tiles: a soft light follows the pointer across each one.
      Two custom properties per move; CSS draws the light. */
   if (!reduced) document.querySelectorAll(".tile").forEach((tile) => {
     tile.addEventListener("pointermove", (ev) => {
