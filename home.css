@@ -26,6 +26,13 @@
   --accent-2: #ff7a3d;
   --on: #ffffff;
   --c: var(--accent);
+  /* faint fills and the floating bars, derived from the theme's own
+     colours so a theme only has to set the ones above */
+  --tint: color-mix(in srgb, var(--ink) 4%, transparent);
+  --tint-2: color-mix(in srgb, var(--ink) 8%, transparent);
+  --glass: color-mix(in srgb, var(--bg) 84%, transparent);
+  --glass-2: color-mix(in srgb, var(--surface) 94%, transparent);
+  color-scheme: dark;
   --display: "Bricolage Grotesque", "Helvetica Neue", system-ui, sans-serif;
   --sans: "Geist", "Helvetica Neue", system-ui, sans-serif;
   --mono: "Geist Mono", "SF Mono", ui-monospace, monospace;
@@ -35,9 +42,34 @@
   --wipe: cubic-bezier(0.7, 0, 0.2, 1);
 }
 
+/* the light theme: the same system on a warm paper ground. The accents
+   step down so text in them still reads on white. The head script sets
+   data-theme before the first paint — a saved choice, else the
+   system's; without scripts the page stays dark. */
+:root[data-theme="light"] {
+  --bg: #f6f5f1;
+  --surface: #ffffff;
+  --ink: #12151c;
+  --dim: #4b5262;
+  --faint: #8a909c;
+  --line: rgba(18, 21, 28, 0.1);
+  --line-2: rgba(18, 21, 28, 0.24);
+  --accent: #3461f0;
+  --accent-soft: #2a4fd0;
+  --accent-2: #ea5a12;
+  color-scheme: light;
+}
+/* a theme switch cross-fades the colours once, then lets go */
+.theme-fade, .theme-fade *, .theme-fade *::before, .theme-fade *::after {
+  transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, fill 0.4s ease, stroke 0.4s ease !important;
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { overflow-x: clip; scroll-padding-top: 72px; }
+/* --c is re-read on the body, where a project page sets its own
+   --accent; declared only on :root it would stay the home page's blue */
 body {
+  --c: var(--accent);
   font-family: var(--sans);
   font-size: 16px;
   line-height: 1.6;
@@ -46,7 +78,7 @@ body {
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
 }
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: var(--on); }
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
@@ -61,7 +93,7 @@ ul, ol { list-style: none; }
 .skip {
   position: fixed; top: 10px; left: 10px; z-index: 100;
   padding: 8px 14px; border-radius: 6px;
-  background: var(--accent); color: #fff; font-size: 14px;
+  background: var(--accent); color: var(--on); font-size: 14px;
   transform: translateY(-150%);
 }
 .skip:focus { transform: none; }
@@ -109,7 +141,7 @@ ul, ol { list-style: none; }
   align-items: center;
   gap: 32px;
   padding: 0 var(--gut);
-  background: rgba(13, 13, 12, 0.82);
+  background: var(--glass);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent;
@@ -139,6 +171,22 @@ ul, ol { list-style: none; }
   height: 2px; background: var(--accent);
   transform: scaleX(var(--p, 0)); transform-origin: 0 50%;
 }
+
+/* ---------- Theme switch ---------- */
+/* the icon is the theme you would switch to: a sun on dark, a moon on
+   light; one turns out as the other turns in */
+html:not(.js) .theme { display: none; }
+.theme { position: relative; }
+.theme svg {
+  position: absolute;
+  width: 17px; height: 17px;
+  fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  transition: transform 0.35s var(--ease), opacity 0.2s ease;
+}
+.theme__moon { opacity: 0; transform: rotate(-60deg) scale(0.6); }
+:root[data-theme="light"] .theme__sun { opacity: 0; transform: rotate(60deg) scale(0.6); }
+:root[data-theme="light"] .theme__moon { opacity: 1; transform: none; }
+.theme:active svg { transform: scale(0.9); }
 
 /* ---------- Section index (wide screens) ---------- */
 .rail {
@@ -189,7 +237,7 @@ ul, ol { list-style: none; }
   padding: 5px;
   border: 1px solid var(--line-2);
   border-radius: 12px;
-  background: rgba(21, 21, 20, 0.94);
+  background: var(--glass-2);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   transform: translateX(-50%);
@@ -374,7 +422,7 @@ ul, ol { list-style: none; }
   padding: 4px 10px;
   border-radius: 999px;
   color: var(--dim);
-  background: rgba(237, 235, 230, 0.07);
+  background: var(--tint-2);
 }
 /* tags stay grey; the open row's tag turns blue */
 .is-open .tag { color: var(--accent-soft); background: color-mix(in srgb, var(--accent) 14%, transparent); }
@@ -513,7 +561,7 @@ ul, ol { list-style: none; }
   border-bottom: 1px solid var(--line);
   font-size: 11px; color: var(--faint);
 }
-.trace__chrome i { width: 9px; height: 9px; border-radius: 50%; background: rgba(237, 235, 230, 0.16); }
+.trace__chrome i { width: 9px; height: 9px; border-radius: 50%; background: var(--line-2); }
 .trace__chrome span { margin-left: 10px; }
 .trace__asks { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 16px 0; }
 .trace__asks button {
@@ -569,7 +617,7 @@ ul, ol { list-style: none; }
   margin-top: 14px;
   padding: 12px 14px;
   border-radius: 6px;
-  background: rgba(237, 235, 230, 0.05);
+  background: var(--tint);
   font-size: 14.5px;
   line-height: 1.55;
 }
@@ -630,7 +678,7 @@ ul, ol { list-style: none; }
 .project:hover::before { clip-path: inset(0 0 0 0); }
 .project h3 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 3vw, 40px); line-height: 1; letter-spacing: -0.04em; margin: 28px 0 12px; }
 .project p { color: var(--dim); font-size: 15px; max-width: 30em; transition: color 0.35s ease; }
-.project:hover p, .project:hover .meta { color: rgba(255, 255, 255, 0.82); }
+.project:hover p, .project:hover .meta { color: color-mix(in srgb, var(--on) 82%, transparent); }
 .project .meta { transition: color 0.35s ease; }
 .project__go { margin-top: auto; padding-top: 28px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
 .project__go i { display: inline-block; font-style: normal; transition: transform 0.4s var(--ease); }

@@ -46,9 +46,27 @@ The movement is kept to a few places on purpose, so each one is noticed:
 - **Projects** — flat cards that fill with colour under the pointer (blue and orange in a
   checkerboard), wiped in from the bottom.
 
+## Light and dark
+
+Every page has a light and a dark theme, and a switch in the bar (a sun on dark, a moon on light).
+
+- **Before the first paint**, a small script in each page's `<head>` sets `data-theme` on `<html>`:
+  the visitor's saved choice (`localStorage`, key `theme`), else the system's
+  `prefers-color-scheme`. So there is no flash of the wrong theme. Without scripts the page stays
+  dark.
+- **The light theme** is one block of overrides in `home.css` (`:root[data-theme="light"]`): a warm
+  paper ground, dark ink, and the accents stepped down so text in them still reads on white. The
+  faint fills and the floating bars (`--tint`, `--tint-2`, `--glass`, `--glass-2`) are mixed from
+  `--ink`, `--bg` and `--surface`, so they follow the theme on their own. Each project page adds
+  its own light accents next to its dark ones; Tabiya also swaps its lockup for an ink-on-paper cut.
+- **The switch** (`js/home.js`) flips the attribute, saves the choice, updates the browser's
+  `theme-color`, cross-fades the colours once (`.theme-fade`, 0.4s) and fires a `themechange`
+  event. The dot field and the PM-OS graph listen for it and repaint in the new colours. Until the
+  visitor chooses, the page follows the system if it changes.
+
 ## Navigation
 
-- **The bar** — the name, four sections and Contact. The active section is underlined, and a
+- **The bar** — the name, four sections, the theme switch and Contact. The active section is underlined, and a
   hairline under the bar fills with the reading position.
 - **The section index** — on screens 1400px and wider, numbers 01–05 down the left edge, each with
   a line that fills as its section is read. Labels show on hover. It stays out of the hero.

@@ -11,5 +11,7 @@
   --accent-soft: #7ceec0;  /* accent text on a dark ground */
   --on: #0c0e13;           /* dark text on green, which is too light for white */
 }
+/* on paper the green steps down so text in it reads */
+:root[data-theme="light"] .page--mcp { --accent: #0f9f6e; --accent-soft: #0b7d56; --on: #ffffff; }
 
 .proj__title { font-size: clamp(36px, 6.4vw, 80px); }

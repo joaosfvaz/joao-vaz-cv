@@ -215,8 +215,16 @@
       const n = parseInt(hex.length === 3 ? hex.replace(/./g, "$&$&") : hex, 16);
       return [(n >> 16) & 255, (n >> 8) & 255, n & 255].join(", ");
     };
-    const POINTER = rgb("--accent");
-    const RIPPLE = rgb("--accent-2");
+    let POINTER = rgb("--accent");
+    let RIPPLE = rgb("--accent-2");
+    let INK = rgb("--ink");
+    /* a theme switch repaints the field in the new colours */
+    document.addEventListener("themechange", () => {
+      POINTER = rgb("--accent");
+      RIPPLE = rgb("--accent-2");
+      INK = rgb("--ink");
+      kick();
+    });
     const GAP = 26;
     const REACH = 170;
     let W = 0, H = 0, dots = [], raf = 0;
@@ -276,7 +284,7 @@
           lit.push(d);
         }
       }
-      ctx.fillStyle = "rgba(255, 255, 255, 0.12)";
+      ctx.fillStyle = "rgba(" + INK + ", 0.12)";
       ctx.fill();
       /* lit dots take colour: the accent under the pointer, the second
          colour in a ripple */
@@ -575,6 +583,44 @@
   }
   S.onScroll(sync);
   S.onMeasure((st) => sync(st));
+
+  /* ------------------------------------------------------------------
+   * Theme — light or dark. The head script set it before the first
+   * paint (a saved choice, else the system's). The switch flips it,
+   * remembers the choice and tells anything drawn on a canvas to
+   * repaint. Until the visitor chooses, the page follows the system.
+   * ---------------------------------------------------------------- */
+  const doc = document.documentElement;
+  const themeMeta = $('meta[name="theme-color"]');
+  const themeBtns = $$("[data-theme-toggle]");
+  let fadeTimer = 0;
+  function setTheme(t, fade) {
+    if (fade && !reduced) {
+      doc.classList.add("theme-fade");
+      clearTimeout(fadeTimer);
+      fadeTimer = setTimeout(() => doc.classList.remove("theme-fade"), 450);
+    }
+    doc.setAttribute("data-theme", t);
+    themeBtns.forEach((b) => {
+      b.setAttribute("aria-label", t === "light" ? "Switch to the dark theme" : "Switch to the light theme");
+    });
+    if (themeMeta) themeMeta.setAttribute("content", getComputedStyle(doc).getPropertyValue("--bg").trim());
+    document.dispatchEvent(new CustomEvent("themechange", { detail: t }));
+  }
+  setTheme(doc.getAttribute("data-theme") === "light" ? "light" : "dark", false);
+  themeBtns.forEach((b) => b.addEventListener("click", () => {
+    const next = doc.getAttribute("data-theme") === "light" ? "dark" : "light";
+    try { localStorage.setItem("theme", next); } catch (e) { /* private mode: the choice lasts this page */ }
+    setTheme(next, true);
+  }));
+  const systemLight = window.matchMedia("(prefers-color-scheme: light)");
+  if (systemLight.addEventListener) {
+    systemLight.addEventListener("change", () => {
+      let saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) { /* no storage: follow the system */ }
+      if (!saved) setTheme(systemLight.matches ? "light" : "dark", true);
+    });
+  }
 
   /* in-page links glide; the target keeps its own scroll padding */
   $$('a[href^="#"]').forEach((a) => {

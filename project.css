@@ -15,7 +15,7 @@
   --ink-dim: var(--dim);
   --ink-faint: var(--faint);
   --bg-2: var(--surface);
-  --line-soft: rgba(255, 255, 255, 0.045);
+  --line-soft: color-mix(in srgb, var(--ink) 5%, transparent);
   --glass-shine: none;
   --maxw: var(--wrap);
   --r: 10px;
@@ -146,7 +146,7 @@
   max-width: 760px;
   padding: 14px 18px;
   border-left: 3px solid var(--accent-2);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--tint);
   border-radius: 0 6px 6px 0;
   font-size: 14.5px;
   color: var(--dim);
@@ -175,7 +175,7 @@
   color: var(--faint);
 }
 
-.d-box rect { fill: rgba(255, 255, 255, 0.02); stroke: rgba(255, 255, 255, 0.16); stroke-width: 1; rx: 6px; }
+.d-box rect { fill: var(--tint); stroke: color-mix(in srgb, var(--ink) 18%, transparent); stroke-width: 1; rx: 6px; }
 .d-box--fn rect { stroke: var(--accent); }
 .d-box--store rect {
   fill: color-mix(in srgb, var(--accent) 8%, transparent);

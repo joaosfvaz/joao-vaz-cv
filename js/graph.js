@@ -27,6 +27,25 @@
     { key: "work", n: 18, r: 0.74, colour: "#c0b4ff", size: 3.3, alpha: 0.8 },
     { key: "raw", n: 16, r: 0.92, colour: "#5f6576", size: 2.6, alpha: 0.7 },
   ];
+  /* the colours come from the page (pm-os.css's --z-* and --ink), so the
+     graph follows the theme; the values above are the fallback */
+  let EDGE = "255,255,255";
+  let PROMOTE = "#c0b4ff";
+  function readColours() {
+    const cs = getComputedStyle(document.body);
+    ZONES.forEach((z) => {
+      const v = cs.getPropertyValue("--z-" + z.key).trim();
+      if (v) z.colour = v;
+    });
+    const soft = cs.getPropertyValue("--accent-soft").trim();
+    if (soft) PROMOTE = soft;
+    const hex = cs.getPropertyValue("--ink").trim().replace("#", "");
+    if (/^[0-9a-f]{6}$/i.test(hex)) {
+      const n = parseInt(hex, 16);
+      EDGE = [(n >> 16) & 255, (n >> 8) & 255, n & 255].join(",");
+    }
+  }
+  readColours();
 
   /* a small seeded PRNG — the layout must not change between loads */
   let seed = 20260912;
@@ -141,7 +160,7 @@
       if (life <= 0) continue;
       const [ax, ay] = pos(A, t);
       const [bx, by] = pos(B, t);
-      ctx.strokeStyle = "rgba(255,255,255," + (e.w * life).toFixed(3) + ")";
+      ctx.strokeStyle = "rgba(" + EDGE + "," + (e.w * life).toFixed(3) + ")";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(ax, ay);
@@ -179,7 +198,7 @@
         const [ax, ay] = pos(beat.node, t);
         const [bx, by] = pos(nodes[beat.target], t);
         const e = p * p * (3 - 2 * p);
-        ctx.fillStyle = "#c0b4ff";
+        ctx.fillStyle = PROMOTE;
         ctx.beginPath();
         ctx.arc(ax + (bx - ax) * e, ay + (by - ay) * e, 3, 0, Math.PI * 2);
         ctx.fill();
@@ -237,6 +256,13 @@
   draw(0);
 
   let resizeId = 0;
+  /* a theme switch: new colours, and a repaint if the loop is not
+     already drawing */
+  document.addEventListener("themechange", function () {
+    readColours();
+    if (!running) draw(0);
+  });
+
   window.addEventListener("resize", function () {
     clearTimeout(resizeId);
     resizeId = setTimeout(function () { resize(); draw(0); }, 150);
