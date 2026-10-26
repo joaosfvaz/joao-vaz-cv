@@ -99,6 +99,11 @@
    * or a fast flick cannot skip one. Each element is indexed among its
    * revealing siblings, so a group lands as a run of beats.
    * ---------------------------------------------------------------- */
+  /* tags in the toolkit land one after another: each knows its place */
+  $$(".tags").forEach((ul) => {
+    Array.prototype.slice.call(ul.children).forEach((li, i) => li.style.setProperty("--t", String(Math.min(i, 10))));
+  });
+
   const rvs = $$(".rv");
   const seen = new Map();
   rvs.forEach((el) => {

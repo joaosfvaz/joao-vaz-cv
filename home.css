@@ -589,24 +589,81 @@ html:not(.js) .theme { display: none; }
 .photos img { width: 100%; height: clamp(150px, 19vw, 250px); object-fit: cover; border-radius: 4px; }
 .photos img:nth-child(2) { object-position: 50% 20%; }
 
-/* the toolkit and the rest of the CV, as plain rows */
-.kit { margin-top: clamp(48px, 7vh, 72px); }
-.kit > div {
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  gap: 24px;
-  padding: 14px 0;
+/* ---------- Toolkit ---------- */
+/* skills in groups, each skill a tag, on the same hairline grid as the
+   outcome tiles; agentic AI leads, wide and in the accent */
+.kit { margin-top: clamp(56px, 8vh, 84px); }
+.kit__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
 }
-.kit > div, .concepts > div { position: relative; }
-.kit > div::before, .concepts > div::before {
+.kit__title::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: currentColor; }
+.kit__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--line);
+  overflow: hidden;
+}
+.kit__group { padding: 20px 20px 22px; background: var(--bg); }
+.kit__group--lead { grid-column: 1 / -1; background: color-mix(in srgb, var(--accent) 6%, var(--bg)); }
+.kit__group h4 {
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags li {
+  padding: 5px 11px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1.4;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.kit__group--lead .tags li {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tags li:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+}
+/* each group's tags land one after another as it arrives */
+.js .kit__group.rv .tags li { opacity: 0; transform: translateY(6px); }
+.js .kit__group.rv.is-in .tags li {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.35s ease, transform 0.5s var(--ease), border-color 0.2s ease, background-color 0.2s ease;
+  transition-delay: calc(var(--t, 0) * 35ms + 150ms), calc(var(--t, 0) * 35ms + 150ms), 0s, 0s;
+}
+/* education and languages: two plain facts under the grid */
+.kit__cv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.kit__cv > div { display: grid; gap: 8px; align-content: start; padding: 16px 20px 18px; border: 1px solid var(--line); border-radius: 10px; }
+.kit__cv dt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+.kit__cv dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.kit__cv b { font-size: 15.5px; font-weight: 600; }
+.kit__cv span { font-size: 13.5px; color: var(--dim); }
+
+.concepts > div { position: relative; }
+.concepts > div::before {
   content: "";
   position: absolute; left: 0; right: 0; top: 0;
   height: 1px; background: var(--line);
   transform-origin: 0 50%;
 }
-.kit dt { font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); padding-top: 3px; }
-.kit dd { font-size: 15.5px; color: var(--dim); }
-.kit > div:first-child dd { color: var(--ink); }
 
 /* ---------- AI: the playable trace ---------- */
 .ai {
@@ -832,8 +889,8 @@ html:not(.js) .theme { display: none; }
 .js .h-split.is-in .w > span { transform: none; transition: transform 0.9s var(--ease); transition-delay: calc(var(--wi, 0) * 45ms + 60ms); }
 
 /* dividers draw from the left as their row arrives */
-.js :is(.acc__item, .contact__row, .kit > div, .concepts > div).rv::before { transform: scaleX(0); }
-.js :is(.acc__item, .contact__row, .kit > div, .concepts > div).rv.is-in::before {
+.js :is(.acc__item, .contact__row, .concepts > div).rv::before { transform: scaleX(0); }
+.js :is(.acc__item, .contact__row, .concepts > div).rv.is-in::before {
   transform: none;
   transition: transform 1s var(--ease) calc(var(--i, 0) * 70ms + 100ms);
 }
@@ -889,7 +946,7 @@ html:not(.js) .theme { display: none; }
   .hero__grid { grid-template-columns: minmax(0, 1fr); align-items: start; }
   .hero__photo { max-width: 460px; }
   .projects { grid-template-columns: minmax(0, 1fr); }
-  .kit > div { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .kit__grid, .kit__cv { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 767px) {
   body { padding-bottom: 88px; }
@@ -932,9 +989,10 @@ html:not(.js) .theme { display: none; }
   .js .hero__photo::after { transform: none; opacity: 1; }
   .js .hero__photo .hero__frame img { transform: none; }
   .js .h-split .w > span, .js .hero__line b::after { transform: none; }
-  .js :is(.acc__item, .contact__row, .kit > div, .concepts > div).rv::before { transform: none; }
+  .js :is(.acc__item, .contact__row, .concepts > div).rv::before { transform: none; }
   .js .section::before, .js .figures::before { transform: none; }
   .js .trace .st { opacity: 1; transform: none; }
   .js .acc__item :is(.wins > div, .ships li) { opacity: 1; transform: none; }
+  .js .kit__group.rv .tags li { opacity: 1; transform: none; }
   .js .trace__spans li.st::after { transform: none; }
 }

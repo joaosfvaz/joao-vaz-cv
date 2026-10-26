@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-26b" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-26c" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if the scripts never run. -->
   <script>
@@ -408,16 +408,48 @@
           </div>
         </div>
 
-        <!-- The toolkit and the rest of the CV as plain definition rows. -->
-        <dl class="kit">
-          <div class="rv"><dt>Agentic AI</dt><dd>Evals &amp; test sets · Tracing &amp; observability · Mandates &amp; permissions · Guardrails &amp; refusals · MCP servers &amp; tools · Agent routing &amp; handover · Context engineering · LLM-as-judge · Human-in-the-loop</dd></div>
-          <div class="rv"><dt>AI-assisted building</dt><dd>Claude Code · Cursor · Lovable · Claude skills · Scheduled agents · Video with HyperFrames</dd></div>
-          <div class="rv"><dt>Data &amp; experimentation</dt><dd>SQL · GA4 · A/B, AA &amp; fake-door tests · Maze · Usability testing</dd></div>
-          <div class="rv"><dt>Delivery &amp; technical</dt><dd>Jira &amp; Atlassian · LaunchDarkly · New Relic SLIs/SLOs · Postman · GraphQL · Event-driven &amp; microservices · Sprints &amp; kanban</dd></div>
-          <div class="rv"><dt>CRM &amp; GTM</dt><dd>Braze · Intercom · Five markets</dd></div>
-          <div class="rv"><dt>Education</dt><dd>MSc Industrial Engineering &amp; Management — University of Minho &amp; TU Graz, 2021–2023</dd></div>
-          <div class="rv"><dt>Languages</dt><dd>Portuguese (native) · English (C2)</dd></div>
-        </dl>
+        <!-- The toolkit: skills in groups, each skill a tag. Agentic AI
+             leads, wide and in the accent; education and languages close
+             it as two plain facts. -->
+        <div class="kit">
+          <h3 class="kit__title rv">Toolkit</h3>
+          <div class="kit__grid">
+            <section class="kit__group kit__group--lead rv">
+              <h4>Agentic AI</h4>
+              <ul class="tags">
+                <li>Evals &amp; test sets</li><li>Tracing &amp; observability</li><li>Mandates &amp; permissions</li><li>Guardrails &amp; refusals</li><li>MCP servers &amp; tools</li><li>Agent routing &amp; handover</li><li>Context engineering</li><li>LLM-as-judge</li><li>Human-in-the-loop</li>
+              </ul>
+            </section>
+            <section class="kit__group rv">
+              <h4>AI-assisted building</h4>
+              <ul class="tags">
+                <li>Claude Code</li><li>Cursor</li><li>Lovable</li><li>Claude skills</li><li>Scheduled agents</li><li>Video with HyperFrames</li>
+              </ul>
+            </section>
+            <section class="kit__group rv">
+              <h4>Data &amp; experimentation</h4>
+              <ul class="tags">
+                <li>SQL</li><li>GA4</li><li>A/B, AA &amp; fake-door tests</li><li>Maze</li><li>Moderated &amp; unmoderated usability tests</li>
+              </ul>
+            </section>
+            <section class="kit__group rv">
+              <h4>Delivery &amp; technical</h4>
+              <ul class="tags">
+                <li>Jira &amp; Atlassian</li><li>LaunchDarkly</li><li>New Relic SLIs/SLOs</li><li>Postman</li><li>GraphQL</li><li>Event-driven &amp; microservices</li><li>Sprints &amp; kanban</li>
+              </ul>
+            </section>
+            <section class="kit__group rv">
+              <h4>CRM &amp; go-to-market</h4>
+              <ul class="tags">
+                <li>Braze</li><li>Intercom</li><li>Campaigns tied to in-product behaviour</li><li>Five markets</li>
+              </ul>
+            </section>
+          </div>
+          <dl class="kit__cv">
+            <div class="rv"><dt>Education</dt><dd><b>MSc Industrial Engineering &amp; Management</b><span>University of Minho &amp; TU Graz · 2021–2023</span></dd></div>
+            <div class="rv"><dt>Languages</dt><dd><b>Portuguese</b><span>native</span></dd><dd><b>English</b><span>C2 · proficient</span></dd></div>
+          </dl>
+        </div>
       </div>
     </section>
 
@@ -479,7 +511,7 @@
     <span>Hand-built · no framework · a little AI</span>
   </footer>
 
-  <script src="/js/scroll.js?v=2026-10-26b"></script>
-  <script src="/js/home.js?v=2026-10-26b"></script>
+  <script src="/js/scroll.js?v=2026-10-26c"></script>
+  <script src="/js/home.js?v=2026-10-26c"></script>
 </body>
 </html>

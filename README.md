@@ -38,6 +38,10 @@ The movement is kept to a few places on purpose, so each one is noticed:
 - **Roles** — each role in Experience opens into two columns: **Outcomes**, as numbers in the
   accent that count up every time the role opens, and **Deliveries**, one line each with a square
   in the second colour. The tiles and the lines land one after another.
+- **Toolkit** — under Experience, the skills sit in groups on the same hairline grid as the outcome
+  tiles, each skill a tag. Agentic AI leads, wide and in the accent. A group's tags land one after
+  another as it arrives (`--t`, set by `js/home.js`). Education and languages close it as two plain
+  facts.
 - **Accordions** — the products and the roles open one at a time. A blue rule draws
   along the row under the pointer and stays under the open one; the plus turns into a minus; the height is a
   `grid-template-rows` transition. Without the script every panel is open.
