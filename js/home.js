@@ -825,23 +825,30 @@
   }
 
   /* the photo log: a click opens the photo large; the arrow keys and the
-     buttons move through them, Esc or a click outside closes */
+     buttons move through them, Esc or a click outside closes. A photo
+     outside the log opens on its own, with no arrows */
   const lb = $("#lightbox");
-  const shots = $$("[data-full]");
-  if (lb && lb.showModal && shots.length) {
+  const shots = $$(".photolog [data-full]");
+  if (lb && lb.showModal) {
     const lbImg = $("img", lb);
     const lbCount = $("[data-lb-count]", lb);
+    let list = shots;
     let at = 0;
     const show = (i) => {
-      at = (i + shots.length) % shots.length;
-      lbImg.src = shots[at].dataset.full;
-      lbImg.alt = $("img", shots[at]).alt;
-      lbCount.textContent = at + 1 + " / " + shots.length;
+      at = (i + list.length) % list.length;
+      lbImg.src = list[at].dataset.full;
+      lbImg.alt = $("img", list[at]).alt;
+      lbCount.textContent = at + 1 + " / " + list.length;
+      lb.classList.toggle("is-single", list.length < 2);
       lbImg.style.animation = "none";
       void lbImg.offsetWidth;
       lbImg.style.animation = "";
     };
-    shots.forEach((b, i) => b.addEventListener("click", () => { show(i); lb.showModal(); }));
+    $$("[data-full]").forEach((b) => b.addEventListener("click", () => {
+      list = b.closest(".photolog") ? shots : [b];
+      show(list.indexOf(b));
+      lb.showModal();
+    }));
     $("[data-lb-prev]", lb).addEventListener("click", () => show(at - 1));
     $("[data-lb-next]", lb).addEventListener("click", () => show(at + 1));
     $("[data-lb-close]", lb).addEventListener("click", () => lb.close());

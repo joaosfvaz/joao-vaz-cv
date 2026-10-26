@@ -1063,12 +1063,26 @@ html:has(.quests[open]) { overflow: hidden; }
 }
 .quest--daily .quest__status { border-color: var(--accent); color: var(--accent); }
 .quest--new .quest__status { border-color: var(--accent-2); color: var(--accent-2); }
+/* a quest with a photo of me doing it: a small frame in the corner, the
+   photo large on a click */
+.quest__shot {
+  position: absolute; right: 20px; top: 62px;
+  width: 56px; height: 70px;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--line);
+  cursor: zoom-in;
+}
+.quest__shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; transition: transform 0.5s var(--ease); }
+.quest__shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.quest:has(.quest__shot) :is(h4, p) { margin-right: 68px; }
 .quest h4 { margin-bottom: 6px; font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -0.02em; }
 .quest p { max-width: 26em; font-size: 14px; line-height: 1.5; color: var(--dim); }
 .quest a { color: var(--accent); }
 @media (hover: hover) and (pointer: fine) {
   .quest:hover { background: var(--tint); }
   .quest:hover .quest__ic { transform: rotate(-8deg) scale(1.08); }
+  .quest__shot:hover img { transform: scale(1.08); }
 }
 
 /* the photo log: placeholders until the photos arrive */
@@ -1123,6 +1137,7 @@ html:has(.quests[open]) { overflow: hidden; }
 .lightbox__bar .meta { min-width: 60px; text-align: center; color: rgba(255, 255, 255, 0.6); }
 .lightbox__bar kbd { margin-left: 6px; font-family: var(--mono); font-size: 10.5px; color: rgba(255, 255, 255, 0.6); }
 .lightbox[open] img { animation: lbIn 0.35s var(--ease); }
+.lightbox.is-single :is([data-lb-prev], [data-lb-next], [data-lb-count]) { display: none; }
 @keyframes lbIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: none; } }
 
 /* opening plays a short loading bar, then everything lands in a run */
