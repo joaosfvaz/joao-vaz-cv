@@ -557,7 +557,7 @@ html:not(.js) .theme { display: none; }
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr);
   column-gap: 10px;
-  padding: 11px 0 12px;
+  padding: 13px 0 14px;
   border-top: 1px solid var(--line);
 }
 .ships li:first-child { border-top: 0; padding-top: 2px; }
@@ -569,8 +569,8 @@ html:not(.js) .theme { display: none; }
   border-radius: 2px;
   background: var(--accent-2);
 }
-.ships b { font-weight: 600; font-size: 15.5px; color: var(--ink); }
-.ships span { grid-column: 2; font-size: 13.5px; color: var(--dim); }
+.ships b { font-weight: 600; font-size: 15.5px; line-height: 1.35; color: var(--ink); }
+.ships span { grid-column: 2; margin-top: 3px; font-size: 14px; line-height: 1.5; color: var(--dim); }
 /* the tiles and the lines land one after another as a role opens */
 .js .acc__item :is(.wins > div, .ships li) { opacity: 0; transform: translateY(8px); transition: opacity 0.35s ease, transform 0.5s var(--ease); }
 .js .acc__item.is-open :is(.wins > div, .ships li) { opacity: 1; transform: none; }
