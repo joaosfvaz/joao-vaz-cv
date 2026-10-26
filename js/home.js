@@ -824,50 +824,129 @@
     if (location.hash === "#side-quests") openQuests();
   }
 
-  /* the photo log: a click opens the photo large; the arrow keys and the
-     buttons move through them, Esc or a click outside closes. A photo
-     outside the log opens on its own, with no arrows */
+  /* the photo reels: each album is a native scroller with snapping, so
+     a swipe, a trackpad and the keyboard all move it the same way. The
+     arrows page through it; the count and the line under it say which
+     photos are in view. Nothing here listens to scroll: an observer on
+     the reel reports what is fully visible. */
+  const pad2 = (n) => String(n).padStart(2, "0");
+  $$("[data-reel]").forEach((row) => {
+    const reel = $(".reel", row);
+    const slides = $$(".reel__shot", reel);
+    const prev = $('[data-reel-dir="-1"]', row);
+    const next = $('[data-reel-dir="1"]', row);
+    const count = $("[data-reel-count]", row);
+    const line = $(".reel__line", row);
+    const seen = new Set();
+    if (!slides.length || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        const i = slides.indexOf(e.target);
+        if (e.intersectionRatio > 0.9) seen.add(i);
+        else seen.delete(i);
+      });
+      if (!seen.size) return;
+      const first = Math.min(...seen);
+      const last = Math.max(...seen);
+      count.textContent = (first === last ? pad2(first + 1) : pad2(first + 1) + "–" + pad2(last + 1)) + " / " + pad2(slides.length);
+      prev.disabled = first === 0;
+      next.disabled = last === slides.length - 1;
+      row.classList.toggle("has-before", first > 0);
+      row.classList.toggle("has-after", last < slides.length - 1);
+      line.style.setProperty("--p", ((last + 1) / slides.length).toFixed(3));
+    }, { root: reel, threshold: [0, 0.9, 1] });
+    slides.forEach((sl) => io.observe(sl));
+    const page = (dir) => reel.scrollBy({ left: dir * reel.clientWidth * 0.8, behavior: reduced ? "auto" : "smooth" });
+    prev.addEventListener("click", () => page(-1));
+    next.addEventListener("click", () => page(1));
+  });
+
+  /* the photo viewer: one album as a full-screen carousel. The track is
+     a native scroller too, so a swipe follows the finger; the arrows, the
+     arrow keys and the filmstrip move it, Esc or a click beside the photo
+     closes. A large file loads only when its slide comes near. A photo
+     outside the reels opens on its own, with no arrows and no filmstrip. */
   const lb = $("#lightbox");
-  const shots = $$(".photolog [data-full]");
-  if (lb && lb.showModal) {
-    const lbImg = $("img", lb);
+  if (lb && lb.showModal && "IntersectionObserver" in window) {
+    const track = $("[data-lb-track]", lb);
+    const film = $("[data-lb-film]", lb);
     const lbCount = $("[data-lb-count]", lb);
-    let list = shots;
+    let list = [];
     let at = 0;
-    const show = (i) => {
-      at = (i + list.length) % list.length;
-      lbImg.src = list[at].dataset.full;
-      lbImg.alt = $("img", list[at]).alt;
-      lbCount.textContent = at + 1 + " / " + list.length;
-      lb.classList.toggle("is-single", list.length < 2);
-      lbImg.style.animation = "none";
-      void lbImg.offsetWidth;
-      lbImg.style.animation = "";
+    let io = null;
+    const load = (i) => {
+      const img = track.children[i] && track.children[i].firstChild;
+      if (img && !img.getAttribute("src")) img.src = img.dataset.src;
+    };
+    const mark = (i) => {
+      at = i;
+      [i - 1, i, i + 1].forEach(load);
+      lbCount.textContent = i + 1 + " / " + list.length;
+      Array.prototype.forEach.call(film.children, (t, k) => {
+        t.classList.toggle("is-on", k === i);
+        if (k === i) t.setAttribute("aria-current", "true");
+        else t.removeAttribute("aria-current");
+      });
+      const t = film.children[i];
+      if (t) film.scrollTo({ left: t.offsetLeft - (film.clientWidth - t.offsetWidth) / 2, behavior: reduced ? "auto" : "smooth" });
+    };
+    const go = (i) => {
+      const wrap = i < 0 || i >= list.length;
+      i = (i + list.length) % list.length;
+      /* past either end it wraps round, at once rather than rewinding */
+      track.scrollTo({ left: i * track.clientWidth, behavior: reduced || wrap ? "auto" : "smooth" });
+    };
+    const build = (items) => {
+      list = items;
+      track.textContent = "";
+      film.textContent = "";
+      if (io) io.disconnect();
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) mark(Array.prototype.indexOf.call(track.children, e.target)); });
+      }, { root: track, threshold: 0.6 });
+      items.forEach((b, i) => {
+        const thumb = $("img", b);
+        const slide = document.createElement("figure");
+        slide.className = "lightbox__slide";
+        const img = document.createElement("img");
+        img.alt = thumb.alt;
+        img.decoding = "async";
+        img.dataset.src = b.dataset.full;
+        slide.appendChild(img);
+        track.appendChild(slide);
+        io.observe(slide);
+        if (items.length < 2) return;
+        const t = document.createElement("button");
+        t.type = "button";
+        t.className = "lightbox__thumb";
+        t.setAttribute("aria-label", "Photo " + (i + 1) + " of " + items.length);
+        const ti = document.createElement("img");
+        ti.src = thumb.currentSrc || thumb.src;
+        ti.alt = "";
+        t.appendChild(ti);
+        t.addEventListener("click", () => go(i));
+        film.appendChild(t);
+      });
+      lb.classList.toggle("is-single", items.length < 2);
     };
     $$("[data-full]").forEach((b) => b.addEventListener("click", () => {
-      list = b.closest(".photolog") ? shots : [b];
-      show(list.indexOf(b));
+      const row = b.closest("[data-reel]");
+      const items = row ? $$("[data-full]", row) : [b];
+      if (items.length !== list.length || items[0] !== list[0]) build(items);
+      const i = items.indexOf(b);
       lb.showModal();
+      track.scrollLeft = i * track.clientWidth;
+      mark(i);
     }));
-    $("[data-lb-prev]", lb).addEventListener("click", () => show(at - 1));
-    $("[data-lb-next]", lb).addEventListener("click", () => show(at + 1));
+    $("[data-lb-prev]", lb).addEventListener("click", () => go(at - 1));
+    $("[data-lb-next]", lb).addEventListener("click", () => go(at + 1));
     $("[data-lb-close]", lb).addEventListener("click", () => lb.close());
     lb.addEventListener("keydown", (ev) => {
-      if (ev.key === "ArrowLeft") show(at - 1);
-      if (ev.key === "ArrowRight") show(at + 1);
+      if (ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
+      ev.preventDefault();
+      go(at + (ev.key === "ArrowLeft" ? -1 : 1));
     });
-    lb.addEventListener("click", (ev) => { if (ev.target === lb) lb.close(); });
-    /* on a touch screen, a swipe sideways moves to the next photo */
-    let x0 = null;
-    lb.addEventListener("touchstart", (ev) => {
-      x0 = ev.touches.length === 1 ? ev.touches[0].clientX : null;
-    }, { passive: true });
-    lb.addEventListener("touchend", (ev) => {
-      if (x0 === null || list.length < 2) return;
-      const dx = ev.changedTouches[0].clientX - x0;
-      x0 = null;
-      if (Math.abs(dx) > 50) show(at + (dx < 0 ? 1 : -1));
-    });
+    track.addEventListener("click", (ev) => { if (ev.target.classList.contains("lightbox__slide")) lb.close(); });
   }
 
   /* in-page links glide; the target keeps its own scroll padding */

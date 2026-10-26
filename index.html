@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-26k" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-26l" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if the scripts never run. -->
   <script>
@@ -606,40 +606,58 @@
 
       <section class="photolog" aria-label="Photo log">
         <p class="meta"><b>Log</b> Through the lens</p>
-        <div class="photolog__row">
-          <h4>Sport <span>my sports photography — click a photo to see it large</span></h4>
-          <div class="photolog__grid photolog__grid--shots">
-            <button class="shot" type="button" data-full="/assets/life/sports-1.jpg"><img src="/assets/life/sports-1-sm.jpg" alt="A player in a striped red, green and white kit roars, head thrown back, arms swinging" width="640" height="800" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/sports-2.jpg"><img src="/assets/life/sports-2-sm.jpg" alt="From behind: a player with 'Lopes Cabral' on his shirt, pulled in by a teammate" width="640" height="800" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/sports-3.jpg"><img src="/assets/life/sports-3-sm.jpg" alt="Two players walk past each other at night, a flare burning in the stand behind them" width="640" height="800" loading="lazy" /></button>
-            <button class="shot shot--wide" type="button" data-full="/assets/life/sports-4.jpg"><img src="/assets/life/sports-4-sm.jpg" alt="A player in blue shields the ball from a defender in white and red, a referee watching" width="900" height="562" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/sports-5.jpg"><img src="/assets/life/sports-5-sm.jpg" alt="A captain in blue strikes a volley, the ball sharp in the foreground" width="640" height="800" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/sports-6.jpg"><img src="/assets/life/sports-6-sm.jpg" alt="A player in yellow and blue stripes winds up a long pass in front of an empty stand" width="640" height="800" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/sports-7.jpg"><img src="/assets/life/sports-7-sm.jpg" alt="A winger in white runs with the ball, chased by a defender in yellow and blue" width="640" height="800" loading="lazy" /></button>
-            <button class="shot shot--feature" type="button" data-full="/assets/life/sports-8.jpg"><img src="/assets/life/sports-8-sm.jpg" alt="A ball boy balances the match ball on his face in front of a crowd in blue" width="640" height="1138" loading="lazy" /></button>
+        <div class="photolog__row" data-reel>
+          <div class="photolog__head">
+            <h4>Sport <span>my sports photography</span></h4>
+            <div class="reel__nav">
+              <span class="meta reel__count" data-reel-count aria-live="polite"></span>
+              <button class="btn btn--line btn--sm" type="button" data-reel-dir="-1" aria-label="Previous photos">←</button>
+              <button class="btn btn--line btn--sm" type="button" data-reel-dir="1" aria-label="Next photos">→</button>
+            </div>
           </div>
+          <div class="reel">
+            <button class="reel__shot" type="button" data-full="/assets/life/sports-1.jpg"><img src="/assets/life/sports-1-sm.jpg" alt="A player in a striped red, green and white kit roars, head thrown back, arms swinging" width="640" height="800" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/sports-2.jpg"><img src="/assets/life/sports-2-sm.jpg" alt="From behind: a player with 'Lopes Cabral' on his shirt, pulled in by a teammate" width="640" height="800" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/sports-3.jpg"><img src="/assets/life/sports-3-sm.jpg" alt="Two players walk past each other at night, a flare burning in the stand behind them" width="640" height="800" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/sports-4.jpg"><img src="/assets/life/sports-4-sm.jpg" alt="A player in blue shields the ball from a defender in white and red, a referee watching" width="900" height="562" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/sports-5.jpg"><img src="/assets/life/sports-5-sm.jpg" alt="A captain in blue strikes a volley, the ball sharp in the foreground" width="640" height="800" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/sports-6.jpg"><img src="/assets/life/sports-6-sm.jpg" alt="A player in yellow and blue stripes winds up a long pass in front of an empty stand" width="640" height="800" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/sports-7.jpg"><img src="/assets/life/sports-7-sm.jpg" alt="A winger in white runs with the ball, chased by a defender in yellow and blue" width="640" height="800" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/sports-8.jpg"><img src="/assets/life/sports-8-sm.jpg" alt="A ball boy balances the match ball on his face in front of a crowd in blue" width="640" height="1138" loading="lazy" /></button>
+          </div>
+          <i class="reel__line" aria-hidden="true"><b></b></i>
         </div>
-        <div class="photolog__row">
-          <h4>Landscapes &amp; places <span>from hikes and trips</span></h4>
-          <div class="photolog__grid photolog__grid--shots">
-            <button class="shot shot--wide" type="button" data-full="/assets/life/landscape-1.jpg"><img src="/assets/life/landscape-1-sm.jpg" alt="A lone hiker on a ridge, small against mountains rising out of the cloud" width="900" height="562" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/landscape-2.jpg"><img src="/assets/life/landscape-2-sm.jpg" alt="A snowy peak above a green lake, a red rowboat with two people on the water" width="640" height="1056" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/landscape-3.jpg"><img src="/assets/life/landscape-3-sm.jpg" alt="A red rowboat seen from above on clear green water, a pine branch in the corner" width="640" height="960" loading="lazy" /></button>
-            <button class="shot shot--wide" type="button" data-full="/assets/life/landscape-4.jpg"><img src="/assets/life/landscape-4-sm.jpg" alt="A lone sailboat on a purple sea at dusk, two islands on the horizon" width="900" height="562" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/landscape-5.jpg"><img src="/assets/life/landscape-5-sm.jpg" alt="People in silhouette on the shore at sunset, a sailboat behind them and palm leaves above" width="640" height="960" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/landscape-6.jpg"><img src="/assets/life/landscape-6-sm.jpg" alt="Layered red cliffs under a blue sky, a boat's wake cutting across the dark sea" width="640" height="964" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/landscape-7.jpg"><img src="/assets/life/landscape-7-sm.jpg" alt="Sunlight glittering on the sea, seen through the railings of a viewpoint" width="640" height="960" loading="lazy" /></button>
-            <button class="shot shot--wide" type="button" data-full="/assets/life/landscape-8.jpg"><img src="/assets/life/landscape-8-sm.jpg" alt="A turquoise wave breaking into white foam, seen from above" width="900" height="562" loading="lazy" /></button>
-            <button class="shot" type="button" data-full="/assets/life/landscape-9.jpg"><img src="/assets/life/landscape-9-sm.jpg" alt="A woman reading by the window light in a bookshop" width="640" height="960" loading="lazy" /></button>
+        <div class="photolog__row" data-reel>
+          <div class="photolog__head">
+            <h4>Landscapes &amp; places <span>from hikes and trips</span></h4>
+            <div class="reel__nav">
+              <span class="meta reel__count" data-reel-count aria-live="polite"></span>
+              <button class="btn btn--line btn--sm" type="button" data-reel-dir="-1" aria-label="Previous photos">←</button>
+              <button class="btn btn--line btn--sm" type="button" data-reel-dir="1" aria-label="Next photos">→</button>
+            </div>
           </div>
+          <div class="reel">
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-1.jpg"><img src="/assets/life/landscape-1-sm.jpg" alt="A lone hiker on a ridge, small against mountains rising out of the cloud" width="900" height="562" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-2.jpg"><img src="/assets/life/landscape-2-sm.jpg" alt="A snowy peak above a green lake, a red rowboat with two people on the water" width="640" height="1056" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-3.jpg"><img src="/assets/life/landscape-3-sm.jpg" alt="A red rowboat seen from above on clear green water, a pine branch in the corner" width="640" height="960" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-4.jpg"><img src="/assets/life/landscape-4-sm.jpg" alt="A lone sailboat on a purple sea at dusk, two islands on the horizon" width="900" height="562" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-5.jpg"><img src="/assets/life/landscape-5-sm.jpg" alt="People in silhouette on the shore at sunset, a sailboat behind them and palm leaves above" width="640" height="960" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-6.jpg"><img src="/assets/life/landscape-6-sm.jpg" alt="Layered red cliffs under a blue sky, a boat's wake cutting across the dark sea" width="640" height="964" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-7.jpg"><img src="/assets/life/landscape-7-sm.jpg" alt="Sunlight glittering on the sea, seen through the railings of a viewpoint" width="640" height="960" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-8.jpg"><img src="/assets/life/landscape-8-sm.jpg" alt="A turquoise wave breaking into white foam, seen from above" width="900" height="562" loading="lazy" /></button>
+            <button class="reel__shot" type="button" data-full="/assets/life/landscape-9.jpg"><img src="/assets/life/landscape-9-sm.jpg" alt="A woman reading by the window light in a bookshop" width="640" height="960" loading="lazy" /></button>
+          </div>
+          <i class="reel__line" aria-hidden="true"><b></b></i>
         </div>
       </section>
     </div>
   </dialog>
 
-  <!-- The photo viewer: one photo large, arrows to move, Esc to close. -->
+  <!-- The photo viewer: a full-screen carousel of one album. js/home.js
+       fills the track and the filmstrip from the photos on the page. -->
   <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
-    <img src="" alt="" />
+    <div class="lightbox__track" data-lb-track></div>
+    <div class="lightbox__film" data-lb-film></div>
     <div class="lightbox__bar">
       <button class="btn btn--line btn--sm" type="button" data-lb-prev aria-label="Previous photo">←</button>
       <span class="meta" data-lb-count></span>
@@ -654,7 +672,7 @@
     <span class="eggs" data-eggs hidden>Easter eggs found: <b>0</b> / 4</span>
   </footer>
 
-  <script src="/js/scroll.js?v=2026-10-26k"></script>
-  <script src="/js/home.js?v=2026-10-26k"></script>
+  <script src="/js/scroll.js?v=2026-10-26l"></script>
+  <script src="/js/home.js?v=2026-10-26l"></script>
 </body>
 </html>

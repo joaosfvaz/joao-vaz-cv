@@ -82,19 +82,26 @@ short loading bar, then the title, the player card and the nine quest cards land
 
 - **Quest cards** — one per interest, numbered Q01–Q09, each with a status chip ("Daily" in the
   accent, "New quest" in orange).
-- **The photo log** — my sports photography, then landscapes and places.
-  - Each row is a three-column grid (`photolog__grid--shots`) of portrait tiles; a landscape
-    frame (`shot--wide`) spans two tiles and takes the height of the portrait tile beside it. A
-    row needs whole lines of three: each wide frame counts as two. On a phone the grid has two
-    columns and fills gaps by itself, so a row with an even count of portrait tiles ends flush.
+- **The photo log** — my sports photography, then landscapes and places. Each album is a
+  **reel** (`[data-reel]`): one row of photos at one height, each as wide as its own shape.
+  - The reel is a native scroller with snapping, so a swipe, a trackpad and the keyboard all move
+    it. The arrows page through it (hidden on touch screens); the count ("01–03 / 08") and the
+    line under the reel say which photos are fully in view. An `IntersectionObserver` on the reel
+    reports that, so nothing listens to scroll. The reel fades out on the side where more photos
+    wait (`has-before`, `has-after`).
+  - On a phone the reel runs to the screen edges, and a photo is at most 80% of the screen wide
+    (a wide one shows its middle), so the next photo always peeks in.
   - Each photo has two files in `assets/life/`: `<row>-N.jpg` (about 1280px, the viewer) and
-    `<row>-N-sm.jpg` (640px wide, the tile; 900×562 and cropped to 8:5 for a wide frame), resized
+    `<row>-N-sm.jpg` (640px wide, the reel; 900×562 and cropped to 8:5 for a wide frame), resized
     and stripped of camera metadata with ffmpeg (`-map_metadata -1`).
-  - A click opens **the viewer** (`<dialog id="lightbox">`): the photo as large as the window
-    allows, ← and → (keys or buttons) to move through all of them, Esc or a click outside to close.
-    It reads the large file from each tile's `data-full`. To add a photo, save the two sizes and
-    add a `<button class="shot" data-full="…">` tile like the others. A `data-full` photo outside
-    the log (the Triathlon quest's `.quest__shot`) opens on its own, with no arrows or counter.
+  - A click opens **the viewer** (`<dialog id="lightbox">`), a full-screen carousel of that
+    album. `js/home.js` fills its track and its filmstrip from the album's tiles. The track is a
+    native scroller too, so a swipe follows the finger; the arrows, the ← and → keys and the
+    filmstrip move it, and Esc or a click beside the photo closes it. A large file loads only when
+    its slide comes near (the slide and its two neighbours).
+  - To add a photo, save the two sizes and add a `<button class="reel__shot" data-full="…">` tile to
+    the album's reel. A `data-full` photo outside the reels (the Triathlon quest's `.quest__shot`)
+    opens on its own, with no arrows, counter or filmstrip.
 
 ## Easter eggs
 
@@ -154,8 +161,8 @@ narrower than 767px, which is why these blocks say `screen`.
 - **Side quests** — the row with "Back to work" stays at the top while the panel scrolls (a phone
   has no Esc key). Each quest becomes a compact row: the icon on the left, the status over the
   title.
-- **The photo log** — two columns; the last sport photo spans both, so the row ends flush. In the
-  viewer, a swipe sideways moves to the next photo.
+- **The photo log** — each reel runs to the screen edges, and the viewer fits above the
+  browser's own toolbar (`100dvh`).
 - **Project pages** — the dock starts with a way back ("← All work"). Below 400px the bar button
   uses its short label (`.bar__short`) and the way back shows only its arrow. A diagram says
   "Swipe sideways to see all of it" above itself.
