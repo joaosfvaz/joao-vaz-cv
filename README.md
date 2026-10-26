@@ -247,8 +247,10 @@ dev-server.py     # no-cache static server for development
 `js/scroll.js` must load before any script that consumes `window.Scroll`. It builds `SECTION_IDS`
 from the page's own `data-nav` links, so each page declares its sections in its markup.
 
-`styles.css`, `js/ui.js`, `js/scene.js`, `js/icons.js`, `js/carousel.js` and `assets/portrait.jpg`
-belong to the older glass design. No page loads them any more.
+`styles.css`, `js/ui.js`, `js/scene.js`, `js/icons.js` and `js/carousel.js` belong to the older
+glass design. No page loads them any more. The photo of me is `assets/portrait.jpg` (the hero, the
+Side quests player card and the share card `og.jpg`); `assets/joao-stage.jpg`, the stage photo it
+replaced, is not loaded either.
 
 ## Rules to keep
 

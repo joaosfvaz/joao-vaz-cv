@@ -1029,7 +1029,7 @@ html:has(.quests[open]) { overflow: hidden; }
   border: 1px solid var(--line);
   border-radius: 12px;
 }
-.player__img { width: 132px; height: 132px; object-fit: cover; object-position: 58% 16%; border-radius: 8px; }
+.player__img { width: 132px; height: 132px; object-fit: cover; object-position: 50% 20%; border-radius: 8px; }
 .player h3 { margin: 4px 0 10px; font-family: var(--display); font-weight: 700; font-size: 30px; letter-spacing: -0.04em; }
 .player__class { display: grid; gap: 4px; margin-bottom: 14px; }
 .player__class div { display: flex; gap: 10px; font-size: 14px; }
