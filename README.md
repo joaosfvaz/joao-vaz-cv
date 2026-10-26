@@ -35,6 +35,9 @@ The movement is kept to a few places on purpose, so each one is noticed:
 - **The word strip** — one band of big type between the hero and the work. It runs sideways at a
   steady pace, speeds up with the scroll and turns round when the scroll does; the set of words is
   copied once and the track jumps back by exactly one set, so the loop has no seam.
+- **Roles** — each role in Experience opens into two columns: **Outcomes**, as numbers in the
+  accent that count up every time the role opens, and **Deliveries**, one line each with a square
+  in the second colour. The tiles and the lines land one after another.
 - **Accordions** — the products and the roles open one at a time. A blue rule draws
   along the row under the pointer and stays under the open one; the plus turns into a minus; the height is a
   `grid-template-rows` transition. Without the script every panel is open.

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-23a" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-26a" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if the scripts never run. -->
   <script>
@@ -284,6 +284,9 @@
           <h2 class="rv">Three years on one problem: <em>helping dealers sell cars.</em></h2>
         </header>
 
+        <!-- Each role splits into what changed (outcomes, as numbers that
+             count up when the role opens) and what shipped (deliveries,
+             one line each). -->
         <div class="acc acc--roles" data-acc>
           <div class="acc__item rv is-open">
             <h3><button class="acc__head" type="button" aria-expanded="true">
@@ -293,18 +296,29 @@
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
-              <ul class="points">
-                <li>Own the product strategy for the team behind dealer insights, pricing and
-                  recommendations. Outcome-driven quarterly OKRs, ~72% average completion over 2.5 years,
-                  and a roadmap from upstream data pipelines to downstream microservices.</li>
-                <li>Bring AI into the product: define the dealer assistant's capabilities for my
-                  domain, write its test questions, review its traces and own its domain evals.</li>
-                <li>Co-designed a two-day product workshop for ~100 people in 8 teams, and built the
-                  8 Claude skills that take each team from dealer interviews to pains, ideas, scored
-                  bets and a roadmap.</li>
-                <li>Work with CRM, Marketing, GTM, Sales, BI and PMM across five markets — PT, RO, PL,
-                  FR and ZA.</li>
-              </ul>
+              <p class="role__sum">Strategy for dealer insights, pricing and recommendations — from the data pipelines to the screens, with stakeholders in five markets.</p>
+              <div class="role">
+                <div class="role__col">
+                  <p class="role__k">Outcomes</p>
+                  <dl class="wins">
+                    <div><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement, 3 data products</dd></div>
+                    <div><dt data-count="72" data-prefix="~" data-suffix="%">~72%</dt><dd>average OKR completion, 2.5 years</dd></div>
+                    <div><dt data-count="40" data-suffix="+">40+</dt><dd>experiments — A/B, AA, fake-door</dd></div>
+                    <div><dt data-count="90" data-suffix="+">90+</dt><dd>PMs trained on AI tools, 75% now use them</dd></div>
+                  </dl>
+                </div>
+                <div class="role__col role__col--ships">
+                  <p class="role__k">Deliveries</p>
+                  <ul class="ships">
+                    <li><b>AI dealer assistant</b><span>capability specs · evals · trace reviews</span></li>
+                    <li><b>Market view, rebuilt</b><span>desktop and mobile redesign</span></li>
+                    <li><b>Segment drill-down</b><span>from a segment to its competing listings</span></li>
+                    <li><b>One source of truth</b><span>listing stats match sales and BI</span></li>
+                    <li><b>Workshop for ~100 people</b><span>8 Claude skills, interviews to roadmap</span></li>
+                    <li><b>Agent skills for every PM</b><span>define a domain's agent, spec a change</span></li>
+                  </ul>
+                </div>
+              </div>
             </div></div>
           </div>
           <div class="acc__item rv">
@@ -315,12 +329,24 @@
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
-              <ul class="points">
-                <li>Same team and scope; promoted to Product Manager in March 2025.</li>
-                <li>Owned the product side of two data-science models: vehicle price estimation and
-                  expected time to sell, from a car's specs.</li>
-                <li>Ran 50+ in-person dealer interviews across Poland, Romania and Portugal.</li>
-              </ul>
+              <p class="role__sum">Same team and scope, on the machine-learning side of the product.</p>
+              <div class="role">
+                <div class="role__col">
+                  <p class="role__k">Outcomes</p>
+                  <dl class="wins">
+                    <div><dt data-count="50" data-suffix="+">50+</dt><dd>in-person dealer interviews, PL · RO · PT</dd></div>
+                    <div><dt data-count="12" data-suffix=" mo">12 mo</dt><dd>to promotion to Product Manager</dd></div>
+                  </dl>
+                </div>
+                <div class="role__col role__col--ships">
+                  <p class="role__k">Deliveries</p>
+                  <ul class="ships">
+                    <li><b>Fair-price estimates</b><span>an ML model, in the product</span></li>
+                    <li><b>Time-to-sell estimates</b><span>from a car's specs</span></li>
+                    <li><b>Dealer research</b><span>interviews in three countries</span></li>
+                  </ul>
+                </div>
+              </div>
             </div></div>
           </div>
           <div class="acc__item rv">
@@ -331,11 +357,21 @@
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
-              <ul class="points">
-                <li>Led product discovery on dealer lead generation.</li>
-                <li>Ran A/B experiments with Data Science on recommendation types tied to exposure
-                  services.</li>
-              </ul>
+              <div class="role">
+                <div class="role__col">
+                  <p class="role__k">Outcomes</p>
+                  <dl class="wins">
+                    <div><dt data-count="6" data-suffix=" mo">6 mo</dt><dd>from trainee to Associate PM</dd></div>
+                  </dl>
+                </div>
+                <div class="role__col role__col--ships">
+                  <p class="role__k">Deliveries</p>
+                  <ul class="ships">
+                    <li><b>Lead-generation discovery</b><span>for professional dealers</span></li>
+                    <li><b>Recommendation A/B tests</b><span>with Data Science</span></li>
+                  </ul>
+                </div>
+              </div>
             </div></div>
           </div>
           <div class="acc__item rv">
@@ -346,10 +382,23 @@
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
-              <p>A month-long AI programme in Amsterdam, co-created by Prosus and the THNK School of
-                Creative Leadership, with people from companies across the group. My team built and
-                demoed a prototype: a seller inbox with an AI assistant that screens out buyers who
-                aren't serious.</p>
+              <p class="role__sum">A month-long AI programme by Prosus and the THNK School of Creative Leadership, with people from across the group.</p>
+              <div class="role">
+                <div class="role__col">
+                  <p class="role__k">Outcomes</p>
+                  <dl class="wins">
+                    <div><dt>Selected</dt><dd>from companies across the Prosus group</dd></div>
+                    <div><dt data-count="1" data-suffix=" mo">1 mo</dt><dd>full time in Amsterdam</dd></div>
+                  </dl>
+                </div>
+                <div class="role__col role__col--ships">
+                  <p class="role__k">Deliveries</p>
+                  <ul class="ships">
+                    <li><b>Seller-inbox prototype</b><span>an AI assistant that screens out buyers who aren't serious</span></li>
+                    <li><b>Live demo on stage</b><span>to the programme, in Amsterdam</span></li>
+                  </ul>
+                </div>
+              </div>
               <div class="photos">
                 <img src="/assets/accelerator/demo.jpg" alt="João presenting his team's prototype on stage" width="1200" height="900" loading="lazy" />
                 <img src="/assets/accelerator/panel.jpg" alt="João asking a question into a microphone" width="900" height="1065" loading="lazy" />
@@ -430,7 +479,7 @@
     <span>Hand-built · no framework · a little AI</span>
   </footer>
 
-  <script src="/js/scroll.js?v=2026-10-23a"></script>
-  <script src="/js/home.js?v=2026-10-23a"></script>
+  <script src="/js/scroll.js?v=2026-10-26a"></script>
+  <script src="/js/home.js?v=2026-10-26a"></script>
 </body>
 </html>

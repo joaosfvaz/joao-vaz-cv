@@ -111,7 +111,7 @@
   function enter(el) {
     if (el.classList.contains("is-in")) return;
     el.classList.add("is-in");
-    count($("[data-count]", el));
+    $$("[data-count]", el).forEach(count);
     onEnter.forEach((fn) => fn(el));
   }
 
@@ -393,6 +393,8 @@
         const open = !item.classList.contains("is-open");
         items.forEach((other) => set(other, false));
         set(item, open);
+        /* a role's numbers count up again each time it opens */
+        if (open) $$("[data-count]", item).forEach(count);
         clearTimeout(settle);
         settle = setTimeout(() => S.measure(), 600);
       });
