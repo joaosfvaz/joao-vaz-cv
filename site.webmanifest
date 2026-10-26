@@ -1,0 +1,12 @@
+{
+  "name": "João Vaz — Product Manager",
+  "short_name": "João Vaz",
+  "icons": [
+    { "src": "/assets/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/brand/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0c0e13",
+  "background_color": "#0c0e13",
+  "display": "browser",
+  "start_url": "/"
+}

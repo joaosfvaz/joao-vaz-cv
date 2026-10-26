@@ -53,6 +53,25 @@ The movement is kept to a few places on purpose, so each one is noticed:
 - **Projects** — flat cards that fill with colour under the pointer (blue and orange in a
   checkerboard), wiped in from the bottom.
 
+## Logo and icons
+
+The mark is a **JV monogram with an orange full stop** on a blue rounded square — the same blue and
+orange as the site, and the same full stop as "João Vaz." in the hero. It is hand-drawn SVG paths,
+so it needs no font.
+
+- `favicon.svg` (and the same file as `assets/brand/logo.svg`) is the master. The bar on every page
+  carries it inline next to the name; on hover the mark tilts and the dot grows.
+- `assets/brand/favicon-32.png` and `favicon.ico` are the fallbacks for browsers without SVG icons.
+- `apple-touch-icon.png` (180px) and `assets/brand/icon-192.png` / `icon-512.png` are full-bleed
+  squares with the mark smaller, because phones round the corners themselves; `site.webmanifest`
+  lists the last two.
+- `assets/brand/og.jpg` (1200×630) is the card a shared link shows. Every page's `<head>` carries
+  the Open Graph and Twitter tags that point at it, with the page's own title and description.
+
+The PNGs, the ICO and the card were rendered from SVG and HTML with headless Chrome (and ffmpeg for
+the ICO). To change the mark, edit the paths in `favicon.svg` and in the bar's inline copy, then
+render them again.
+
 ## Light and dark
 
 Every page has a light and a dark theme, and a switch in the bar (a sun on dark, a moon on light).

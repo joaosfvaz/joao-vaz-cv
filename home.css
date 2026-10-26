@@ -148,8 +148,24 @@ ul, ol { list-style: none; }
   transition: border-color 0.3s ease;
 }
 .bar.is-scrolled { border-bottom-color: var(--line); }
-.bar__name { font-family: var(--display); font-weight: 700; font-size: 20px; line-height: 1; letter-spacing: -0.03em; }
-.bar__name::after { content: "."; color: var(--accent); }
+/* the JV monogram and the name; the mark carries the full stop now */
+.bar__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+.bar__mark { width: 30px; height: 30px; flex: 0 0 auto; transition: transform 0.4s var(--ease); }
+.bar__dot { transform-box: fill-box; transform-origin: center; transition: transform 0.4s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .bar__name:hover .bar__mark { transform: rotate(-8deg); }
+  .bar__name:hover .bar__dot { transform: scale(1.35); }
+}
 .bar__links { display: flex; gap: 28px; margin-left: auto; font-size: 14px; color: var(--dim); }
 .bar__links a { position: relative; padding: 6px 0; transition: color 0.2s ease; }
 .bar__links a::after {
@@ -951,7 +967,7 @@ html:not(.js) .theme { display: none; }
 @media (max-width: 767px) {
   body { padding-bottom: 88px; }
   .hero__photo { --off: 12px; }
-  .bar { height: 56px; }
+  .bar { height: 56px; gap: 12px; }
   .bar__links { display: none; }
   .bar__end { margin-left: auto; }
   .dock { display: flex; }
