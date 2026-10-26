@@ -93,7 +93,8 @@ short loading bar, then the title, the player card and the nine quest cards land
   - A click opens **the viewer** (`<dialog id="lightbox">`): the photo as large as the window
     allows, ← and → (keys or buttons) to move through all of them, Esc or a click outside to close.
     It reads the large file from each tile's `data-full`. To add a photo, save the two sizes and
-    add a `<button class="shot" data-full="…">` tile like the others.
+    add a `<button class="shot" data-full="…">` tile like the others. A `data-full` photo outside
+    the log (the Triathlon quest's `.quest__shot`) opens on its own, with no arrows or counter.
 
 ## Easter eggs
 
@@ -139,6 +140,25 @@ Every page has a light and a dark theme, and a switch in the bar (a sun on dark,
 
 All three read the same thing: the section under a reading line a third of the way down the
 window, from `window.Scroll`'s anchors.
+
+### On phones
+
+Everything for phones sits in `@media screen and (max-width: 767px)` (and `400px` in
+`project.css`). The desktop never sees it, and neither does the print CV: a printed page is
+narrower than 767px, which is why these blocks say `screen`.
+
+- **Thumb-sized targets** — the bar's icons, the trace questions, the viewer's buttons and the
+  Side quests button are 44px tall.
+- **The agent concepts** become a row of cards to swipe through, the next card peeking in from the
+  edge.
+- **Side quests** — the row with "Back to work" stays at the top while the panel scrolls (a phone
+  has no Esc key). Each quest becomes a compact row: the icon on the left, the status over the
+  title.
+- **The photo log** — two columns; the last sport photo spans both, so the row ends flush. In the
+  viewer, a swipe sideways moves to the next photo.
+- **Project pages** — the dock starts with a way back ("← All work"). Below 400px the bar button
+  uses its short label (`.bar__short`) and the way back shows only its arrow. A diagram says
+  "Swipe sideways to see all of it" above itself.
 
 ## Pages
 
@@ -234,7 +254,10 @@ belong to the older glass design. No page loads them any more.
    anchor jumps on its own.
 3. **Re-measuring re-fires.** `Scroll.measure()` re-tests every consumer against the current
    position. An accordion calls it once its panel settles, and the webfonts call it when they land.
-4. **Cache busting.** GitHub Pages lets browsers keep a file for ten minutes, so a deploy could pair
+4. **Phones change only phones.** Put phone rules in a `screen and (max-width: …)` block, keep
+   new markup hidden by default, and never split a desktop label into spans inside a `.btn` (it
+   is a flex box, so each span becomes a flex item and the gap moves the text).
+5. **Cache busting.** GitHub Pages lets browsers keep a file for ten minutes, so a deploy could pair
    a new page with an old stylesheet. Every CSS and JS link carries a `?v=` stamp; change it on
    every page whenever a stylesheet or a script changes.
 

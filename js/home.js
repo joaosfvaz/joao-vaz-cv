@@ -857,6 +857,17 @@
       if (ev.key === "ArrowRight") show(at + 1);
     });
     lb.addEventListener("click", (ev) => { if (ev.target === lb) lb.close(); });
+    /* on a touch screen, a swipe sideways moves to the next photo */
+    let x0 = null;
+    lb.addEventListener("touchstart", (ev) => {
+      x0 = ev.touches.length === 1 ? ev.touches[0].clientX : null;
+    }, { passive: true });
+    lb.addEventListener("touchend", (ev) => {
+      if (x0 === null || list.length < 2) return;
+      const dx = ev.changedTouches[0].clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 50) show(at + (dx < 0 ? 1 : -1));
+    });
   }
 
   /* in-page links glide; the target keeps its own scroll padding */
