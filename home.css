@@ -950,8 +950,211 @@ html:not(.js) .theme { display: none; }
 .strip__track span:nth-of-type(even) { color: transparent; -webkit-text-stroke: 1.5px var(--faint); }
 .strip__track b { font-weight: 800; font-size: 0.6em; color: var(--accent-2); }
 
+/* ---------- Easter eggs ---------- */
+/* the note a find shows: a small flat card, bottom left, above the dock */
+.toast {
+  position: fixed;
+  left: 20px; bottom: 20px;
+  z-index: 80;
+  max-width: min(360px, calc(100vw - 40px));
+  padding: 14px 16px 15px;
+  border: 1px solid var(--line-2);
+  border-left: 3px solid var(--accent-2);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px -16px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.35s var(--ease);
+}
+.toast.is-on { opacity: 1; transform: none; }
+.toast span { display: block; margin-bottom: 4px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); }
+.toast p { font-size: 14px; line-height: 1.45; }
+.confetti { position: fixed; inset: 0; z-index: 85; width: 100vw; height: 100vh; pointer-events: none; }
+/* the footer's count, shown only after the first find */
+.eggs b { color: var(--accent-2); font-weight: 500; }
+.eggs[hidden] { display: none; }
+/* five clicks: the mark turns once and the dot pops */
+.bar__name.is-spun .bar__mark { animation: markSpin 0.9s var(--ease); }
+.bar__name.is-spun .bar__dot { animation: dotPop 0.9s var(--ease); }
+@keyframes markSpin { from { transform: rotate(0deg) scale(1); } 45% { transform: rotate(200deg) scale(1.15); } to { transform: rotate(360deg) scale(1); } }
+@keyframes dotPop { 0%, 40% { transform: scale(1); } 70% { transform: scale(1.9); } to { transform: scale(1); } }
+
+/* ==================================================================
+   Side quests — the personal side, full screen. The same system with a
+   little more play: a loading bar, a player card, quest cards with a
+   status, and a photo log waiting for its photos.
+   ================================================================== */
+html:has(.quests[open]) { overflow: hidden; }
+.quests {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  max-width: none; max-height: none;
+  margin: 0; padding: 0;
+  border: 0;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.quests::backdrop { background: var(--bg); }
+.quests__inner { padding: clamp(24px, 5vh, 48px) 0 80px; }
+.quests__top { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 26px; }
+.quests__top kbd {
+  margin-left: 8px; padding: 1px 6px;
+  border: 1px solid var(--line-2); border-radius: 4px;
+  font-family: var(--mono); font-size: 10.5px; color: var(--dim);
+}
+.quests__title {
+  max-width: 14em;
+  margin-bottom: 32px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(40px, 6vw, 84px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+.quests__title em { font-style: normal; color: var(--accent-2); }
+
+/* the player card */
+.player {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.player__img { width: 132px; height: 132px; object-fit: cover; object-position: 58% 16%; border-radius: 8px; }
+.player h3 { margin: 4px 0 10px; font-family: var(--display); font-weight: 700; font-size: 30px; letter-spacing: -0.04em; }
+.player__class { display: grid; gap: 4px; margin-bottom: 14px; }
+.player__class div { display: flex; gap: 10px; font-size: 14px; }
+.player__class dt { min-width: 110px; padding-top: 2px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+.player__stats { display: flex; flex-wrap: wrap; gap: 8px; }
+.player__stats li { padding: 5px 11px; border-radius: 999px; background: var(--tint-2); font-size: 13px; }
+.player__stats b { color: var(--accent); font-weight: 700; }
+
+/* the quests, numbered Q01 to Q09 on the hairline grid */
+.quests__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--line);
+  overflow: hidden;
+  counter-reset: q;
+}
+.quest { position: relative; padding: 20px 20px 34px; background: var(--bg); counter-increment: q; transition: background-color 0.25s ease; }
+.quest::after { content: "Q" counter(q, decimal-leading-zero); position: absolute; right: 18px; bottom: 14px; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+.quest__top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 18px; }
+.quest__ic { width: 30px; height: 30px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.4s var(--ease); }
+.quest__status {
+  padding: 3px 9px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--dim);
+  white-space: nowrap;
+}
+.quest--daily .quest__status { border-color: var(--accent); color: var(--accent); }
+.quest--new .quest__status { border-color: var(--accent-2); color: var(--accent-2); }
+.quest h4 { margin-bottom: 6px; font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -0.02em; }
+.quest p { max-width: 26em; font-size: 14px; line-height: 1.5; color: var(--dim); }
+.quest a { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .quest:hover { background: var(--tint); }
+  .quest:hover .quest__ic { transform: rotate(-8deg) scale(1.08); }
+}
+
+/* the photo log: placeholders until the photos arrive */
+.photolog { margin-top: 40px; }
+.photolog__row { margin-top: 16px; }
+.photolog__row h4 { margin-bottom: 10px; font-family: var(--display); font-weight: 600; font-size: 17px; }
+.photolog__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.photolog__row h4 span { margin-left: 8px; font-family: var(--sans); font-weight: 400; font-size: 13px; color: var(--faint); }
+/* the photos: portrait tiles, the landscape frames two tiles wide */
+.shot {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--surface);
+  cursor: zoom-in;
+}
+.shot img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease), filter 0.4s ease; }
+/* a wide frame takes the height of the portrait tiles in its row */
+.shot--wide { grid-column: span 2; aspect-ratio: auto; }
+.shot--wide img { position: absolute; inset: 0; }
+.shot::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--line);
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .shot:hover img { transform: scale(1.04); }
+}
+.shot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* the viewer: one photo, as large as the window allows */
+.lightbox {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  max-width: none; max-height: none;
+  margin: 0; padding: 24px 24px 84px;
+  border: 0;
+  background: rgba(8, 9, 12, 0.94);
+  color: #f3f4f7;
+}
+.lightbox[open] { display: grid; place-items: center; }
+.lightbox::backdrop { background: transparent; }
+.lightbox img { max-width: 100%; max-height: calc(100vh - 120px); object-fit: contain; border-radius: 6px; }
+.lightbox__bar {
+  position: absolute; left: 0; right: 0; bottom: 20px;
+  display: flex; justify-content: center; align-items: center; gap: 10px;
+}
+.lightbox__bar .btn { color: #f3f4f7; border-color: rgba(255, 255, 255, 0.25); }
+.lightbox__bar .meta { min-width: 60px; text-align: center; color: rgba(255, 255, 255, 0.6); }
+.lightbox__bar kbd { margin-left: 6px; font-family: var(--mono); font-size: 10.5px; color: rgba(255, 255, 255, 0.6); }
+.lightbox[open] img { animation: lbIn 0.35s var(--ease); }
+@keyframes lbIn { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: none; } }
+
+/* opening plays a short loading bar, then everything lands in a run */
+.quests__load {
+  position: fixed; inset: 0; z-index: 3;
+  display: grid; place-content: center; justify-items: center; gap: 14px;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+.quests__load span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+.quests__load i { position: relative; display: block; width: 220px; height: 4px; overflow: hidden; border-radius: 2px; background: var(--line); }
+.quests__load i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; }
+.quests.is-playing .quests__load { animation: loadFade 1.1s ease both; }
+.quests.is-playing .quests__load i::after { animation: loadBar 0.75s var(--ease) both; }
+@keyframes loadFade { 0%, 72% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes loadBar { from { transform: scaleX(0); } to { transform: none; } }
+.quests.is-playing :is(.quests__title, .player, .quest, .photolog) { animation: questIn 0.6s var(--ease) both; }
+.quests.is-playing .quests__title { animation-delay: 0.8s; }
+.quests.is-playing .player { animation-delay: 0.88s; }
+.quests.is-playing .quest { animation-delay: calc(0.95s + var(--q, 0) * 50ms); }
+.quests.is-playing .photolog { animation-delay: 1.45s; }
+@keyframes questIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* a way in from the contact section */
+.offclock { margin-top: 28px; font-size: 15px; color: var(--dim); }
+.offclock button { color: var(--accent-2); font-weight: 600; }
+.offclock button:hover { text-decoration: underline; text-underline-offset: 3px; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1080px) {
+  .quests__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .figures { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .figures > div:nth-child(4) { border-left: 0; padding-left: 0; }
   .figures > div:nth-child(n + 4) { border-top: 1px solid var(--line); }
@@ -966,6 +1169,7 @@ html:not(.js) .theme { display: none; }
 }
 @media (max-width: 767px) {
   body { padding-bottom: 88px; }
+  .toast { bottom: 96px; left: 12px; max-width: calc(100vw - 24px); }
   .hero__photo { --off: 12px; }
   .bar { height: 56px; gap: 12px; }
   .bar__links { display: none; }
@@ -977,6 +1181,16 @@ html:not(.js) .theme { display: none; }
   .acc__body { padding-left: 46px; }
   .concepts { grid-template-columns: minmax(0, 1fr); }
   .role { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .quests__grid { grid-template-columns: minmax(0, 1fr); }
+  .player { grid-template-columns: 88px minmax(0, 1fr); gap: 16px; }
+  .player__img { width: 88px; height: 88px; }
+  .player__class div { flex-direction: column; gap: 0; }
+  .photolog__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .photolog__grid--shots { grid-auto-flow: dense; }
+  .shot--wide { aspect-ratio: 8 / 5; }
+  .photolog__row h4 span { display: block; margin: 2px 0 0; }
+  /* the bar keeps room for the controller: LinkedIn lives in Contact */
+  .bar__end a.bar__icon[href*="linkedin"] { display: none; }
   .contact__row { grid-template-columns: minmax(0, 1fr) auto; }
   .contact__row .meta { grid-column: 1 / -1; }
   .trace__run { min-height: 0; }
@@ -1010,5 +1224,84 @@ html:not(.js) .theme { display: none; }
   .js .trace .st { opacity: 1; transform: none; }
   .js .acc__item :is(.wins > div, .ships li) { opacity: 1; transform: none; }
   .js .kit__group.rv .tags li { opacity: 1; transform: none; }
+  .quests__load { display: none; }
   .js .trace__spans li.st::after { transform: none; }
+}
+
+/* ==================================================================
+   Print — the page becomes a clean CV on paper: black on white, no
+   navigation, no motion, every role and product open, no games.
+   ================================================================== */
+@media print {
+  :root, :root[data-theme] {
+    --bg: #fff; --surface: #fff; --ink: #111; --dim: #333; --faint: #666;
+    --line: #d6d6d6; --line-2: #bbb; --accent: #2a52d6; --accent-soft: #2a52d6; --accent-2: #c94d14;
+  }
+  @page { margin: 12mm 13mm 14mm; }
+  html { font-size: 9pt; }
+  body { background: #fff; color: #111; padding: 0; font-size: 9pt; line-height: 1.45; }
+  .bar, .rail, .dock, .skip, .hero__field, .strip, .hero__actions, .hero__photo, .trace, .photos,
+  .acc__icon, .toast, .confetti, .eggs, .quests, .lightbox, .offclock, .keys, .head__intro, .project__go,
+  .section--contact .contact__title { display: none !important; }
+  /* the side projects print as a compact list */
+  .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6pt; }
+  .project { min-height: 0; padding: 6pt 8pt; color: var(--ink) !important; }
+  .project::before { display: none; }
+  .project h3 { font-size: 11pt; margin: 2pt 0 3pt; }
+  .project p { font-size: 8pt; color: var(--dim) !important; }
+  .js .rv, .js .rv.is-in, .js [data-split] .ch, .js .name-dot, .js .h-split .w > span,
+  .js .acc__body > *, .js .acc__item :is(.wins > div, .ships li), .js .kit__group .tags li {
+    opacity: 1 !important; transform: none !important; animation: none !important; transition: none !important;
+  }
+  .js .acc__item .acc__panel { grid-template-rows: 1fr !important; }
+  .acc__item::before, .section::before, .figures::before { transform: none !important; }
+  .acc__item::after, .contact__row::after { display: none; }
+  .wrap { width: 100%; }
+  .hero { min-height: 0; padding: 0; display: block; }
+  .hero__grid { display: block; }
+  .hero__name { font-size: 26pt; margin: 4pt 0 6pt; }
+  .hero__name .line { display: inline-block; padding: 0 0.12em 0 0; margin: 0; }
+  .line:nth-child(2) { padding-left: 0; }
+  .hero__line { font-size: 12pt; margin-bottom: 4pt; }
+  .hero__pitch { font-size: 9.5pt; margin-bottom: 0; }
+  .figures { grid-template-columns: repeat(6, minmax(0, 1fr)); margin-top: 5mm; }
+  .figures > div { padding: 5pt 6pt 6pt; border-top: 0 !important; border-left: 1px solid var(--line) !important; }
+  .figures > div:first-child { border-left: 0 !important; padding-left: 0; }
+  .figures dt { font-size: 14pt; margin-bottom: 3pt; }
+  .figures dd { font-size: 7.5pt; }
+  .section { padding: 5mm 0 0; }
+  .head { margin-bottom: 2mm; }
+  .head h2, .contact__title { font-size: 13pt; margin-top: 3pt; max-width: none; }
+  .meta { font-size: 7.5pt; }
+  .acc__head { padding: 4pt 0; grid-template-columns: 26pt minmax(0, 1fr) auto; gap: 8pt; }
+  .acc__title { font-size: 11pt; }
+  .acc__title small { font-size: 8.5pt; margin-top: 1pt; }
+  .tag, .acc__when { font-size: 7pt; }
+  .acc__body { padding-left: 34pt; }
+  .acc__body p, .role__sum { font-size: 9pt; margin-bottom: 4pt; }
+  .acc__body > :last-child { margin-bottom: 5pt; }
+  .role { gap: 10pt; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+  .wins > div { padding: 5pt 7pt; }
+  .wins dt { font-size: 12pt; margin-bottom: 2pt; }
+  .wins dd { font-size: 7.5pt; }
+  .ships li { padding: 3pt 0; }
+  .ships b { font-size: 9pt; }
+  .ships span { font-size: 8pt; margin-top: 0; }
+  .ai { display: block; }
+  .concepts { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 10pt; }
+  .concepts > div { padding: 5pt 0; }
+  .concepts dt { font-size: 9.5pt; margin-bottom: 2pt; }
+  .concepts dd { font-size: 7.5pt; }
+  .kit { margin-top: 5mm; }
+  .kit__group { padding: 6pt 8pt; }
+  .kit__group h4 { font-size: 9.5pt; margin-bottom: 4pt; }
+  .tags { gap: 3pt; }
+  .tags li { font-size: 7.5pt; padding: 1pt 6pt; }
+  .kit__cv > div { padding: 6pt 8pt; }
+  .contact__row { padding: 4pt 0; grid-template-columns: 60pt minmax(0, 1fr); }
+  .contact__row strong { font-size: 11pt; }
+  .contact__row i { display: none; }
+  .acc__item, .kit__group, .concepts > div, .wins, .ships li, .role { break-inside: avoid; }
+  a[href^="http"]:not(.bar__icon):not(.contact__row)::after { content: " (" attr(href) ")"; font-size: 7.5pt; color: #555; }
+  .foot { padding: 3mm 0 0; font-size: 7.5pt; }
 }

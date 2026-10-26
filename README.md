@@ -72,6 +72,44 @@ The PNGs, the ICO and the card were rendered from SVG and HTML with headless Chr
 the ICO). To change the mark, edit the paths in `favicon.svg` and in the bar's inline copy, then
 render them again.
 
+## Side quests
+
+The personal side lives in a full-screen panel (`<dialog id="side-quests">` on the home page). The
+controller button in the bar opens it, so does the link under Contact, and so does
+`/#side-quests` — which is where the project pages' controller button points. Opening it plays a
+short loading bar, then the title, the player card and the nine quest cards land in a run. Esc or
+"Back to work" closes it.
+
+- **Quest cards** — one per interest, numbered Q01–Q09, each with a status chip ("Daily" in the
+  accent, "New quest" in orange).
+- **The photo log** — my sports photography, then landscapes and places.
+  - Each row is a three-column grid (`photolog__grid--shots`) of portrait tiles; a landscape
+    frame (`shot--wide`) spans two tiles and takes the height of the portrait tile beside it. A
+    row needs whole lines of three: each wide frame counts as two. On a phone the grid has two
+    columns and fills gaps by itself, so a row with an even count of portrait tiles ends flush.
+  - Each photo has two files in `assets/life/`: `<row>-N.jpg` (about 1280px, the viewer) and
+    `<row>-N-sm.jpg` (640px wide, the tile; 900×562 and cropped to 8:5 for a wide frame), resized
+    and stripped of camera metadata with ffmpeg (`-map_metadata -1`).
+  - A click opens **the viewer** (`<dialog id="lightbox">`): the photo as large as the window
+    allows, ← and → (keys or buttons) to move through all of them, Esc or a click outside to close.
+    It reads the large file from each tile's `data-full`. To add a photo, save the two sizes and
+    add a `<button class="shot" data-full="…">` tile like the others.
+
+## Easter eggs
+
+Four, quiet until found. A find shows a small note bottom left, and the footer starts counting
+("Easter eggs found: 2 / 4"). Finds are stored in this browser only (`localStorage`, key `eggs`).
+
+- **Type "evals"** anywhere (not in a field) — the AI trace scrolls into view and plays a hidden
+  fourth run: "Who built this website?". On a project page the note points to the home page.
+- **Click the logo five times** quickly — the mark turns once and the dot pops.
+- **The Konami code** (↑↑↓↓←→←→BA) — flat confetti in the site's colours, and a note with the email.
+- **Print the page** — the print styles turn it into a clean CV on paper: black on white, no
+  navigation or motion, every product and role open, about four A4 pages.
+
+The browser console greets whoever opens it, with a hint for the first egg. Under reduced motion
+the confetti and the spin are skipped; the notes still show.
+
 ## Light and dark
 
 Every page has a light and a dark theme, and a switch in the bar (a sun on dark, a moon on light).

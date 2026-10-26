@@ -448,6 +448,19 @@
       a: "I can help with your listings, prices and the car market, but not the weather. Want to see how your stock is doing instead?",
       evals: ["refusal behaviour", "scope adherence", "plain language"],
     },
+    /* the hidden run: no tab plays it — typing "evals" does */
+    {
+      q: "Who built this website?",
+      spans: [
+        ["route → about-the-builder agent", "29 ms", 0, 12, ""],
+        ["tool · read_cv(\"João Vaz\")", "143 ms", 8, 24, "is-tool"],
+        ["tool · git_log(\"joao-vaz.com\")", "201 ms", 10, 30, "is-tool"],
+        ["mandate · assist · read-only ✓", "2 ms", 42, 6, "is-check"],
+        ["answer · grounded in 2 tool results", "0.8 s", 50, 40, ""],
+      ],
+      a: "João Vaz — a product manager who reads agent traces for fun. He built this site by hand: no framework, one scroll driver, a little AI. You found the hidden run.",
+      evals: ["correctness", "groundedness", "self-awareness"],
+    },
   ];
 
   const trace = $("[data-trace]");
@@ -532,6 +545,11 @@
       });
     });
     again.addEventListener("click", () => play(current));
+    /* the easter egg asks for the hidden run */
+    document.addEventListener("egg-evals", () => {
+      trace.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+      setTimeout(() => play(RUNS.length - 1), reduced ? 0 : 500);
+    });
 
     /* the first run waits until the trace is on screen */
     render(0);
@@ -627,6 +645,211 @@
       try { saved = localStorage.getItem("theme"); } catch (e) { /* no storage: follow the system */ }
       if (!saved) setTheme(systemLight.matches ? "light" : "dark", true);
     });
+  }
+
+  /* ------------------------------------------------------------------
+   * Easter eggs — small rewards for the curious, invisible otherwise: a
+   * note in the console, a hidden trace run (type "evals"), the logo
+   * (click it five times), the Konami code and the printed page. Finds
+   * are counted in this browser only, and the footer shows the count
+   * once there is one. Nothing is sent anywhere.
+   * ---------------------------------------------------------------- */
+  const EGGS = ["evals", "logo", "konami", "print"];
+  const found = new Set();
+  try {
+    JSON.parse(localStorage.getItem("eggs") || "[]").forEach((k) => { if (EGGS.indexOf(k) > -1) found.add(k); });
+  } catch (e) { /* no storage: finds last this page */ }
+  const eggCount = $("[data-eggs]");
+  function showCount() {
+    if (!eggCount || !found.size) return;
+    eggCount.hidden = false;
+    $("b", eggCount).textContent = String(found.size);
+  }
+  showCount();
+
+  let toastEl = null;
+  let toastTimer = 0;
+  function toast(label, text) {
+    if (!toastEl) {
+      toastEl = document.createElement("div");
+      toastEl.className = "toast";
+      toastEl.setAttribute("role", "status");
+      document.body.appendChild(toastEl);
+    }
+    toastEl.textContent = "";
+    const l = document.createElement("span");
+    const t = document.createElement("p");
+    l.textContent = label;
+    t.textContent = text;
+    toastEl.appendChild(l);
+    toastEl.appendChild(t);
+    toastEl.classList.remove("is-on");
+    void toastEl.offsetWidth;
+    toastEl.classList.add("is-on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("is-on"), 5500);
+  }
+  function find(key, text) {
+    const again = found.has(key);
+    found.add(key);
+    try { localStorage.setItem("eggs", JSON.stringify(Array.from(found))); } catch (e) { /* see above */ }
+    showCount();
+    toast("Easter egg " + found.size + " / " + EGGS.length + (again ? " · found again" : ""), text);
+  }
+
+  /* for whoever opens the console */
+  if (window.console && console.log) {
+    console.log(
+      "%cJV.%c\n\nHi, curious one. You opened the console.\nThis site is hand-built: no framework, one scroll driver, a little AI.\nThere are four easter eggs on it. A hint for the first: type \"evals\" anywhere on the page.\n\n— João · joaosfvaz@gmail.com",
+      "font: 800 28px sans-serif; color: #4d7cff",
+      "font: 12px ui-monospace, monospace"
+    );
+  }
+
+  /* flat confetti in the site's colours, once, then gone */
+  function confetti() {
+    if (reduced) return;
+    const c = document.createElement("canvas");
+    c.className = "confetti";
+    c.setAttribute("aria-hidden", "true");
+    document.body.appendChild(c);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const w = window.innerWidth, h = window.innerHeight;
+    c.width = w * dpr;
+    c.height = h * dpr;
+    const g = c.getContext("2d");
+    g.scale(dpr, dpr);
+    const cs = getComputedStyle(document.body);
+    const colours = ["--accent", "--accent-2", "--ink"].map((n) => cs.getPropertyValue(n).trim());
+    const bits = [];
+    for (let i = 0; i < 140; i++) {
+      bits.push({
+        x: Math.random() * w, y: -20 - Math.random() * h * 0.5,
+        vx: (Math.random() - 0.5) * 2.4, vy: 2 + Math.random() * 3.5,
+        r: Math.random() * 6.3, vr: (Math.random() - 0.5) * 0.3,
+        s: 6 + Math.random() * 6, c: colours[i % 3],
+      });
+    }
+    const t0 = performance.now();
+    (function step(now) {
+      const t = now - t0;
+      g.clearRect(0, 0, w, h);
+      g.globalAlpha = Math.min(1, Math.max(0, (3200 - t) / 600));
+      bits.forEach((b) => {
+        b.x += b.vx; b.y += b.vy; b.vy += 0.035; b.r += b.vr;
+        g.save(); g.translate(b.x, b.y); g.rotate(b.r);
+        g.fillStyle = b.c; g.fillRect(-b.s / 2, -b.s / 2, b.s, b.s * 0.6);
+        g.restore();
+      });
+      if (t < 3200) requestAnimationFrame(step);
+      else c.remove();
+    })(t0);
+  }
+
+  /* typing "evals", and the Konami code — never while typing in a field */
+  const KONAMI = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
+  let keys = [];
+  let typed = "";
+  document.addEventListener("keydown", (ev) => {
+    if (ev.metaKey || ev.ctrlKey || ev.altKey) return;
+    if (ev.target.closest && ev.target.closest("input, textarea, select, [contenteditable]")) return;
+    const k = (ev.key || "").toLowerCase();
+    keys.push(k);
+    if (keys.length > KONAMI.length) keys.shift();
+    if (keys.join() === KONAMI.join()) {
+      keys = [];
+      confetti();
+      find("konami", "↑↑↓↓←→←→BA. You clearly ship things for fun. Let's talk: joaosfvaz@gmail.com");
+    }
+    if (k.length === 1) {
+      typed = (typed + k).slice(-5);
+      if (typed === "evals") {
+        typed = "";
+        if (trace) {
+          document.dispatchEvent(new CustomEvent("egg-evals"));
+          find("evals", "A hidden fourth run: the agent was asked who built this site.");
+        } else {
+          find("evals", "The hidden run plays in the AI section of the home page.");
+        }
+      }
+    }
+  });
+
+  /* five quick clicks on the logo */
+  const logo = $(".bar__name");
+  if (logo) {
+    let clicks = 0;
+    let last = 0;
+    logo.addEventListener("click", () => {
+      const now = performance.now();
+      clicks = now - last < 700 ? clicks + 1 : 1;
+      last = now;
+      if (clicks < 5) return;
+      clicks = 0;
+      logo.classList.remove("is-spun");
+      void logo.offsetWidth;
+      logo.classList.add("is-spun");
+      find("logo", "Five clicks on a logo. You test things properly — a good sign.");
+    });
+  }
+
+  /* the printed page is a clean CV (see @media print in home.css) */
+  window.addEventListener("beforeprint", () => {
+    find("print", "Printing? This page turns into a clean CV on paper.");
+  });
+
+  /* ------------------------------------------------------------------
+   * Side quests — the personal side, in a full-screen dialog. Opening it
+   * plays a short loading bar, then the cards land. Esc, the close
+   * button or a link out close it; /#side-quests opens it on arrival,
+   * which is how the project pages' controller button gets here.
+   * ---------------------------------------------------------------- */
+  const quests = $("#side-quests");
+  if (quests && quests.showModal) {
+    $$(".quest", quests).forEach((q, i) => q.style.setProperty("--q", String(i)));
+    const openQuests = () => {
+      if (quests.open) return;
+      quests.showModal();
+      quests.scrollTop = 0;
+      quests.classList.remove("is-playing");
+      void quests.offsetWidth;
+      quests.classList.add("is-playing");
+      history.replaceState(null, "", "#side-quests");
+    };
+    $$("[data-quests-open]").forEach((b) => b.addEventListener("click", openQuests));
+    $$("[data-quests-close]", quests).forEach((b) => b.addEventListener("click", () => quests.close()));
+    quests.addEventListener("close", () => {
+      if (location.hash === "#side-quests") history.replaceState(null, "", location.pathname);
+    });
+    if (location.hash === "#side-quests") openQuests();
+  }
+
+  /* the photo log: a click opens the photo large; the arrow keys and the
+     buttons move through them, Esc or a click outside closes */
+  const lb = $("#lightbox");
+  const shots = $$("[data-full]");
+  if (lb && lb.showModal && shots.length) {
+    const lbImg = $("img", lb);
+    const lbCount = $("[data-lb-count]", lb);
+    let at = 0;
+    const show = (i) => {
+      at = (i + shots.length) % shots.length;
+      lbImg.src = shots[at].dataset.full;
+      lbImg.alt = $("img", shots[at]).alt;
+      lbCount.textContent = at + 1 + " / " + shots.length;
+      lbImg.style.animation = "none";
+      void lbImg.offsetWidth;
+      lbImg.style.animation = "";
+    };
+    shots.forEach((b, i) => b.addEventListener("click", () => { show(i); lb.showModal(); }));
+    $("[data-lb-prev]", lb).addEventListener("click", () => show(at - 1));
+    $("[data-lb-next]", lb).addEventListener("click", () => show(at + 1));
+    $("[data-lb-close]", lb).addEventListener("click", () => lb.close());
+    lb.addEventListener("keydown", (ev) => {
+      if (ev.key === "ArrowLeft") show(at - 1);
+      if (ev.key === "ArrowRight") show(at + 1);
+    });
+    lb.addEventListener("click", (ev) => { if (ev.target === lb) lb.close(); });
   }
 
   /* in-page links glide; the target keeps its own scroll padding */
