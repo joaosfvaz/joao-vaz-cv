@@ -140,9 +140,12 @@ contact.
 - **Print** is always the recruiter CV, in either view: the curious parts and the view controls
   are hidden on paper, the colours stay the recruiter's, and counters print their final value.
   A contact line (email, LinkedIn, the site) prints under the name; on screen it is hidden.
-- **The PDF CV** (`joao-vaz-cv.pdf`) is that print, made by `make-cv.sh`. "Download CV" in the
-  hero and the CV row at Contact both point at it, and download it as `Joao-Vaz-CV.pdf`. After
-  any change to the CV's content, run `sh make-cv.sh` and commit the new PDF with it.
+- **The PDF CV** (`joao-vaz-cv.pdf`) is not the print of this page: it is a condensed one-page
+  CV, `cv/index.html` with its own sheet `cv.css`, made for paper (A4, one column so hiring
+  systems read it in order). `make-cv.sh` prints it. "Download CV" in the hero and the CV row at
+  Contact both point at the PDF and download it as `Joao-Vaz-CV.pdf`. Every fact in the CV is on
+  this page too, so change both together, then run `sh make-cv.sh` and commit the new PDF.
+  `/cv/` itself is not linked and asks search engines not to list it.
 
 ## Side quests
 
@@ -314,8 +317,10 @@ team-context.css  # what the MCP page adds: accents, tool grid, the allow/deny g
 js/scroll.js      # the single scroll driver: metrics, anchors, progress, one rAF loop
 js/graph.js       # the generated Obsidian-style graph on the PM-OS page (that page only)
 dev-server.py     # no-cache static server for development
-make-cv.sh        # prints the recruiter view to joao-vaz-cv.pdf, the "Download CV" file
-joao-vaz-cv.pdf   # the CV as a file (4 pages); make it again with make-cv.sh, never by hand
+cv/               # /cv/ — the one-page CV for paper, the source of joao-vaz-cv.pdf
+cv.css            # the CV's own sheet: A4, black on white, the site's blue and typefaces
+make-cv.sh        # prints cv/index.html to joao-vaz-cv.pdf, the "Download CV" file
+joao-vaz-cv.pdf   # the CV as a file (1 page); make it again with make-cv.sh, never by hand
 404.html          # the page GitHub Pages serves for any missing address ("Quest not found")
 robots.txt        # lets every crawler in and points at the sitemap
 sitemap.xml       # the four pages, for search engines; update lastmod when a page changes

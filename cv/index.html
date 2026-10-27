@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>João Vaz — CV</title>
+  <!-- The CV on paper: the source of joao-vaz-cv.pdf (make-cv.sh prints
+       it). A condensed version of the home page on one A4 page; every
+       fact here is on the home page too, so change both together. -->
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/cv.css?v=2026-10-28d" />
+</head>
+<body>
+  <main class="cv">
+    <header class="cv__head">
+      <div>
+        <h1>João Vaz<span aria-hidden="true">.</span></h1>
+        <p class="cv__role">Product Manager · AI &amp; data products</p>
+      </div>
+      <p class="cv__contact">
+        <a href="mailto:joaosfvaz@gmail.com">joaosfvaz@gmail.com</a>
+        <a href="https://linkedin.com/in/joaovaz00">linkedin.com/in/joaovaz00</a>
+        <a href="https://joao-vaz.com">joao-vaz.com</a>
+      </p>
+    </header>
+
+    <p class="cv__summary">Product Manager at OLX Group (Motors, B2B), part of Prosus. I lead six
+      data and AI products for <b>12,000+ professional car dealers</b> in Portugal, Poland and
+      Romania, including the AI agents for my domain in the dealers' assistant. I set the
+      strategy for a 10-person team, and I build my own agents along the way.</p>
+
+    <dl class="cv__figures">
+      <div><dt>+150%</dt><dd>weekly engagement, 3 data products, 18 months</dd></div>
+      <div><dt>12k+</dt><dd>professional car dealers in PT · PL · RO</dd></div>
+      <div><dt>40+</dt><dd>experiments — A/B, AA &amp; fake-door</dd></div>
+      <div><dt>75+</dt><dd>in-person dealer interviews</dd></div>
+      <div><dt>90+</dt><dd>PMs trained on AI tooling</dd></div>
+    </dl>
+
+    <section class="cv__block">
+      <h2>Experience</h2>
+
+      <article class="job">
+        <header><h3>Product Manager <span>OLX Group · Prosus · Motors B2B</span></h3><p>Mar 2025 — now</p></header>
+        <p class="job__lede">Strategy for dealer insights, pricing and recommendations — from the data
+          pipelines to the screens, with stakeholders in five markets.</p>
+        <ul>
+          <li>Lead six dealer products: AI agents for pricing and performance, fair-price estimates,
+            a live view of the car market, listing performance, the dealer home screen and
+            recommendations on every listing.</li>
+          <li>Defined what my domain's agents in the dealers' AI assistant can answer about pricing
+            and listing performance, put our data behind MCP tools, and tested them with evals and
+            trace reviews.</li>
+          <li>Rebuilt the market insights view, with a drill-down to the competing listings in each
+            segment, and moved listing statistics to one data source, so leads count the same in
+            the product, in sales reports and in BI.</li>
+          <li>Co-designed a two-day product workshop for ~100 people in 8 teams, with 8 Claude skills
+            that turn dealer interviews into a scored roadmap; wrote the Claude skills rolled out to
+            every PM in our unit.</li>
+          <li>~72% average OKR completion over 2.5 years; 75% of the 90+ PMs I trained on AI tools
+            now use them.</li>
+        </ul>
+      </article>
+
+      <article class="job">
+        <header><h3>Prosus AI Accelerator <span>Selected · Amsterdam</span></h3><p>Sep 2026 · 1 month</p></header>
+        <ul>
+          <li>A month-long AI programme by Prosus and the THNK School of Creative Leadership. Built
+            with my team a prototype seller inbox where an AI assistant screens out buyers who
+            aren't serious, and presented it live on stage.</li>
+        </ul>
+      </article>
+
+      <article class="job">
+        <header><h3>Associate Product Manager <span>OLX Group · Prosus · Motors B2B</span></h3><p>Mar 2024 — Mar 2025</p></header>
+        <ul>
+          <li>Brought a machine-learning price estimate into the product, so dealers see what each
+            car is worth next to their asking price, and added time-to-sell estimates.</li>
+          <li>Interviewed 75+ dealers in person in Poland, Romania and Portugal. Promoted to Product
+            Manager in 12 months.</li>
+        </ul>
+      </article>
+
+      <article class="job">
+        <header><h3>Product Management Trainee <span>OLX Group</span></h3><p>Sep 2023 — Feb 2024</p></header>
+        <ul>
+          <li>Researched how dealers get their leads, and ran A/B tests with Data Science on
+            recommendations next to paid-visibility products. Promoted to Associate PM in 6 months.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="cv__block">
+      <h2>Skills</h2>
+      <dl class="skills">
+        <div><dt>AI &amp; agents</dt><dd>Evals &amp; test sets · tracing &amp; observability · mandates, permissions &amp; guardrails · MCP servers &amp; tools · agent routing &amp; handover · context engineering · LLM-as-judge · human-in-the-loop</dd></div>
+        <div><dt>Building &amp; data</dt><dd>Claude Code · Cursor · Lovable · Claude skills · scheduled agents · SQL · GA4 · A/B, AA &amp; fake-door tests · Maze · usability tests</dd></div>
+        <div><dt>Delivery &amp; market</dt><dd>Jira · LaunchDarkly · New Relic SLIs/SLOs · Postman · GraphQL · event-driven &amp; microservices · Braze · Intercom · five markets</dd></div>
+      </dl>
+    </section>
+
+    <section class="cv__block">
+      <h2>Side projects</h2>
+      <p class="cv__projects"><b>PM-OS</b> a knowledge base kept true by seven scheduled Claude
+        routines · <b>Team-context MCP</b> a read-only MCP server for the company's internal AI
+        assistant · <b>Portugal Explicado</b> Portugal's taxes, laws and economy in plain Portuguese,
+        every number sourced · <b>Tabiya</b> a chess coach on AWS serverless that explains every
+        move. More at joao-vaz.com.</p>
+    </section>
+
+    <section class="cv__block">
+      <h2>Education &amp; languages</h2>
+      <p class="cv__projects"><b>MSc Industrial Engineering &amp; Management</b> · University of Minho &amp;
+        TU Graz · 2021–2023 &nbsp;·&nbsp; <b>Portuguese</b> native · <b>English</b> C2</p>
+    </section>
+  </main>
+</body>
+</html>

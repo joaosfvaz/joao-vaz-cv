@@ -1,7 +1,7 @@
 #!/bin/sh
-# Prints the recruiter view to joao-vaz-cv.pdf, the file behind
-# "Download CV". The print stylesheet makes the page a clean CV on paper,
-# so the PDF is exactly what a visitor gets from Print.
+# Prints cv/index.html, the condensed one-page CV, to joao-vaz-cv.pdf,
+# the file behind "Download CV". The page is made for paper (cv.css), so
+# the PDF is that page, on one A4 page.
 #
 # Run it after any change to the CV's content, then commit the PDF:
 #   sh make-cv.sh
@@ -19,6 +19,6 @@ sleep 1
 
 "$CHROME" --headless=new --disable-gpu --no-pdf-header-footer \
   --user-data-dir="$PROFILE" --virtual-time-budget=8000 \
-  --print-to-pdf="joao-vaz-cv.pdf" "http://localhost:$PORT/?mode=recruiter" >/dev/null 2>&1
+  --print-to-pdf="joao-vaz-cv.pdf" "http://localhost:$PORT/cv/" >/dev/null 2>&1
 
 echo "joao-vaz-cv.pdf: $(du -k joao-vaz-cv.pdf | cut -f1) KB"
