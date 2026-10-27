@@ -72,6 +72,42 @@ The PNGs, the ICO and the card were rendered from SVG and HTML with headless Chr
 the ICO). To change the mark, edit the paths in `favicon.svg` and in the bar's inline copy, then
 render them again.
 
+## Two views and the question
+
+The home page has two views. The **recruiter view** is the full CV: products, AI, experience,
+projects, contact. The **curious view** is lighter and leads with orange: the side quests on the
+page itself, a short "Day job" with three figures and a way to the full CV, then projects and
+contact.
+
+- **Which view** — the head script sets `data-mode` on `<html>` before the first paint:
+  `?mode=recruiter` or `?mode=curious` picks it (and is remembered in `localStorage` as `mode`,
+  then dropped from the URL); otherwise the remembered choice; otherwise a deep link (any `#…`)
+  goes straight to the recruiter view without asking; otherwise the page asks (`"ask"`).
+  **Send recruiters `joao-vaz.com/?mode=recruiter`** (LinkedIn, the CV, applications) and they
+  never see the question.
+- **Parts of one view** carry `data-for="recruiter"` or `data-for="curious"`; anything else
+  belongs to both. One `@media screen` rule hides the other view's parts. The bar, the section
+  index, the dock and the skip link have a set of links per view, and `js/scroll.js` and the nav
+  in `js/home.js` read only this view's `[data-nav]` links (`Scroll.inMode`), because a hidden
+  section would measure at the top of the page.
+- **The side quests are written once**, in their dialog. In the curious view, `js/home.js` moves
+  the player card, the quests and the photo log into `#quests` before anything else reads the
+  page; the controller button and `/#side-quests` then scroll to that section.
+- **The question** (`<dialog id="onboard">`) is a character select: two cards with a class,
+  five-segment stat bars that charge up, the keys (← → to choose, 1 or 2, Enter) and a lean
+  towards the pointer on a mouse. It shows from the first paint while the page asks. A choice
+  plays a loading bar and a wipe, then goes to `/?mode=…&start=1`, so the page starts over in that
+  view, its intro plays where it can be seen, and the choice holds even where storage is blocked.
+  A toast then names the view. Skip or Esc on a first visit means the recruiter view. The
+  "Switch" chip in the hero and "Change view" in the footer open it again (the current view is
+  marked; Cancel or Esc closes it). "See the full CV" in Day job goes straight to the recruiter
+  view through the same bar.
+- **Fail open** — without scripts there is no mode, so the page is the recruiter view. If the
+  head script ran but `js/home.js` has not opened the question by `DOMContentLoaded` (it failed to
+  load or broke), the head script drops the question and shows the page.
+- **Print** is always the recruiter CV, in either view: the curious parts and the view controls
+  are hidden on paper, the colours stay the recruiter's, and counters print their final value.
+
 ## Side quests
 
 The personal side lives in a full-screen panel (`<dialog id="side-quests">` on the home page). The

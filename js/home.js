@@ -24,6 +24,24 @@
   const $$ = (sel, el) => Array.prototype.slice.call((el || document).querySelectorAll(sel));
 
   /* ------------------------------------------------------------------
+   * The view — recruiter or curious, set before the first paint by the
+   * head script (S.mode). In the curious view the side quests live on
+   * the page: their content moves out of the dialog into its section
+   * here, before anything below reads the page, so it is written once.
+   * ---------------------------------------------------------------- */
+  const root = document.documentElement;
+  if (S.mode === "curious") {
+    const host = $("[data-quests-inline]");
+    const inner = $("#side-quests .quests__inner");
+    if (host && inner) {
+      $$(".player, .quests__grid, .photolog", inner).forEach((el) => {
+        el.classList.add("rv");
+        host.appendChild(el);
+      });
+    }
+  }
+
+  /* ------------------------------------------------------------------
    * The name — split into characters that rise out of their lines.
    * The index runs on across both lines, so "Vaz" follows "João".
    * ---------------------------------------------------------------- */
@@ -82,6 +100,7 @@
    * ---------------------------------------------------------------- */
   function count(el) {
     if (!el || reduced) return;
+    if (!el.dataset.final) el.dataset.final = el.textContent;
     const to = parseFloat(el.dataset.count);
     const pre = el.dataset.prefix || "";
     const suf = el.dataset.suffix || "";
@@ -93,6 +112,12 @@
       if (p < 1) requestAnimationFrame(tick);
     })(t0);
   }
+
+  /* paper never shows a number halfway: printing puts the final value
+     back, the one the markup carries */
+  window.addEventListener("beforeprint", () => {
+    $$("[data-count]").forEach((el) => { if (el.dataset.final) el.textContent = el.dataset.final; });
+  });
 
   /* ------------------------------------------------------------------
    * Reveals — driven by position, not IntersectionObserver: a deep link
@@ -568,12 +593,13 @@
    * The bar's hairline and each index line fill with the reading.
    * ---------------------------------------------------------------- */
   const bar = $("#bar");
-  const rail = $(".rail");
-  const navLinks = $$("[data-nav]");
-  /* the sections are whatever the page's own links point at, in order */
+  const rail = $$(".rail").filter(S.inMode)[0];
+  const navLinks = $$("[data-nav]").filter(S.inMode);
+  /* the sections are whatever the page's own links point at, in order
+     (this view's links only, the same rule as js/scroll.js) */
   const ids = navLinks.map((a) => a.dataset.nav).filter((id, i, all) => all.indexOf(id) === i);
   const railFills = {};
-  $$(".rail a").forEach((a) => { railFills[a.dataset.nav] = $("i", a); });
+  $$(".rail a").filter(S.inMode).forEach((a) => { railFills[a.dataset.nav] = $("i", a); });
   let active = "";
 
   function sync(st) {
@@ -765,9 +791,11 @@
       typed = (typed + k).slice(-5);
       if (typed === "evals") {
         typed = "";
-        if (trace) {
+        if (trace && S.inMode(trace)) {
           document.dispatchEvent(new CustomEvent("egg-evals"));
           find("evals", "A hidden fourth run: the agent was asked who built this site.");
+        } else if (trace) {
+          find("evals", "The hidden run plays in the AI section of the recruiter view.");
         } else {
           find("evals", "The hidden run plays in the AI section of the home page.");
         }
@@ -805,7 +833,16 @@
    * which is how the project pages' controller button gets here.
    * ---------------------------------------------------------------- */
   const quests = $("#side-quests");
-  if (quests && quests.showModal) {
+  const questsHere = S.mode === "curious" ? $("#quests") : null;
+  if (questsHere) {
+    /* the curious view: the side quests are on the page already */
+    const goQuests = () => questsHere.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+    $$("[data-quests-open]").forEach((b) => b.addEventListener("click", goQuests));
+    if (location.hash === "#side-quests") {
+      history.replaceState(null, "", location.pathname + "#quests");
+      requestAnimationFrame(() => questsHere.scrollIntoView());
+    }
+  } else if (quests && quests.showModal) {
     $$(".quest", quests).forEach((q, i) => q.style.setProperty("--q", String(i)));
     const openQuests = () => {
       if (quests.open) return;
@@ -947,6 +984,166 @@
       go(at + (ev.key === "ArrowLeft" ? -1 : 1));
     });
     track.addEventListener("click", (ev) => { if (ev.target.classList.contains("lightbox__slide")) lb.close(); });
+  }
+
+  /* ------------------------------------------------------------------
+   * The question — a first visit asks who is visiting, like a game's
+   * character select. "ask" (from the head script) opens it at once; the
+   * "Switch" chip in the hero and "Change view" in the footer open it
+   * again. A choice goes to /?mode=… behind a loading bar, so the page
+   * starts over in that view and its intro plays where it can be seen,
+   * and the choice holds even where storage is blocked. Skip or Esc on a
+   * first visit means the recruiter view; later they only close it.
+   * ---------------------------------------------------------------- */
+  const ob = $("#onboard");
+  if (ob && ob.showModal) {
+    const picks = $$(".pick", ob);
+    const boot = $("[data-boot]", ob);
+    const loadLabel = $("[data-load-label]", ob);
+    const loadPct = $("[data-load-pct]", ob);
+    let going = false;
+    let pending = "";
+    let bootTimers = [];
+
+    const hover = (p) => {
+      picks.forEach((x) => x.classList.toggle("is-on", x === p));
+      ob.setAttribute("data-hover", p ? p.dataset.pick : "");
+    };
+    const pickFor = (mode) => picks.filter((p) => p.dataset.pick === mode)[0];
+
+    /* the console line types out the boot, then says it is ready */
+    function runBoot() {
+      bootTimers.forEach(clearTimeout);
+      if (reduced) { boot.textContent = "Ready"; return; }
+      bootTimers = ["Booting joao-vaz.com", "Loading player data", "2 paths found", "Ready"].map((t, i) =>
+        setTimeout(() => { boot.textContent = t; }, i * 340));
+    }
+
+    function open(again) {
+      ob.classList.toggle("is-again", again);
+      ob.classList.remove("is-picked", "is-leaving");
+      ob.removeAttribute("data-picked");
+      picks.forEach((p) => p.classList.remove("is-chosen", "is-out", "is-now"));
+      if (again && pickFor(S.mode)) pickFor(S.mode).classList.add("is-now");
+      if (!ob.open) ob.showModal();
+      ob.classList.remove("is-playing");
+      void ob.offsetWidth;
+      ob.classList.add("is-playing");
+      const start = again ? pickFor(S.mode) : picks[0];
+      if (start) {
+        start.focus({ preventScroll: true });
+        hover(start);
+      }
+      runBoot();
+    }
+
+    /* a choice: the card steps forward, the bar loads, the screen wipes
+       and the page starts over in that view */
+    function choose(mode) {
+      if (going) return;
+      if (ob.classList.contains("is-again") && mode === S.mode && !root.hasAttribute("data-mode-switching")) {
+        ob.close();
+        return;
+      }
+      going = true;
+      const p = pickFor(mode);
+      hover(p);
+      picks.forEach((x) => x.classList.toggle(x === p ? "is-chosen" : "is-out", true));
+      ob.classList.add("is-picked");
+      ob.setAttribute("data-picked", mode);
+      loadLabel.textContent = "Loading the " + mode + " view";
+      const url = "/?mode=" + mode + "&start=1";
+      pending = url;
+      if (reduced) { location.replace(url); return; }
+      const t0 = performance.now();
+      (function tick(now) {
+        const k = clamp((now - t0) / 950, 0, 1);
+        const v = Math.round(100 * S.easeOutCubic(k));
+        loadPct.textContent = v + "%";
+        ob.style.setProperty("--load", (v / 100).toFixed(3));
+        if (k < 1) { requestAnimationFrame(tick); return; }
+        ob.classList.add("is-leaving");
+        setTimeout(() => location.replace(url), 420);
+      })(t0);
+    }
+
+    function skip() {
+      if (going) return;
+      if (ob.classList.contains("is-again")) ob.close();
+      else choose("recruiter");
+    }
+
+    picks.forEach((p) => {
+      /* the pointer and the keys move one selection, never two */
+      p.addEventListener("pointerenter", () => {
+        if (going) return;
+        p.focus({ preventScroll: true });
+        hover(p);
+      });
+      p.addEventListener("focus", () => hover(p));
+      p.addEventListener("click", () => choose(p.dataset.pick));
+    });
+    /* on a mouse, the cards lean towards the pointer */
+    if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      picks.forEach((p) => {
+        p.addEventListener("pointermove", (ev) => {
+          const r = p.getBoundingClientRect();
+          p.style.setProperty("--rx", (((ev.clientY - r.top) / r.height - 0.5) * -7).toFixed(2) + "deg");
+          p.style.setProperty("--ry", (((ev.clientX - r.left) / r.width - 0.5) * 9).toFixed(2) + "deg");
+        });
+        p.addEventListener("pointerleave", () => {
+          p.style.removeProperty("--rx");
+          p.style.removeProperty("--ry");
+        });
+      });
+    }
+    ob.addEventListener("keydown", (ev) => {
+      if (going) return;
+      const i = picks.indexOf(document.activeElement);
+      if (ev.key === "ArrowRight" || ev.key === "ArrowDown") {
+        ev.preventDefault();
+        picks[(i + 1) % picks.length].focus();
+      } else if (ev.key === "ArrowLeft" || ev.key === "ArrowUp") {
+        ev.preventDefault();
+        picks[(i + picks.length - 1) % picks.length].focus();
+      } else if (ev.key === "1" || ev.key === "2") {
+        ev.preventDefault();
+        choose(picks[Number(ev.key) - 1].dataset.pick);
+      }
+    });
+    $("[data-onboard-skip]", ob).addEventListener("click", skip);
+    ob.addEventListener("cancel", (ev) => { ev.preventDefault(); skip(); });
+    /* before the visitor has clicked anything, a browser may let Esc
+       close the dialog outright instead of asking: finish the choice at
+       once (a first visit with no choice yet means the recruiter view) */
+    ob.addEventListener("close", () => {
+      if (pending) location.replace(pending);
+      else if (!ob.classList.contains("is-again")) location.replace("/?mode=recruiter&start=1");
+    });
+
+    $$("[data-mode-open]").forEach((b) => b.addEventListener("click", () => open(true)));
+    /* "See the full CV": straight to the other view, through the same bar */
+    $$("[data-mode-switch]").forEach((a) => a.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      root.setAttribute("data-mode-switching", "");
+      open(true);
+      choose(a.dataset.modeSwitch);
+    }));
+
+    if (root.getAttribute("data-mode") === "ask") {
+      open(false);
+      /* the page behind may show now: the dialog covers it */
+      root.setAttribute("data-mode", "asking");
+    }
+  }
+
+  /* arriving from the question: say which view this is, once the intro
+     has landed */
+  if (root.hasAttribute("data-mode-new")) {
+    setTimeout(() => {
+      if (S.mode === "curious") toast("Curious view", "Side quests first, then the day job. The full CV is one switch away, at the top of the page.");
+      else toast("Recruiter view", "The full CV: products, AI and experience. Switch views any time at the top of the page.");
+    }, reduced ? 0 : 1900);
   }
 
   /* in-page links glide; the target keeps its own scroll padding */

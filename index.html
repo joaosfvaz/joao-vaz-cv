@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-26n" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-27a" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if the scripts never run. -->
   <script>
@@ -40,19 +40,46 @@
       if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", t);
     })();
+    /* the view, also before the first paint: ?mode= picks it and is
+       remembered, else the remembered choice. A deep link goes straight to
+       the recruiter view; anyone else is asked first ("ask"), and
+       js/home.js runs the question. */
+    (function () {
+      var root = document.documentElement, m = null, q = null, saved = null;
+      try { q = new URLSearchParams(location.search); m = q.get("mode"); } catch (e) {}
+      try { saved = localStorage.getItem("mode"); } catch (e) {}
+      if (m === "recruiter" || m === "curious") {
+        try { localStorage.setItem("mode", m); } catch (e) {}
+        if (q.get("start")) root.setAttribute("data-mode-new", "");
+        history.replaceState(null, "", location.pathname + location.hash);
+      } else if (saved === "recruiter" || saved === "curious") m = saved;
+      else m = location.hash ? "recruiter" : "ask";
+      root.setAttribute("data-mode", m);
+      /* fail open: if js/home.js has not taken the question once the
+         page's scripts have run (or failed), show the page */
+      if (m === "ask") document.addEventListener("DOMContentLoaded", function () {
+        if (root.getAttribute("data-mode") === "ask") root.setAttribute("data-mode", "recruiter");
+      });
+    })();
   </script>
 </head>
 <body>
-  <a class="skip" href="#products">Skip to the work</a>
+  <a class="skip" href="#products" data-for="recruiter">Skip to the work</a>
+  <a class="skip" href="#quests" data-for="curious">Skip to the side quests</a>
 
   <!-- Top bar: the name, the four sections, contact. A hairline under it
        fills with the reading position. -->
   <header class="bar" id="bar">
     <a class="bar__name" href="#top" aria-label="João Vaz — home"><svg class="bar__mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#4d7cff" /><g transform="translate(3.6 3.6) scale(.89)"><g fill="#fff"><path d="M15 13h8.5v24.5c0 7.2-5.8 13-13 13H9v-8.5h1.5c2.5 0 4.5-2 4.5-4.5z" /><path d="M27 13h8.6l4.9 21.5 4.9-21.5H54l-9.2 37.5h-8.6z" /></g><rect class="bar__dot" x="52" y="42.5" width="8" height="8" rx="1.2" fill="#ff7a3d" /></g></svg><span>João Vaz</span></a>
-    <nav class="bar__links" aria-label="Sections">
+    <nav class="bar__links" aria-label="Sections" data-for="recruiter">
       <a href="#products" data-nav="products">Products</a>
       <a href="#ai" data-nav="ai">AI</a>
       <a href="#work" data-nav="work">Experience</a>
+      <a href="#projects" data-nav="projects">Projects</a>
+    </nav>
+    <nav class="bar__links" aria-label="Sections" data-for="curious">
+      <a href="#quests" data-nav="quests">Side quests</a>
+      <a href="#dayjob" data-nav="dayjob">Day job</a>
       <a href="#projects" data-nav="projects">Projects</a>
     </nav>
     <div class="bar__end">
@@ -69,21 +96,33 @@
 
   <!-- Wide screens: an index down the left edge. Each number is a link;
        the line beside it fills as the section is read. -->
-  <nav class="rail" aria-label="Section index">
+  <nav class="rail" aria-label="Section index" data-for="recruiter">
     <a href="#products" data-nav="products"><b>01</b><span>Products</span><i></i></a>
     <a href="#ai" data-nav="ai"><b>02</b><span>AI</span><i></i></a>
     <a href="#work" data-nav="work"><b>03</b><span>Experience</span><i></i></a>
     <a href="#projects" data-nav="projects"><b>04</b><span>Projects</span><i></i></a>
     <a href="#contact" data-nav="contact"><b>05</b><span>Contact</span><i></i></a>
   </nav>
+  <nav class="rail" aria-label="Section index" data-for="curious">
+    <a href="#quests" data-nav="quests"><b>01</b><span>Side quests</span><i></i></a>
+    <a href="#dayjob" data-nav="dayjob"><b>02</b><span>Day job</span><i></i></a>
+    <a href="#projects" data-nav="projects"><b>03</b><span>Projects</span><i></i></a>
+    <a href="#contact" data-nav="contact"><b>04</b><span>Contact</span><i></i></a>
+  </nav>
 
   <!-- Phones: the same sections in a dock at the bottom, under the thumb. -->
-  <nav class="dock" aria-label="Sections">
+  <nav class="dock" aria-label="Sections" data-for="recruiter">
     <a href="#products" data-nav="products"><b>01</b>Products</a>
     <a href="#ai" data-nav="ai"><b>02</b>AI</a>
     <a href="#work" data-nav="work"><b>03</b>Work</a>
     <a href="#projects" data-nav="projects"><b>04</b>Projects</a>
     <a href="#contact" data-nav="contact"><b>05</b>Contact</a>
+  </nav>
+  <nav class="dock" aria-label="Sections" data-for="curious">
+    <a href="#quests" data-nav="quests"><b>01</b>Quests</a>
+    <a href="#dayjob" data-nav="dayjob"><b>02</b>Day job</a>
+    <a href="#projects" data-nav="projects"><b>03</b>Projects</a>
+    <a href="#contact" data-nav="contact"><b>04</b>Contact</a>
   </nav>
 
   <main>
@@ -94,17 +133,34 @@
       <canvas class="hero__field" aria-hidden="true"></canvas>
       <div class="hero__grid wrap">
         <div class="hero__copy">
-          <p class="meta rv">Product Manager · OLX Group · Prosus</p>
+          <!-- Which view this is, and the way to the other one. -->
+          <button class="mode-chip rv" type="button" data-mode-open>
+            <i aria-hidden="true"></i>
+            <span data-for="recruiter">Recruiter view</span><span data-for="curious">Curious view</span>
+            <u>Switch</u>
+          </button>
+          <p class="meta rv" data-for="recruiter">Product Manager · OLX Group · Prosus</p>
+          <p class="meta rv" data-for="curious">Product Manager · Chess · Sport · Photos</p>
           <h1 class="hero__name" aria-label="João Vaz">
             <span class="line"><span data-split>João</span></span>
             <span class="line"><span data-split>Vaz</span><span class="ch name-dot" style="--d:7" aria-hidden="true">.</span></span>
           </h1>
           <!-- The two numbers are underlined in blue, one after the other,
                once the line has landed. -->
-          <p class="hero__line rv">I build tools for <b>12,000+ car dealers</b> and <b>10M+ visitors</b>.</p>
-          <p class="hero__pitch rv">Product Manager at OLX Group (Motors, B2B), part of Prosus. I set
+          <p class="hero__line rv" data-for="recruiter">I build tools for <b>12,000+ car dealers</b> and <b>10M+ visitors</b>.</p>
+          <p class="hero__pitch rv" data-for="recruiter">Product Manager at OLX Group (Motors, B2B), part of Prosus. I set
             the strategy for a 10-person team, and I build my own agents along the way.</p>
-          <div class="hero__actions rv">
+          <p class="hero__line rv" data-for="curious">Tools for car dealers by day. After hours, <b>chess, sport</b> and <b>a camera</b>.</p>
+          <p class="hero__pitch rv" data-for="curious">The lighter version of my site: what I do for fun, some of my
+            photos and the things I build on the side. The full CV is one switch away.</p>
+          <div class="hero__actions rv" data-for="curious">
+            <a class="btn btn--ink" href="#quests">
+              <span>See the side quests</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+            <a class="btn btn--line" href="#contact">Say hi</a>
+          </div>
+          <div class="hero__actions rv" data-for="recruiter">
             <!-- A mail link that the script turns into "copy the address";
                  without the script it still opens the mail app. -->
             <a class="btn btn--ink" href="mailto:joaosfvaz@gmail.com" data-copy="joaosfvaz@gmail.com">
@@ -125,7 +181,7 @@
 
       <!-- Counters read their finished value from the markup; js/home.js
            counts up to it. If the script never runs, the number is right. -->
-      <dl class="figures wrap">
+      <dl class="figures wrap" data-for="recruiter">
         <div class="rv"><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement across 3 data products, in 18 months</dd></div>
         <div class="rv"><dt data-count="12" data-suffix="k+">12k+</dt><dd>professional car dealers in PT · PL · RO</dd></div>
         <div class="rv"><dt data-count="40" data-suffix="+">40+</dt><dd>experiments — A/B, AA &amp; fake-door</dd></div>
@@ -138,14 +194,47 @@
          scroll; it turns round when the scroll does. Decorative. -->
     <div class="strip" aria-hidden="true">
       <div class="strip__track" data-strip>
-        <span>AI agents</span><b>✳</b><span>Evals</span><b>✳</b><span>Traces</span><b>✳</b><span>MCP</span><b>✳</b><span>Data products</span><b>✳</b><span>Experimentation</span><b>✳</b><span>Dealer research</span><b>✳</b>
+        <span data-for="recruiter">AI agents</span><b data-for="recruiter">✳</b><span data-for="recruiter">Evals</span><b data-for="recruiter">✳</b><span data-for="recruiter">Traces</span><b data-for="recruiter">✳</b><span data-for="recruiter">MCP</span><b data-for="recruiter">✳</b><span data-for="recruiter">Data products</span><b data-for="recruiter">✳</b><span data-for="recruiter">Experimentation</span><b data-for="recruiter">✳</b><span data-for="recruiter">Dealer research</span><b data-for="recruiter">✳</b>
+        <span data-for="curious">Chess</span><b data-for="curious">✳</b><span data-for="curious">Tennis</span><b data-for="curious">✳</b><span data-for="curious">Football</span><b data-for="curious">✳</b><span data-for="curious">Triathlon</span><b data-for="curious">✳</b><span data-for="curious">Guitar</span><b data-for="curious">✳</b><span data-for="curious">Photography</span><b data-for="curious">✳</b><span data-for="curious">Hiking</span><b data-for="curious">✳</b>
       </div>
     </div>
+
+    <!-- SIDE QUESTS, on the page — the curious view only. The content is
+         the side quests panel's own: js/home.js moves it in here, so it is
+         written once. -->
+    <section class="section" id="quests" data-for="curious">
+      <div class="wrap">
+        <header class="head">
+          <p class="meta rv"><b>01</b> Side quests</p>
+          <h2 class="rv">What I do <em>when the laptop closes.</em></h2>
+        </header>
+        <div class="quests-inline" data-quests-inline></div>
+      </div>
+    </section>
+
+    <!-- DAY JOB — the curious view's short version of the CV -->
+    <section class="section" id="dayjob" data-for="curious">
+      <div class="wrap">
+        <header class="head">
+          <p class="meta rv"><b>02</b> Day job</p>
+          <h2 class="rv">I build tools for <em>12,000+ car dealers.</em></h2>
+          <p class="head__intro rv">I am a Product Manager at OLX Group (Motors, B2B), part of Prosus. My
+            team builds the products dealers use to price and sell their cars, and I lead the AI agents
+            for our domain in the dealers' assistant.</p>
+        </header>
+        <dl class="figures figures--3">
+          <div class="rv"><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement across 3 data products, in 18 months</dd></div>
+          <div class="rv"><dt data-count="75" data-suffix="+">75+</dt><dd>in-person dealer interviews</dd></div>
+          <div class="rv"><dt data-count="90" data-suffix="+">90+</dt><dd>PMs trained on AI tooling</dd></div>
+        </dl>
+        <p class="dayjob__cta rv"><a class="btn btn--line" href="/?mode=recruiter" data-mode-switch="recruiter">See the full CV <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a></p>
+      </div>
+    </section>
 
     <!-- PRODUCTS -->
     <!-- An accordion: one product open at a time. Without the script every
          panel is open, so nothing is ever hidden behind a broken button. -->
-    <section class="section" id="products">
+    <section class="section" id="products" data-for="recruiter">
       <div class="wrap">
         <header class="head">
           <p class="meta rv"><b>01</b> Products</p>
@@ -250,7 +339,7 @@
     <!-- A playable trace: pick a dealer question and the run plays out —
          routing, tool calls, the mandate check, the answer, the evals.
          The markup holds the first run finished; js/home.js takes over. -->
-    <section class="section" id="ai">
+    <section class="section" id="ai" data-for="recruiter">
       <div class="wrap">
         <header class="head">
           <p class="meta rv"><b>02</b> AI &amp; agents</p>
@@ -295,7 +384,7 @@
     </section>
 
     <!-- EXPERIENCE -->
-    <section class="section" id="work">
+    <section class="section" id="work" data-for="recruiter">
       <div class="wrap">
         <header class="head">
           <p class="meta rv"><b>03</b> Experience</p>
@@ -475,7 +564,7 @@
     <section class="section" id="projects">
       <div class="wrap">
         <header class="head">
-          <p class="meta rv"><b>04</b> Projects</p>
+          <p class="meta rv"><b><span data-for="recruiter">04</span><span data-for="curious">03</span></b> Projects</p>
           <h2 class="rv">Things I built myself, <em>from idea to working product.</em></h2>
         </header>
         <div class="projects">
@@ -514,13 +603,13 @@
     <!-- CONTACT -->
     <section class="section section--contact" id="contact">
       <div class="wrap">
-        <p class="meta rv"><b>05</b> Contact</p>
+        <p class="meta rv"><b><span data-for="recruiter">05</span><span data-for="curious">04</span></b> Contact</p>
         <h2 class="contact__title rv">Let's build something <em>worth shipping.</em></h2>
         <div class="contact__rows">
           <a class="contact__row rv" href="mailto:joaosfvaz@gmail.com"><span class="meta">Email</span><strong>joaosfvaz@gmail.com</strong><i aria-hidden="true">→</i></a>
           <a class="contact__row rv" href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener"><span class="meta">LinkedIn</span><strong>in/joaovaz00</strong><i aria-hidden="true">↗</i></a>
         </div>
-        <p class="offclock rv">Off the clock? <button type="button" data-quests-open>Open the side quests →</button></p>
+        <p class="offclock rv" data-for="recruiter">Off the clock? <button type="button" data-quests-open>Open the side quests →</button></p>
       </div>
     </section>
   </main>
@@ -652,6 +741,61 @@
     </div>
   </dialog>
 
+  <!-- THE QUESTION — on a first visit the page asks who is visiting, like
+       a game's character select, and shows one of two views: the recruiter
+       view (the full CV) or the curious view (side quests first, the CV one
+       switch away). The head script picks the view; js/home.js runs this
+       screen, and the "Switch" chip in the hero brings it back. -->
+  <dialog class="onboard" id="onboard" aria-labelledby="onboard-title">
+    <div class="onboard__inner">
+      <div class="onboard__top">
+        <svg class="onboard__mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#4d7cff" /><g transform="translate(3.6 3.6) scale(.89)"><g fill="#fff"><path d="M15 13h8.5v24.5c0 7.2-5.8 13-13 13H9v-8.5h1.5c2.5 0 4.5-2 4.5-4.5z" /><path d="M27 13h8.6l4.9 21.5 4.9-21.5H54l-9.2 37.5h-8.6z" /></g><rect x="52" y="42.5" width="8" height="8" rx="1.2" fill="#ff7a3d" /></g></svg>
+        <p class="meta onboard__boot" aria-hidden="true"><span data-boot>Ready</span><i></i></p>
+        <button class="btn btn--line btn--sm onboard__skip" type="button" data-onboard-skip><span data-for-state="first">Skip</span><span data-for-state="again">Cancel</span> <kbd>Esc</kbd></button>
+      </div>
+      <p class="meta onboard__kicker">Choose your path</p>
+      <h2 class="onboard__title" id="onboard-title">Who is <em>visiting?</em></h2>
+      <div class="onboard__picks">
+        <button class="pick pick--rec" type="button" data-pick="recruiter">
+          <span class="pick__top"><kbd class="pick__key">1</kbd><span class="pick__now">Current</span></span>
+          <svg class="pick__ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="7.5" width="17" height="12" rx="2" /><path d="M9 7.5V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v1.5M3.5 12.5h17M11 12.5v1.5h2v-1.5" /></svg>
+          <span class="meta pick__class">Class · Talent scout</span>
+          <span class="pick__name">Recruiter</span>
+          <span class="pick__line">I am hiring and want the full picture.</span>
+          <span class="pick__stats">
+            <span class="stat"><span>Career detail</span><i style="--v:5"></i></span>
+            <span class="stat"><span>AI &amp; agents</span><i style="--v:5"></i></span>
+            <span class="stat"><span>Side quests</span><i style="--v:1"></i></span>
+          </span>
+          <span class="pick__perks">Products · AI · Experience · Print-ready CV</span>
+          <span class="pick__go">Start <i aria-hidden="true">→</i></span>
+        </button>
+        <button class="pick pick--cur" type="button" data-pick="curious">
+          <span class="pick__top"><kbd class="pick__key">2</kbd><span class="pick__now">Current</span></span>
+          <svg class="pick__ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M15.6 8.4l-2.1 5.1-5.1 2.1 2.1-5.1z" /><circle cx="12" cy="12" r=".8" /></svg>
+          <span class="meta pick__class">Class · Explorer</span>
+          <span class="pick__name">Just curious</span>
+          <span class="pick__line">I am here to look around.</span>
+          <span class="pick__stats">
+            <span class="stat"><span>Career detail</span><i style="--v:2"></i></span>
+            <span class="stat"><span>AI &amp; agents</span><i style="--v:2"></i></span>
+            <span class="stat"><span>Side quests</span><i style="--v:5"></i></span>
+          </span>
+          <span class="pick__perks">Side quests · Photos · Chess · Things I built</span>
+          <span class="pick__go">Start <i aria-hidden="true">→</i></span>
+        </button>
+      </div>
+      <div class="onboard__foot">
+        <p class="meta onboard__hint"><kbd>←</kbd><kbd>→</kbd> choose <kbd>Enter</kbd> start · you can switch later</p>
+        <div class="onboard__load" aria-live="polite">
+          <span data-load-label></span>
+          <i aria-hidden="true"><b></b></i>
+          <span class="onboard__pct" data-load-pct>0%</span>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <!-- The photo viewer: a full-screen carousel of one album. js/home.js
        fills the track and the filmstrip from the photos on the page. -->
   <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
@@ -668,10 +812,11 @@
   <footer class="foot wrap">
     <span>© 2026 João Vaz</span>
     <span>Hand-built · no framework · a little AI</span>
+    <button class="foot__mode" type="button" data-mode-open>Change view</button>
     <span class="eggs" data-eggs hidden>Easter eggs found: <b>0</b> / 4</span>
   </footer>
 
-  <script src="/js/scroll.js?v=2026-10-26n"></script>
-  <script src="/js/home.js?v=2026-10-26n"></script>
+  <script src="/js/scroll.js?v=2026-10-27a"></script>
+  <script src="/js/home.js?v=2026-10-27a"></script>
 </body>
 </html>

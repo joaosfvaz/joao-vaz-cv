@@ -11,10 +11,20 @@
   "use strict";
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* the home page has two views (data-mode on <html>, set by the head
+     script); a part written for one view sits inside data-for. Anything
+     else belongs to both. A page without a mode is the recruiter view. */
+  const MODE = document.documentElement.getAttribute("data-mode") === "curious" ? "curious" : "recruiter";
+  const inMode = (el) => {
+    const f = el.closest("[data-for]");
+    return !f || f.getAttribute("data-for") === MODE;
+  };
   /* the page's sections: "top", then every section its own links point
-     at (data-nav), in order. Each page declares its own. */
+     at (data-nav), in order — only this view's links. Each page declares
+     its own. */
   const SECTION_IDS = ["top"].concat(
     Array.prototype.slice.call(document.querySelectorAll("[data-nav]"))
+      .filter(inMode)
       .map((a) => a.getAttribute("data-nav"))
       .filter((id, i, all) => id && all.indexOf(id) === i)
   );
@@ -100,6 +110,8 @@
     smoothstep: smoothstep,
     easeOutCubic: easeOutCubic,
     measure: remeasure,
+    mode: MODE,
+    inMode: inMode,
 
     /* motion callbacks. Under reduced motion they never loop — each one
        runs a single settled pass so the page renders its end state. */

@@ -19,11 +19,17 @@
   --faint: #687083;
   --line: rgba(255, 255, 255, 0.09);
   --line-2: rgba(255, 255, 255, 0.2);
-  /* --accent is the main colour, --accent-soft its lighter step, and
-     --accent-2 the second colour; --on is text on an accent fill */
-  --accent: #4d7cff;
-  --accent-soft: #a9bcff;
-  --accent-2: #ff7a3d;
+  /* the two colours, each with its lighter step. --accent is the main
+     colour, --accent-soft its lighter step, and --accent-2 the second
+     colour; --on is text on an accent fill. The recruiter view leads with
+     blue, the curious view with orange. */
+  --blue: #4d7cff;
+  --blue-soft: #a9bcff;
+  --orange: #ff7a3d;
+  --orange-soft: #ffb08a;
+  --accent: var(--blue);
+  --accent-soft: var(--blue-soft);
+  --accent-2: var(--orange);
   --on: #ffffff;
   --c: var(--accent);
   /* faint fills and the floating bars, derived from the theme's own
@@ -54,10 +60,33 @@
   --faint: #8a909c;
   --line: rgba(18, 21, 28, 0.1);
   --line-2: rgba(18, 21, 28, 0.24);
-  --accent: #3461f0;
-  --accent-soft: #2a4fd0;
-  --accent-2: #ea5a12;
+  --blue: #3461f0;
+  --blue-soft: #2a4fd0;
+  --orange: #ea5a12;
+  --orange-soft: #c2470b;
   color-scheme: light;
+}
+/* the curious view leads with orange (text on an orange fill is dark),
+   and each view shows only its own parts (data-for). Print is always the
+   recruiter CV, so both are for screens only */
+@media screen {
+  :root[data-mode="curious"] {
+    --accent: var(--orange);
+    --accent-soft: var(--orange-soft);
+    --accent-2: var(--blue);
+    --on: #12151c;
+  }
+  /* on paper the bright orange is too light for small text: the darker
+     step leads, with white on it */
+  :root[data-theme="light"][data-mode="curious"] {
+    --accent: var(--orange-soft);
+    --on: #ffffff;
+  }
+  :root[data-mode="curious"] [data-for="recruiter"],
+  :root:not([data-mode="curious"]) [data-for="curious"] { display: none !important; }
+}
+@media print {
+  [data-for="curious"] { display: none !important; }
 }
 /* a theme switch cross-fades the colours once, then lets go */
 .theme-fade, .theme-fade *, .theme-fade *::before, .theme-fade *::after {
@@ -1233,6 +1262,259 @@ html:has(.quests[open]) { overflow: hidden; }
 .offclock button:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---------- Responsive ---------- */
+/* ==================================================================
+   The two views — recruiter and curious
+   ================================================================== */
+/* the chip over the hero says which view this is and brings back the
+   question; the footer has the same door */
+.mode-chip {
+  display: none;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 20px;
+  padding: 6px 12px 6px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.js .mode-chip { display: inline-flex; }
+.mode-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+.mode-chip u { text-decoration: none; color: var(--ink); }
+.mode-chip u::before { content: "⇄ "; color: var(--accent); }
+.mode-chip:hover { border-color: var(--accent); color: var(--ink); }
+.hero .mode-chip.rv { --delay: 0.05s; }
+.foot__mode { display: none; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
+.js .foot__mode { display: inline; }
+.foot__mode:hover { color: var(--ink); }
+
+/* the curious view's side quests sit on the page */
+.quests-inline .player { margin-bottom: 16px; }
+.figures--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(32px, 5vh, 48px); }
+.dayjob__cta { margin-top: 36px; }
+
+/* ==================================================================
+   The question — a character select on a first visit
+   ================================================================== */
+.onboard {
+  --pc-load: var(--accent);
+  position: fixed; inset: 0;
+  z-index: 200;
+  width: 100%; height: 100%;
+  max-width: none; max-height: none;
+  margin: 0; padding: 0;
+  border: 0;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* shown from the first paint while the page asks, before any script */
+.onboard[open], :root[data-mode="ask"] .onboard { display: grid; }
+.onboard::backdrop { background: var(--bg); }
+/* the ground: the hero's dots, a blue glow and an orange glow; the one
+   on the side of the card in focus grows */
+.onboard::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1.1px, transparent 1.4px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 45%, #000 25%, transparent 78%);
+  mask-image: radial-gradient(ellipse at 50% 45%, #000 25%, transparent 78%);
+}
+.onboard__inner::before, .onboard__inner::after {
+  content: "";
+  position: fixed;
+  top: 20%; width: 60vmax; height: 60vmax;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.12;
+  filter: blur(40px);
+  transition: opacity 0.6s ease, transform 0.9s var(--ease);
+}
+.onboard__inner::before { left: -22vmax; background: var(--blue); }
+.onboard__inner::after { right: -22vmax; background: var(--orange); }
+.onboard[data-hover="recruiter"] .onboard__inner::before,
+.onboard[data-hover="curious"] .onboard__inner::after { opacity: 0.28; transform: scale(1.08); }
+/* on paper-white the glows need far less */
+:root[data-theme="light"] .onboard__inner::before, :root[data-theme="light"] .onboard__inner::after { opacity: 0.06; }
+:root[data-theme="light"] .onboard[data-hover="recruiter"] .onboard__inner::before,
+:root[data-theme="light"] .onboard[data-hover="curious"] .onboard__inner::after { opacity: 0.14; }
+.onboard__inner {
+  position: relative;
+  width: min(1040px, 100% - 2 * var(--gut));
+  margin: auto;
+  padding: 24px 0 36px;
+}
+.onboard__inner > * { position: relative; z-index: 1; }
+.onboard__top { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(28px, 8vh, 80px); }
+.onboard__mark { width: 30px; height: 30px; flex: 0 0 auto; }
+.onboard__boot { flex: 1; display: flex; align-items: center; gap: 5px; min-width: 0; white-space: nowrap; overflow: hidden; }
+.onboard__boot i { width: 7px; height: 13px; background: var(--accent); animation: obCaret 1s steps(1) infinite; }
+@keyframes obCaret { 50% { opacity: 0; } }
+.onboard kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 1px 6px;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  text-align: center;
+  color: var(--dim);
+}
+.onboard__skip [data-for-state="again"], .onboard.is-again .onboard__skip [data-for-state="first"] { display: none; }
+.onboard.is-again .onboard__skip [data-for-state="again"] { display: inline; }
+.onboard__kicker { margin-bottom: 12px; }
+.onboard__title {
+  margin-bottom: clamp(24px, 5vh, 44px);
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(44px, 7.4vw, 100px);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+.onboard__title em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--blue), var(--orange));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* the two cards */
+.onboard__picks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; perspective: 1200px; }
+.pick {
+  --pc: var(--blue);
+  --pc-on: #ffffff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 22px 24px 24px;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  text-align: left;
+  cursor: pointer;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s var(--ease), border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.35s ease, opacity 0.4s ease;
+}
+.pick--cur { --pc: var(--orange); --pc-on: #12151c; }
+.pick.is-on {
+  border-color: var(--pc);
+  background: color-mix(in srgb, var(--pc) 9%, var(--surface));
+  box-shadow: 0 0 0 1px var(--pc), 0 30px 70px -30px color-mix(in srgb, var(--pc) 70%, transparent);
+  transform: translateY(-4px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+}
+/* the selection is the focus mark: the pointer and the keys move it together */
+.pick:focus-visible { outline: none; }
+.pick__top { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 18px; }
+.pick__now {
+  display: none;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--pc);
+  color: var(--pc-on);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.pick.is-now .pick__now { display: inline-block; }
+.pick__ic { width: 42px; height: 42px; margin-bottom: 14px; fill: none; stroke: var(--pc); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.5s var(--ease); }
+.pick.is-on .pick__ic { transform: scale(1.12) rotate(-6deg); }
+.pick__class { margin-bottom: 6px; color: var(--pc); }
+.pick__name { margin-bottom: 6px; font-family: var(--display); font-weight: 700; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.05; letter-spacing: -0.04em; }
+.pick__line { margin-bottom: 20px; font-size: 15px; color: var(--dim); }
+/* stats as five-segment bars, like a character sheet; a card in focus
+   charges them up */
+.pick__stats { display: grid; gap: 9px; width: 100%; margin-bottom: 18px; }
+.stat { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+.stat i { position: relative; height: 8px; background: repeating-linear-gradient(to right, var(--line-2) 0 calc(20% - 3px), transparent calc(20% - 3px) 20%); }
+.stat i::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(to right, var(--pc) 0 calc(20% - 3px), transparent calc(20% - 3px) 20%);
+  clip-path: inset(0 calc(100% - var(--v) * 20%) 0 0);
+  opacity: 0.45;
+  transition: opacity 0.3s ease;
+}
+.pick.is-on .stat i::after { opacity: 1; animation: obCharge 0.55s steps(5, end) backwards; }
+.pick.is-on .stat:nth-child(2) i::after { animation-delay: 0.08s; }
+.pick.is-on .stat:nth-child(3) i::after { animation-delay: 0.16s; }
+@keyframes obCharge { from { clip-path: inset(0 100% 0 0); } }
+.pick__perks { margin-bottom: 20px; font-size: 13px; color: var(--dim); }
+.pick__go {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 40px;
+  margin-top: auto;
+  padding: 0 16px;
+  border-radius: 6px;
+  background: var(--tint-2);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.pick.is-on .pick__go { background: var(--pc); color: var(--pc-on); }
+.pick.is-on .pick__go i { animation: obNudge 1.1s var(--ease) infinite; }
+@keyframes obNudge { 50% { transform: translateX(4px); } }
+
+/* the foot: the keys until a choice, then the loading bar in their place */
+.onboard__foot { display: grid; margin-top: 24px; }
+.onboard__hint, .onboard__load { grid-area: 1 / 1; transition: opacity 0.3s ease, transform 0.4s var(--ease); }
+.onboard__hint { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.onboard__hint kbd:nth-of-type(2) { margin-right: 4px; }
+.onboard__hint kbd:nth-of-type(3) { margin-left: 8px; margin-right: 4px; }
+.onboard__load {
+  display: flex; align-items: center; gap: 14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  opacity: 0;
+  transform: translateY(6px);
+}
+.onboard__load i { position: relative; flex: 1; height: 4px; overflow: hidden; border-radius: 2px; background: var(--line); }
+.onboard__load b { position: absolute; inset: 0; background: var(--pc-load); transform: scaleX(var(--load, 0)); transform-origin: 0 50%; }
+.onboard__pct { min-width: 40px; text-align: right; color: var(--ink); }
+.onboard[data-picked="recruiter"] { --pc-load: var(--blue); }
+.onboard[data-picked="curious"] { --pc-load: var(--orange); }
+
+/* a choice: the other card steps back, the chosen one forward */
+.onboard.is-picked .pick { cursor: default; }
+.onboard.is-picked .pick.is-out { opacity: 0.12; transform: scale(0.95) translateY(8px); }
+.onboard.is-picked .pick.is-chosen { transform: translateY(-8px) scale(1.02); }
+.onboard.is-picked .onboard__hint { opacity: 0; transform: translateY(-6px); }
+.onboard.is-picked .onboard__load { opacity: 1; transform: none; }
+/* then the screen wipes up in the chosen colour, and the page starts */
+.onboard::after {
+  content: "";
+  position: fixed; inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: var(--bg);
+  box-shadow: 0 -6px 0 var(--pc-load);
+  transform: translateY(105%);
+}
+.onboard.is-leaving::after { transform: none; transition: transform 0.42s var(--wipe); }
+
+/* opening plays the entrance once */
+.onboard.is-playing :is(.onboard__kicker, .onboard__title, .pick, .onboard__foot) { animation: obIn 0.7s var(--ease) backwards; }
+.onboard.is-playing .onboard__kicker { animation-delay: 0.08s; }
+.onboard.is-playing .onboard__title { animation-delay: 0.16s; }
+.onboard.is-playing .pick:nth-child(1) { animation-delay: 0.3s; }
+.onboard.is-playing .pick:nth-child(2) { animation-delay: 0.4s; }
+.onboard.is-playing .onboard__foot { animation-delay: 0.58s; }
+@keyframes obIn { from { opacity: 0; transform: translateY(18px); } }
+
 @media (max-width: 1080px) {
   .quests__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   /* five figures: three over two, each row filling the width */
@@ -1350,6 +1632,27 @@ html:has(.quests[open]) { overflow: hidden; }
   .lightbox { height: 100dvh; }
   .lightbox__slide { padding: 14px 8px 8px; }
   .lightbox__bar .btn { height: 44px; min-width: 44px; justify-content: center; }
+
+  /* the view chip is a thumb target too */
+  .mode-chip { min-height: 40px; }
+  .foot__mode { padding: 12px 0; }
+  /* the question on a phone: the cards stack and lose the extras */
+  .onboard__inner { padding: 14px 0 28px; }
+  .onboard__top { margin-bottom: 26px; }
+  .onboard__title { font-size: clamp(40px, 12vw, 56px); margin-bottom: 22px; }
+  .onboard__picks { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .pick { padding: 16px 18px 18px; }
+  .pick__top { margin-bottom: 0; }
+  .onboard .pick__key, .onboard__skip kbd { display: none; }
+  .pick.is-now .pick__top { margin-bottom: 10px; }
+  .pick__ic { position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; margin: 0; }
+  .pick__name { font-size: 30px; }
+  .pick__line { margin-bottom: 14px; font-size: 14px; }
+  .pick__stats { gap: 7px; margin-bottom: 14px; }
+  .stat { grid-template-columns: 100px minmax(0, 1fr); font-size: 10.5px; }
+  .pick__perks { display: none; }
+  .pick__go { height: 40px; }
+  .onboard__hint { display: none; }
 }
 @media (max-width: 560px) {
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1399,6 +1702,7 @@ html:has(.quests[open]) { overflow: hidden; }
   body { background: #fff; color: #111; padding: 0; font-size: 9pt; line-height: 1.45; }
   .bar, .rail, .dock, .skip, .hero__field, .strip, .hero__actions, .hero__photo, .trace, .photos,
   .acc__icon, .toast, .confetti, .eggs, .quests, .lightbox, .offclock, .keys, .head__intro, .project__go,
+  .onboard, .mode-chip, .foot__mode,
   .section--contact .contact__title { display: none !important; }
   /* the side projects print as a compact list */
   .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6pt; }
@@ -1411,7 +1715,7 @@ html:has(.quests[open]) { overflow: hidden; }
     opacity: 1 !important; transform: none !important; animation: none !important; transition: none !important;
   }
   .js .acc__item .acc__panel { grid-template-rows: 1fr !important; }
-  .acc__item::before, .section::before, .figures::before { transform: none !important; }
+  .acc__item::before, .section::before, .figures::before, .concepts > div::before, .contact__row::before { transform: none !important; }
   .acc__item::after, .contact__row::after { display: none; }
   .wrap { width: 100%; }
   .hero { min-height: 0; padding: 0; display: block; }
