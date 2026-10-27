@@ -139,6 +139,10 @@ contact.
   load or broke), the head script drops the question and shows the page.
 - **Print** is always the recruiter CV, in either view: the curious parts and the view controls
   are hidden on paper, the colours stay the recruiter's, and counters print their final value.
+  A contact line (email, LinkedIn, the site) prints under the name; on screen it is hidden.
+- **The PDF CV** (`joao-vaz-cv.pdf`) is that print, made by `make-cv.sh`. "Download CV" in the
+  hero and the CV row at Contact both point at it, and download it as `Joao-Vaz-CV.pdf`. After
+  any change to the CV's content, run `sh make-cv.sh` and commit the new PDF with it.
 
 ## Side quests
 
@@ -310,7 +314,16 @@ team-context.css  # what the MCP page adds: accents, tool grid, the allow/deny g
 js/scroll.js      # the single scroll driver: metrics, anchors, progress, one rAF loop
 js/graph.js       # the generated Obsidian-style graph on the PM-OS page (that page only)
 dev-server.py     # no-cache static server for development
+make-cv.sh        # prints the recruiter view to joao-vaz-cv.pdf, the "Download CV" file
+joao-vaz-cv.pdf   # the CV as a file (4 pages); make it again with make-cv.sh, never by hand
+404.html          # the page GitHub Pages serves for any missing address ("Quest not found")
+robots.txt        # lets every crawler in and points at the sitemap
+sitemap.xml       # the four pages, for search engines; update lastmod when a page changes
+js/game.js        # the curious view's game: XP, quest log, puzzle, run card
 ```
+
+The home page's `<head>` also carries search data (schema.org `Person`: name, role, employer,
+photo, email, LinkedIn). Keep it in step with the page when the role changes.
 
 `js/scroll.js` must load before any script that consumes `window.Scroll`. It builds `SECTION_IDS`
 from the page's own `data-nav` links, so each page declares its sections in its markup.

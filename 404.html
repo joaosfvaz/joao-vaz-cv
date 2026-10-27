@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page not found — João Vaz</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/brand/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0c0e13" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- GitHub Pages serves this page for any address it does not have, at
+       that address: every link here is absolute. The home page's sheet
+       gives it the same type, colours and buttons; no scripts beyond the
+       theme, so nothing waits to be revealed. -->
+  <link rel="stylesheet" href="/home.css?v=2026-10-28c" />
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem("theme"); } catch (e) {}
+      if (t !== "light" && t !== "dark") t = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+  <style>
+    .lost {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      align-content: center;
+      gap: 28px;
+      padding-block: 48px;
+    }
+    .lost__home { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 600; font-size: 17px; }
+    .lost__home svg { width: 28px; height: 28px; }
+    .lost__code {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(110px, 24vw, 260px);
+      line-height: 0.85;
+      letter-spacing: -0.06em;
+      color: var(--accent);
+    }
+    .lost__title { max-width: 14em; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4.6vw, 54px); line-height: 1.05; letter-spacing: -0.04em; }
+    .lost__title em { font-style: normal; color: var(--accent-2); }
+    .lost p { max-width: 34em; color: var(--dim); }
+    .lost__go { display: flex; flex-wrap: wrap; gap: 12px; }
+  </style>
+</head>
+<body>
+  <main class="lost wrap">
+    <a class="lost__home" href="/" aria-label="João Vaz — home"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#4d7cff" /><g transform="translate(3.6 3.6) scale(.89)"><g fill="#fff"><path d="M15 13h8.5v24.5c0 7.2-5.8 13-13 13H9v-8.5h1.5c2.5 0 4.5-2 4.5-4.5z" /><path d="M27 13h8.6l4.9 21.5 4.9-21.5H54l-9.2 37.5h-8.6z" /></g><rect x="52" y="42.5" width="8" height="8" rx="1.2" fill="#ff7a3d" /></g></svg><span>João Vaz</span></a>
+    <div class="lost__code" aria-hidden="true">404</div>
+    <p class="meta">Quest not found</p>
+    <h1 class="lost__title">This page is <em>off the map.</em></h1>
+    <p>The link may be old, or the address may have a typo. Everything else is still here.</p>
+    <div class="lost__go">
+      <a class="btn btn--ink" href="/"><span>Go to the home page</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a>
+      <a class="btn btn--line" href="/?mode=recruiter">See the full CV</a>
+      <a class="btn btn--line" href="/?mode=curious#quests">See the side quests</a>
+    </div>
+  </main>
+</body>
+</html>

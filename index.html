@@ -24,10 +24,24 @@
   <meta property="og:image:alt" content="João Vaz — I build tools for 12,000+ car dealers and 10M+ visitors." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#0c0e13" />
+  <!-- who this page is about, for search engines -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "João Vaz",
+      "url": "https://joao-vaz.com/",
+      "image": "https://joao-vaz.com/assets/portrait.jpg",
+      "jobTitle": "Product Manager",
+      "worksFor": { "@type": "Organization", "name": "OLX Group" },
+      "email": "mailto:joaosfvaz@gmail.com",
+      "sameAs": ["https://www.linkedin.com/in/joaovaz00"]
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-28b" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-28c" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if the scripts never run. -->
   <script>
@@ -150,6 +164,7 @@
             <span class="line"><span data-split>João</span></span>
             <span class="line"><span data-split>Vaz</span><span class="ch name-dot" style="--d:7" aria-hidden="true">.</span></span>
           </h1>
+          <p class="hero__print"><a href="mailto:joaosfvaz@gmail.com">joaosfvaz@gmail.com</a> · <a href="https://linkedin.com/in/joaovaz00">linkedin.com/in/joaovaz00</a> · <a href="https://joao-vaz.com">joao-vaz.com</a></p>
           <!-- The two numbers are underlined in blue, one after the other,
                once the line has landed. -->
           <p class="hero__line rv" data-for="recruiter">I build tools for <b>12,000+ car dealers</b> and <b>10M+ visitors</b>.</p>
@@ -173,6 +188,10 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
             </a>
             <a class="btn btn--line" href="#products">See the work</a>
+            <a class="btn btn--line" href="/joao-vaz-cv.pdf" download="Joao-Vaz-CV.pdf">
+              <span>Download CV</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14" /></svg>
+            </a>
             <span class="sr-only" aria-live="polite" data-copy-status></span>
           </div>
         </div>
@@ -613,6 +632,8 @@
         <div class="contact__rows">
           <a class="contact__row rv" href="mailto:joaosfvaz@gmail.com"><span class="meta">Email</span><strong>joaosfvaz@gmail.com</strong><i aria-hidden="true">→</i></a>
           <a class="contact__row rv" href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener"><span class="meta">LinkedIn</span><strong>in/joaovaz00</strong><i aria-hidden="true">↗</i></a>
+          <!-- the CV as a file: the print of this page, made by make-cv.sh -->
+          <a class="contact__row contact__row--cv rv" href="/joao-vaz-cv.pdf" download="Joao-Vaz-CV.pdf"><span class="meta">CV</span><strong>PDF · 4 pages</strong><i aria-hidden="true">↓</i></a>
         </div>
         <p class="offclock rv" data-for="recruiter">Off the clock? <button type="button" data-quests-open>Open the side quests →</button></p>
         <!-- The curious view's end screen: the visitor's run so far, from
@@ -873,8 +894,8 @@
     <span class="eggs" data-eggs hidden>Easter eggs found: <b>0</b> / 4</span>
   </footer>
 
-  <script src="/js/scroll.js?v=2026-10-28b"></script>
-  <script src="/js/home.js?v=2026-10-28b"></script>
-  <script src="/js/game.js?v=2026-10-28b"></script>
+  <script src="/js/scroll.js?v=2026-10-28c"></script>
+  <script src="/js/home.js?v=2026-10-28c"></script>
+  <script src="/js/game.js?v=2026-10-28c"></script>
 </body>
 </html>

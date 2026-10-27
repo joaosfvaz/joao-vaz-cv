@@ -324,6 +324,8 @@ html:not(.js) .theme { display: none; }
   gap: clamp(32px, 6vw, 96px);
 }
 .hero__copy { padding-bottom: 8px; }
+/* the contact line is for paper only (see Print) */
+.hero__print { display: none; }
 .hero__name {
   font-family: var(--display);
   font-weight: 800;
@@ -1891,7 +1893,7 @@ html:has(.quests[open]) { overflow: hidden; }
   body { background: #fff; color: #111; padding: 0; font-size: 9pt; line-height: 1.45; }
   .bar, .rail, .dock, .skip, .hero__field, .strip, .hero__actions, .hero__photo, .trace, .photos,
   .acc__icon, .toast, .confetti, .eggs, .quests, .lightbox, .offclock, .keys, .head__intro, .project__go,
-  .onboard, .mode-switch, .foot__mode, .mode-wipe,
+  .onboard, .mode-switch, .foot__mode, .mode-wipe, .contact__row--cv,
   .qlog, .chess, .runcard, .quest__play, .quest__back, .quest__turn,
   .section--contact .contact__title { display: none !important; }
   /* the side projects print as a compact list */
@@ -1950,9 +1952,15 @@ html:has(.quests[open]) { overflow: hidden; }
   .tags li { font-size: 7.5pt; padding: 1pt 6pt; }
   .kit__cv > div { padding: 6pt 8pt; }
   .contact__row { padding: 4pt 0; grid-template-columns: 60pt minmax(0, 1fr); }
+  /* a printed page is phone-narrow: keep the label beside the address,
+     not above it */
+  .contact__row .meta { grid-column: auto; }
   .contact__row strong { font-size: 11pt; }
   .contact__row i { display: none; }
+  /* the way to reach João, under the name on the first page */
+  .hero__print { display: block; margin: 0 0 6pt; font-family: var(--mono); font-size: 8pt; letter-spacing: 0.02em; color: #333; }
+  .hero__print a { color: inherit; }
   .acc__item, .kit__group, .concepts > div, .wins, .ships li, .role { break-inside: avoid; }
-  a[href^="http"]:not(.bar__icon):not(.contact__row)::after { content: " (" attr(href) ")"; font-size: 7.5pt; color: #555; }
+  a[href^="http"]:not(.bar__icon):not(.contact__row):not(.hero__print a)::after { content: " (" attr(href) ")"; font-size: 7.5pt; color: #555; }
   .foot { padding: 3mm 0 0; font-size: 7.5pt; }
 }
