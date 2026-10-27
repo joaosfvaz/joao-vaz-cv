@@ -107,6 +107,33 @@ contact.
   curious view" / "Switch to the recruiter view") and "See the full CV" in Day job do the same
   without the thumb. All of them are plain links to `/?mode=…`, so they still work without
   `js/home.js`.
+- **The game** (`js/game.js`, curious view only; the recruiter view loads it and leaves at once).
+  Quiet on purpose: the controller in the bar is the only thing that stays on screen.
+  - **XP and levels.** Achievements give XP: reaching the side quests (50), reading every quest
+    card (100, a card counts after a second mostly in view), seeing every photo in the viewer
+    (150, 18 photos), the chess puzzle (200), opening a side project (100, the toast waits for the
+    way back) and reaching Contact (100). Each easter egg gives 50. Levels: Visitor 0, Explorer
+    150, Regular 400, Insider 700. A phone can reach the top without the keyboard eggs.
+  - **The controller** opens the quest log: the level, the XP bar and each achievement with a hint
+    until it is done. Once there is XP it carries the level and a small XP bar.
+  - **Toasts** speak only for an achievement or a level, one at a time (`toast()` in
+    `js/home.js` queues them and moves into an open dialog). The first step and Contact stay
+    quiet, so a new visitor sees two toasts in the first 30 seconds, not four. The confetti plays
+    once, at the top level.
+  - **The puzzle** on the chess card is the Opera Game (Morphy, Paris 1858), before 16.Qb8+. The
+    one mate in two is 16.Qb8+ Nxb8 17.Rd8#; the answer and the legal moves were checked with
+    python-chess. A legal move that does not mate is played, then taken back; two misses give a
+    hint.
+  - **The run card** at Contact shows the visitor's run once they get there, with "Send me your
+    score" (a mailto with the level and XP in the subject).
+  - **Waiting for facts.** `CARD_BACKS` (one line per quest card, in page order) and `PLACES` (the
+    place of each landscape photo, by file) at the top of `js/game.js` are empty. While a list is
+    empty its game stays off. Fill `CARD_BACKS` and each card gets "Turn over"; fill `PLACES` for
+    at least 5 photos and 3 places, and the viewer asks "Where was this taken?" (a new achievement,
+    Globetrotter, 100 XP).
+  - **Storage.** Progress is in `localStorage` ("game", with "eggs" from `js/home.js`); the time
+    of the visit is in `sessionStorage`. Nothing is sent anywhere. With storage blocked the game
+    still runs, for that page only.
 - **Fail open** — without scripts there is no mode, so the page is the recruiter view. If the
   head script ran but `js/home.js` has not opened the question by `DOMContentLoaded` (it failed to
   load or broke), the head script drops the question and shows the page.

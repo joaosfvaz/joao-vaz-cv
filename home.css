@@ -991,6 +991,7 @@ html:not(.js) .theme { display: none; }
   border-left: 3px solid var(--accent-2);
   border-radius: 8px;
   background: var(--surface);
+  color: var(--ink);
   box-shadow: 0 12px 32px -16px rgba(0, 0, 0, 0.45);
   opacity: 0;
   transform: translateY(12px);
@@ -1353,6 +1354,143 @@ html:has(.quests[open]) { overflow: hidden; }
 .dayjob__cta { margin-top: 36px; }
 
 /* ==================================================================
+   The game — the curious view only (js/game.js). Quiet on purpose:
+   the controller in the bar is the one thing that stays on screen
+   ================================================================== */
+/* once there is any XP, the controller carries the level and a small
+   XP bar */
+.xp { position: relative; }
+.xp__lv, .xp__bar { display: none; }
+.xp.has-xp .xp__lv {
+  display: block;
+  position: absolute; top: 2px; right: 0;
+  min-width: 15px; height: 15px; padding: 0 4px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on);
+  font: 600 9.5px/15px var(--mono);
+  text-align: center;
+}
+.xp.has-xp .xp__bar {
+  display: block;
+  position: absolute; left: 9px; right: 9px; bottom: 4px;
+  height: 2px; border-radius: 1px;
+  background: var(--line-2);
+  overflow: hidden;
+}
+.xp__bar i { display: block; height: 100%; background: var(--accent); transform: scaleX(var(--xp, 0)); transform-origin: 0 50%; transition: transform 0.6s var(--ease); }
+
+/* the quest log and the puzzle: small panels over a dimmed page */
+.qlog, .chess {
+  width: min(440px, 100vw - 24px);
+  max-height: calc(100dvh - 24px);
+  margin: auto;
+  padding: 20px 22px 18px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.qlog::backdrop, .chess::backdrop { background: color-mix(in srgb, var(--bg) 60%, transparent); }
+.qlog[open], .chess[open] { animation: panelIn 0.35s var(--ease); }
+@keyframes panelIn { from { opacity: 0; transform: translateY(-8px) scale(0.98); } }
+.qlog__head, .chess__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.qlog__head kbd, .chess__head kbd { margin-left: 6px; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+.qlog__title, .chess__title { margin-bottom: 14px; font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.1; letter-spacing: -0.03em; }
+.qlog__title em, .chess__title em { font-style: normal; color: var(--accent); }
+.qlog__xp { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.qlog__xp i { flex: 1; height: 6px; border-radius: 3px; background: var(--tint-2); overflow: hidden; }
+.qlog__xp b { display: block; height: 100%; background: var(--accent); transform: scaleX(var(--k, 0)); transform-origin: 0 50%; transition: transform 0.8s var(--ease) 0.15s; }
+.qlog__xp .meta { font-size: 11px; white-space: nowrap; }
+.qlog__list { list-style: none; border-top: 1px solid var(--line); }
+.qrow { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.qrow > i { display: grid; place-items: center; width: 22px; height: 22px; border: 1px dashed var(--line-2); border-radius: 50%; font-style: normal; font-size: 12px; color: var(--on); }
+.qrow.is-done > i { border: 0; background: var(--accent); }
+.qrow b { display: block; font-size: 14.5px; font-weight: 600; }
+.qrow:not(.is-done) b { color: var(--dim); }
+.qrow span { display: block; font-size: 13px; line-height: 1.45; color: var(--dim); }
+.qrow .qrow__side { padding-top: 2px; font-family: var(--mono); font-size: 11px; white-space: nowrap; color: var(--faint); }
+.qrow.is-done .qrow__side { color: var(--accent); }
+.qlog__note { margin-top: 14px; font-size: 12px; color: var(--faint); }
+
+/* the puzzle: a board of buttons, tap a piece, then a square */
+.chess { width: min(460px, 100vw - 24px); }
+.chess__board {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.sq {
+  position: relative;
+  display: grid; place-items: center;
+  aspect-ratio: 1;
+  font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", serif;
+  font-size: min(40px, 8.4vw);
+  line-height: 1;
+  color: #12151c;
+  touch-action: manipulation;
+}
+.sq--light { background: #e9e7e1; }
+.sq--dark { background: #a3abba; }
+.sq.is-white { color: #ffffff; text-shadow: 0 1px 0 #12151c, 0 -1px 0 #12151c, 1px 0 0 #12151c, -1px 0 0 #12151c, 0 2px 3px rgba(0, 0, 0, 0.25); }
+.sq.is-last { box-shadow: inset 0 0 0 100px color-mix(in srgb, var(--orange) 26%, transparent); }
+.sq.is-pick { box-shadow: inset 0 0 0 3px var(--orange); }
+.sq.is-to::after { content: ""; position: absolute; width: 26%; height: 26%; border-radius: 50%; background: rgba(18, 21, 28, 0.32); }
+.sq.is-to:not(:empty)::after { width: 84%; height: 84%; background: none; border: 3px solid rgba(18, 21, 28, 0.32); }
+.sq.is-mate { box-shadow: inset 0 0 0 100px color-mix(in srgb, #e5484d 55%, transparent); }
+.sq:focus-visible { outline: 3px solid var(--orange); outline-offset: -3px; }
+.chess__status { min-height: 1.5em; margin: 14px 0 12px; font-size: 14.5px; }
+.chess__foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.chess__foot .meta { font-size: 10.5px; line-height: 1.5; }
+.quest__play { margin-top: 12px; font-size: 14px; font-weight: 600; color: var(--accent); }
+.quest__play:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* the run card: the end screen at Contact, once the visitor gets there */
+.runcard[hidden] { display: none; }
+.runcard {
+  max-width: 640px;
+  margin-top: 40px;
+  padding: 22px 22px 20px;
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  background: var(--surface);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.7s var(--ease);
+}
+.runcard.is-in { opacity: 1; transform: none; }
+.runcard__stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 20px; margin: 18px 0 20px; }
+.runcard__stats [hidden] { display: none; }
+.runcard__stats dt { margin-bottom: 4px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+.runcard__stats dd { font-family: var(--display); font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+.runcard__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* the viewer: how many photos are collected, and where one was taken */
+.lightbox__bar .lightbox__got { position: absolute; top: max(10px, env(safe-area-inset-top)); left: 12px; min-width: 0; padding: 4px 8px; border-radius: 4px; background: rgba(8, 9, 12, 0.72); text-align: left; font-size: 11px; color: rgba(255, 255, 255, 0.8); }
+.lightbox__quiz[hidden] { display: none; }
+.lightbox__quiz { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; padding: 10px 16px 0; }
+.lightbox__quiz .meta { width: 100%; text-align: center; color: rgba(255, 255, 255, 0.7); }
+.lightbox__quiz .btn { color: #f3f4f7; border-color: rgba(255, 255, 255, 0.25); }
+.lightbox__quiz .btn:disabled { opacity: 0.45; }
+.lightbox__quiz .btn.is-right { opacity: 1; border-color: var(--orange); color: var(--orange); }
+
+/* quest cards that turn over, once their facts exist */
+.quest__back { display: none; position: absolute; inset: 0; z-index: 1; flex-direction: column; justify-content: center; gap: 8px; padding: 20px 20px 34px; background: var(--bg); }
+.quest.is-flipped .quest__back { display: flex; }
+.quest .quest__back .meta { font-size: 11px; color: var(--accent); }
+.quest .quest__back p:not(.meta) { max-width: none; font-family: var(--display); font-size: 19px; font-weight: 600; line-height: 1.3; letter-spacing: -0.02em; color: var(--ink); }
+.quest__turn { position: absolute; left: 20px; bottom: 12px; z-index: 2; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.quest.is-turning { animation: questTurn 0.44s var(--ease); }
+@keyframes questTurn { 50% { transform: perspective(800px) rotateY(90deg); } }
+
+/* ==================================================================
    The question — a character select on a first visit
    ================================================================== */
 .onboard {
@@ -1695,6 +1833,12 @@ html:has(.quests[open]) { overflow: hidden; }
   .pick__go { height: 40px; }
   .onboard__hint { display: none; }
 }
+/* the game's panels give the board and the list more room on a phone */
+@media screen and (max-width: 560px) {
+  .qlog, .chess { padding: 16px 14px 14px; }
+  .runcard { padding: 18px 16px 16px; }
+  .runcard__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 /* on the narrowest phones the switch needs the label's room */
 @media screen and (max-width: 374px) {
   .mode-switch__label { display: none; }
@@ -1747,7 +1891,8 @@ html:has(.quests[open]) { overflow: hidden; }
   body { background: #fff; color: #111; padding: 0; font-size: 9pt; line-height: 1.45; }
   .bar, .rail, .dock, .skip, .hero__field, .strip, .hero__actions, .hero__photo, .trace, .photos,
   .acc__icon, .toast, .confetti, .eggs, .quests, .lightbox, .offclock, .keys, .head__intro, .project__go,
-  .onboard, .mode-switch, .foot__mode,
+  .onboard, .mode-switch, .foot__mode, .mode-wipe,
+  .qlog, .chess, .runcard, .quest__play, .quest__back, .quest__turn,
   .section--contact .contact__title { display: none !important; }
   /* the side projects print as a compact list */
   .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6pt; }

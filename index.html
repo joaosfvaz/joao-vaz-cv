@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-28a" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-28b" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if the scripts never run. -->
   <script>
@@ -83,7 +83,8 @@
       <a href="#projects" data-nav="projects">Projects</a>
     </nav>
     <div class="bar__end">
-      <button class="bar__icon quests-btn" type="button" data-quests-open aria-label="Side quests — the personal side" title="Side quests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 8.5h9a4 4 0 0 1 3.9 4.9l-.9 3.6a2.3 2.3 0 0 1-3.9 1l-1.8-2h-3.6l-1.8 2a2.3 2.3 0 0 1-3.9-1l-.9-3.6a4 4 0 0 1 3.9-4.9z" /><path d="M8.5 11.5v3M7 13h3" /><circle cx="15.5" cy="12" r=".9" /><circle cx="17" cy="14" r=".9" /></svg></button>
+      <button class="bar__icon quests-btn" type="button" data-quests-open data-for="recruiter" aria-label="Side quests — the personal side" title="Side quests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 8.5h9a4 4 0 0 1 3.9 4.9l-.9 3.6a2.3 2.3 0 0 1-3.9 1l-1.8-2h-3.6l-1.8 2a2.3 2.3 0 0 1-3.9-1l-.9-3.6a4 4 0 0 1 3.9-4.9z" /><path d="M8.5 11.5v3M7 13h3" /><circle cx="15.5" cy="12" r=".9" /><circle cx="17" cy="14" r=".9" /></svg></button>
+      <button class="bar__icon quests-btn xp" type="button" data-qlog-open data-for="curious" aria-label="Quest log" title="Quest log"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 8.5h9a4 4 0 0 1 3.9 4.9l-.9 3.6a2.3 2.3 0 0 1-3.9 1l-1.8-2h-3.6l-1.8 2a2.3 2.3 0 0 1-3.9-1l-.9-3.6a4 4 0 0 1 3.9-4.9z" /><path d="M8.5 11.5v3M7 13h3" /><circle cx="15.5" cy="12" r=".9" /><circle cx="17" cy="14" r=".9" /></svg><b class="xp__lv" aria-hidden="true"></b><i class="xp__bar" aria-hidden="true"><i></i></i></button>
       <button class="bar__icon theme" type="button" data-theme-toggle aria-label="Switch to the light theme">
         <svg class="theme__sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.6v2.2M12 19.2v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" /></svg>
         <svg class="theme__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.3 8.3 0 0 1 9.5 4a8.3 8.3 0 1 0 10.5 10.5Z" /></svg>
@@ -614,6 +615,23 @@
           <a class="contact__row rv" href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener"><span class="meta">LinkedIn</span><strong>in/joaovaz00</strong><i aria-hidden="true">↗</i></a>
         </div>
         <p class="offclock rv" data-for="recruiter">Off the clock? <button type="button" data-quests-open>Open the side quests →</button></p>
+        <!-- The curious view's end screen: the visitor's run so far, from
+             js/game.js. It shows once the visitor gets here. -->
+        <div class="runcard" data-for="curious" data-runcard hidden>
+          <p class="meta"><b>Run</b> Complete</p>
+          <dl class="runcard__stats">
+            <div><dt>Level</dt><dd data-run="level"></dd></div>
+            <div><dt>XP</dt><dd data-run="xp"></dd></div>
+            <div><dt>Achievements</dt><dd data-run="ach"></dd></div>
+            <div><dt>Photos</dt><dd data-run="photos"></dd></div>
+            <div><dt>Easter eggs</dt><dd data-run="eggs"></dd></div>
+            <div data-run-time hidden><dt>Time</dt><dd data-run="time"></dd></div>
+          </dl>
+          <div class="runcard__actions">
+            <a class="btn btn--ink btn--sm" href="mailto:joaosfvaz@gmail.com" data-run-mail>Send me your score</a>
+            <button class="btn btn--line btn--sm" type="button" data-qlog-open>Open the quest log</button>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -652,6 +670,7 @@
             <div class="quest__top"><svg class="quest__ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="6.5" r="2.5" /><path d="M9.5 10.5h5M10.6 10.5c0 3-1.6 5-2.6 6.5h8c-1-1.5-2.6-3.5-2.6-6.5M6.5 20h11M7.5 17h9" /></svg><span class="quest__status">Ongoing</span></div>
             <h4>Chess</h4>
             <p>I play a lot, lose a fair share, and built my own coach to find out why. <a href="/tabiya/">See Tabiya →</a></p>
+            <button class="quest__play" type="button" data-chess-open data-for="curious">Solve a mate in 2 →</button>
           </li>
           <li class="quest">
             <div class="quest__top"><svg class="quest__ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M5.2 6.8c3 2.6 3 7.8 0 10.4M18.8 6.8c-3 2.6-3 7.8 0 10.4" /></svg><span class="quest__status">Main sport</span></div>
@@ -748,8 +767,9 @@
   <!-- THE QUESTION — on a first visit the page asks who is visiting, like
        a game's character select, and shows one of two views: the recruiter
        view (the full CV) or the curious view (side quests first, the CV one
-       switch away). The head script picks the view; js/home.js runs this
-       screen, and the "Switch" chip in the hero brings it back. -->
+       switch away). The head script picks the view and js/home.js runs
+       this screen, on a first visit only; the switch in the hero changes
+       the view after that. -->
   <dialog class="onboard" id="onboard" aria-labelledby="onboard-title">
     <div class="onboard__inner">
       <div class="onboard__top">
@@ -804,12 +824,44 @@
        fills the track and the filmstrip from the photos on the page. -->
   <dialog class="lightbox" id="lightbox" aria-label="Photo viewer">
     <div class="lightbox__track" data-lb-track></div>
+    <div class="lightbox__quiz" data-lb-quiz hidden></div>
     <div class="lightbox__film" data-lb-film></div>
     <div class="lightbox__bar">
       <button class="btn btn--line btn--sm" type="button" data-lb-prev aria-label="Previous photo">←</button>
       <span class="meta" data-lb-count></span>
+      <span class="meta lightbox__got" data-lb-got data-for="curious"></span>
       <button class="btn btn--line btn--sm" type="button" data-lb-next aria-label="Next photo">→</button>
       <button class="btn btn--line btn--sm" type="button" data-lb-close>Close <kbd>Esc</kbd></button>
+    </div>
+  </dialog>
+
+  <!-- THE QUEST LOG — the curious view's progress: the level, the XP and
+       each achievement with a hint until it is done. js/game.js fills it;
+       the controller in the bar opens it. -->
+  <dialog class="qlog" id="qlog" aria-labelledby="qlog-title">
+    <div class="qlog__head">
+      <p class="meta"><b>Quest log</b></p>
+      <button class="btn btn--line btn--sm" type="button" data-qlog-close>Close <kbd>Esc</kbd></button>
+    </div>
+    <h2 class="qlog__title" id="qlog-title"><span data-qlog-level></span> <em data-qlog-name></em></h2>
+    <div class="qlog__xp"><i><b data-qlog-fill></b></i><span class="meta" data-qlog-xp></span></div>
+    <ol class="qlog__list" data-qlog-list></ol>
+    <p class="qlog__note">Progress stays in this browser. Nothing is sent anywhere.</p>
+  </dialog>
+
+  <!-- THE PUZZLE — a mate in two on the chess card. Tap a white piece,
+       then a square; js/game.js knows the answer and the legal moves. -->
+  <dialog class="chess" id="chess" aria-labelledby="chess-title">
+    <div class="chess__head">
+      <p class="meta"><b>Puzzle</b> Mate in 2</p>
+      <button class="btn btn--line btn--sm" type="button" data-chess-close>Close <kbd>Esc</kbd></button>
+    </div>
+    <h2 class="chess__title" id="chess-title">White to move. <em>Mate in two.</em></h2>
+    <div class="chess__board" data-chess-board></div>
+    <p class="chess__status" data-chess-status aria-live="polite"></p>
+    <div class="chess__foot">
+      <p class="meta">Morphy vs the Duke of Brunswick and Count Isouard · Paris 1858</p>
+      <button class="btn btn--line btn--sm" type="button" data-chess-reset>Start again</button>
     </div>
   </dialog>
 
@@ -821,7 +873,8 @@
     <span class="eggs" data-eggs hidden>Easter eggs found: <b>0</b> / 4</span>
   </footer>
 
-  <script src="/js/scroll.js?v=2026-10-28a"></script>
-  <script src="/js/home.js?v=2026-10-28a"></script>
+  <script src="/js/scroll.js?v=2026-10-28b"></script>
+  <script src="/js/home.js?v=2026-10-28b"></script>
+  <script src="/js/game.js?v=2026-10-28b"></script>
 </body>
 </html>

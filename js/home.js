@@ -693,15 +693,23 @@
   }
   showCount();
 
+  /* one toast at a time: another waits until this one has gone. In an
+     open dialog it moves inside, so the dialog does not cover it */
   let toastEl = null;
   let toastTimer = 0;
+  const toastQueue = [];
   function toast(label, text) {
+    if (toastEl && toastEl.classList.contains("is-on")) {
+      toastQueue.push([label, text]);
+      return;
+    }
     if (!toastEl) {
       toastEl = document.createElement("div");
       toastEl.className = "toast";
       toastEl.setAttribute("role", "status");
-      document.body.appendChild(toastEl);
     }
+    const host = $("dialog[open]") || document.body;
+    if (toastEl.parentNode !== host) host.appendChild(toastEl);
     toastEl.textContent = "";
     const l = document.createElement("span");
     const t = document.createElement("p");
@@ -713,7 +721,10 @@
     void toastEl.offsetWidth;
     toastEl.classList.add("is-on");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toastEl.classList.remove("is-on"), 5500);
+    toastTimer = setTimeout(() => {
+      toastEl.classList.remove("is-on");
+      if (toastQueue.length) setTimeout(() => toast.apply(null, toastQueue.shift()), 400);
+    }, toastQueue.length ? 4000 : 5500);
   }
   function find(key, text) {
     const again = found.has(key);
@@ -721,6 +732,7 @@
     try { localStorage.setItem("eggs", JSON.stringify(Array.from(found))); } catch (e) { /* see above */ }
     showCount();
     toast("Easter egg " + found.size + " / " + EGGS.length + (again ? " · found again" : ""), text);
+    if (!again) document.dispatchEvent(new CustomEvent("egg-found", { detail: key }));
   }
 
   /* for whoever opens the console */
@@ -771,6 +783,10 @@
       else c.remove();
     })(t0);
   }
+
+  /* the curious view's game (js/game.js) shares the toasts, the confetti
+     and the easter eggs */
+  window.Home = { toast: toast, confetti: confetti, eggs: found, EGGS: EGGS };
 
   /* typing "evals", and the Konami code — never while typing in a field */
   const KONAMI = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
@@ -918,6 +934,7 @@
     const mark = (i) => {
       at = i;
       [i - 1, i, i + 1].forEach(load);
+      document.dispatchEvent(new CustomEvent("photo-seen", { detail: list[i].dataset.full }));
       lbCount.textContent = i + 1 + " / " + list.length;
       Array.prototype.forEach.call(film.children, (t, k) => {
         t.classList.toggle("is-on", k === i);
