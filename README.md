@@ -98,10 +98,15 @@ contact.
   towards the pointer on a mouse. It shows from the first paint while the page asks. A choice
   plays a loading bar and a wipe, then goes to `/?mode=…&start=1`, so the page starts over in that
   view, its intro plays where it can be seen, and the choice holds even where storage is blocked.
-  A toast then names the view. Skip or Esc on a first visit means the recruiter view. The
-  "Switch" chip in the hero and "Change view" in the footer open it again (the current view is
-  marked; Cancel or Esc closes it). "See the full CV" in Day job goes straight to the recruiter
-  view through the same bar.
+  A toast then names the view. Skip or Esc means the recruiter view. The question only shows on
+  a first visit; after that the switch changes the view.
+- **The view switch** in the hero shows both views, Recruiter and Just curious, with the current
+  one under a thumb in that view's colour. The other one leans the thumb towards it on hover; a
+  click slides the thumb across, the screen wipes up with an edge in that view's colour, and the
+  page starts over at `/?mode=…&start=1`, with no question. The footer link ("Switch to the
+  curious view" / "Switch to the recruiter view") and "See the full CV" in Day job do the same
+  without the thumb. All of them are plain links to `/?mode=…`, so they still work without
+  `js/home.js`.
 - **Fail open** — without scripts there is no mode, so the page is the recruiter view. If the
   head script ran but `js/home.js` has not opened the question by `DOMContentLoaded` (it failed to
   load or broke), the head script drops the question and shows the page.

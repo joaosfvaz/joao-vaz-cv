@@ -988,13 +988,49 @@
 
   /* ------------------------------------------------------------------
    * The question — a first visit asks who is visiting, like a game's
-   * character select. "ask" (from the head script) opens it at once; the
-   * "Switch" chip in the hero and "Change view" in the footer open it
-   * again. A choice goes to /?mode=… behind a loading bar, so the page
+   * character select. "ask" (from the head script) opens it at once, and
+   * only then: later visits change view with the switch. A choice goes to
+   * /?mode=… behind a loading bar, so the page
    * starts over in that view and its intro plays where it can be seen,
    * and the choice holds even where storage is blocked. Skip or Esc on a
    * first visit means the recruiter view; later they only close it.
    * ---------------------------------------------------------------- */
+  /* the hero switch: the thumb sits on this view */
+  $$(".mode-switch").forEach((sw) => {
+    sw.setAttribute("data-on", S.mode);
+    $$("[data-mode-switch]", sw).forEach((a) => {
+      if (a.dataset.modeSwitch === S.mode) a.setAttribute("aria-current", "true");
+      else a.removeAttribute("aria-current");
+    });
+  });
+  /* the switch, the footer link and "See the full CV" go straight to the
+     other view: the switch slides its thumb across, the screen wipes up
+     in that view's colour and the page starts over in it. The question
+     itself only asks once, on a first visit */
+  function switchTo(to, sw) {
+    if (to === S.mode || root.hasAttribute("data-mode-switching")) return;
+    root.setAttribute("data-mode-switching", "");
+    const url = "/?mode=" + to + "&start=1";
+    if (reduced) { location.replace(url); return; }
+    if (sw) {
+      sw.setAttribute("data-going", "");
+      sw.setAttribute("data-on", to);
+    }
+    const wipe = document.createElement("div");
+    wipe.className = "mode-wipe";
+    wipe.setAttribute("data-to", to);
+    document.body.appendChild(wipe);
+    setTimeout(() => {
+      void wipe.offsetWidth;
+      wipe.classList.add("is-on");
+      setTimeout(() => location.replace(url), 440);
+    }, sw ? 380 : 0);
+  }
+  $$("[data-mode-switch]").forEach((a) => a.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    switchTo(a.dataset.modeSwitch, a.closest(".mode-switch"));
+  }));
+
   const ob = $("#onboard");
   if (ob && ob.showModal) {
     const picks = $$(".pick", ob);
@@ -1019,21 +1055,11 @@
         setTimeout(() => { boot.textContent = t; }, i * 340));
     }
 
-    function open(again) {
-      ob.classList.toggle("is-again", again);
-      ob.classList.remove("is-picked", "is-leaving");
-      ob.removeAttribute("data-picked");
-      picks.forEach((p) => p.classList.remove("is-chosen", "is-out", "is-now"));
-      if (again && pickFor(S.mode)) pickFor(S.mode).classList.add("is-now");
-      if (!ob.open) ob.showModal();
-      ob.classList.remove("is-playing");
-      void ob.offsetWidth;
+    function open() {
+      ob.showModal();
       ob.classList.add("is-playing");
-      const start = again ? pickFor(S.mode) : picks[0];
-      if (start) {
-        start.focus({ preventScroll: true });
-        hover(start);
-      }
+      picks[0].focus({ preventScroll: true });
+      hover(picks[0]);
       runBoot();
     }
 
@@ -1041,10 +1067,6 @@
        and the page starts over in that view */
     function choose(mode) {
       if (going) return;
-      if (ob.classList.contains("is-again") && mode === S.mode && !root.hasAttribute("data-mode-switching")) {
-        ob.close();
-        return;
-      }
       going = true;
       const p = pickFor(mode);
       hover(p);
@@ -1067,11 +1089,7 @@
       })(t0);
     }
 
-    function skip() {
-      if (going) return;
-      if (ob.classList.contains("is-again")) ob.close();
-      else choose("recruiter");
-    }
+    const skip = () => choose("recruiter");
 
     picks.forEach((p) => {
       /* the pointer and the keys move one selection, never two */
@@ -1116,22 +1134,10 @@
     /* before the visitor has clicked anything, a browser may let Esc
        close the dialog outright instead of asking: finish the choice at
        once (a first visit with no choice yet means the recruiter view) */
-    ob.addEventListener("close", () => {
-      if (pending) location.replace(pending);
-      else if (!ob.classList.contains("is-again")) location.replace("/?mode=recruiter&start=1");
-    });
-
-    $$("[data-mode-open]").forEach((b) => b.addEventListener("click", () => open(true)));
-    /* "See the full CV": straight to the other view, through the same bar */
-    $$("[data-mode-switch]").forEach((a) => a.addEventListener("click", (ev) => {
-      ev.preventDefault();
-      root.setAttribute("data-mode-switching", "");
-      open(true);
-      choose(a.dataset.modeSwitch);
-    }));
+    ob.addEventListener("close", () => location.replace(pending || "/?mode=recruiter&start=1"));
 
     if (root.getAttribute("data-mode") === "ask") {
-      open(false);
+      open();
       /* the page behind may show now: the dialog covers it */
       root.setAttribute("data-mode", "asking");
     }

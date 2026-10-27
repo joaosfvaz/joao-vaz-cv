@@ -1265,29 +1265,84 @@ html:has(.quests[open]) { overflow: hidden; }
 /* ==================================================================
    The two views — recruiter and curious
    ================================================================== */
-/* the chip over the hero says which view this is and brings back the
-   question; the footer has the same door */
-.mode-chip {
+/* the switch over the hero shows both views, the current one under a
+   thumb in that view's colour. The other one slides the thumb across and
+   the page wipes into that view; the question never asks again. data-on
+   says where the thumb is (js/home.js sets it from the view) */
+.mode-switch {
+  --thumb: var(--blue);
+  --thumb-on: #ffffff;
   display: none;
   align-items: center;
-  gap: 9px;
-  margin-bottom: 20px;
-  padding: 6px 12px 6px 10px;
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+.mode-switch[data-on="curious"] { --thumb: var(--orange); --thumb-on: #12151c; }
+:root[data-theme="light"] .mode-switch[data-on="curious"] { --thumb: var(--orange-soft); --thumb-on: #ffffff; }
+.js .mode-switch { display: flex; }
+.hero .mode-switch.rv { --delay: 0.05s; }
+.mode-switch__label {
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--dim);
-  transition: border-color 0.2s ease, color 0.2s ease;
+  color: var(--faint);
 }
-.js .mode-chip { display: inline-flex; }
-.mode-chip i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
-.mode-chip u { text-decoration: none; color: var(--ink); }
-.mode-chip u::before { content: "⇄ "; color: var(--accent); }
-.mode-chip:hover { border-color: var(--accent); color: var(--ink); }
-.hero .mode-chip.rv { --delay: 0.05s; }
+.mode-switch__track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 4px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--glass-2);
+}
+.mode-switch__thumb {
+  position: absolute;
+  top: 4px; bottom: 4px; left: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: var(--thumb);
+  box-shadow: 0 8px 22px -8px var(--thumb);
+  transition: transform 0.5s var(--ease), background-color 0.35s ease, box-shadow 0.35s ease;
+}
+.mode-switch[data-on="curious"] .mode-switch__thumb { transform: translateX(100%); }
+.mode-switch a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--dim);
+  transition: color 0.3s ease;
+}
+.mode-switch svg { width: 17px; height: 17px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mode-switch[data-on="recruiter"] [data-mode-switch="recruiter"],
+.mode-switch[data-on="curious"] [data-mode-switch="curious"] { color: var(--thumb-on); cursor: default; }
+/* the other view leans the thumb towards it */
+.mode-switch:not([data-going]) a:not([aria-current]):hover { color: var(--ink); }
+.mode-switch[data-on="recruiter"]:not([data-going]):has([data-mode-switch="curious"]:hover) .mode-switch__thumb { transform: translateX(8px); }
+.mode-switch[data-on="curious"]:not([data-going]):has([data-mode-switch="recruiter"]:hover) .mode-switch__thumb { transform: translateX(calc(100% - 8px)); }
+.mode-switch a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* then the screen wipes up with an edge in the new view's colour, as the
+   question's does, and the page starts over in that view */
+.mode-wipe {
+  position: fixed; inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  background: var(--bg);
+  box-shadow: 0 -6px 0 var(--blue);
+  transform: translateY(105%);
+  transition: transform 0.42s var(--wipe);
+}
+.mode-wipe[data-to="curious"] { box-shadow: 0 -6px 0 var(--orange); }
+.mode-wipe.is-on { transform: none; }
 .foot__mode { display: none; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
 .js .foot__mode { display: inline; }
 .foot__mode:hover { color: var(--ink); }
@@ -1369,8 +1424,6 @@ html:has(.quests[open]) { overflow: hidden; }
   text-align: center;
   color: var(--dim);
 }
-.onboard__skip [data-for-state="again"], .onboard.is-again .onboard__skip [data-for-state="first"] { display: none; }
-.onboard.is-again .onboard__skip [data-for-state="again"] { display: inline; }
 .onboard__kicker { margin-bottom: 12px; }
 .onboard__title {
   margin-bottom: clamp(24px, 5vh, 44px);
@@ -1416,18 +1469,6 @@ html:has(.quests[open]) { overflow: hidden; }
 /* the selection is the focus mark: the pointer and the keys move it together */
 .pick:focus-visible { outline: none; }
 .pick__top { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 18px; }
-.pick__now {
-  display: none;
-  padding: 2px 9px;
-  border-radius: 999px;
-  background: var(--pc);
-  color: var(--pc-on);
-  font-family: var(--mono);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.pick.is-now .pick__now { display: inline-block; }
 .pick__ic { width: 42px; height: 42px; margin-bottom: 14px; fill: none; stroke: var(--pc); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.5s var(--ease); }
 .pick.is-on .pick__ic { transform: scale(1.12) rotate(-6deg); }
 .pick__class { margin-bottom: 6px; color: var(--pc); }
@@ -1633,8 +1674,9 @@ html:has(.quests[open]) { overflow: hidden; }
   .lightbox__slide { padding: 14px 8px 8px; }
   .lightbox__bar .btn { height: 44px; min-width: 44px; justify-content: center; }
 
-  /* the view chip is a thumb target too */
-  .mode-chip { min-height: 40px; }
+  /* the view switch runs across the column, each half a thumb target */
+  .mode-switch__track { flex: 1 1 auto; max-width: 380px; }
+  .mode-switch a { height: 44px; padding: 0 8px; gap: 7px; }
   .foot__mode { padding: 12px 0; }
   /* the question on a phone: the cards stack and lose the extras */
   .onboard__inner { padding: 14px 0 28px; }
@@ -1644,7 +1686,6 @@ html:has(.quests[open]) { overflow: hidden; }
   .pick { padding: 16px 18px 18px; }
   .pick__top { margin-bottom: 0; }
   .onboard .pick__key, .onboard__skip kbd { display: none; }
-  .pick.is-now .pick__top { margin-bottom: 10px; }
   .pick__ic { position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; margin: 0; }
   .pick__name { font-size: 30px; }
   .pick__line { margin-bottom: 14px; font-size: 14px; }
@@ -1653,6 +1694,10 @@ html:has(.quests[open]) { overflow: hidden; }
   .pick__perks { display: none; }
   .pick__go { height: 40px; }
   .onboard__hint { display: none; }
+}
+/* on the narrowest phones the switch needs the label's room */
+@media screen and (max-width: 374px) {
+  .mode-switch__label { display: none; }
 }
 @media (max-width: 560px) {
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1702,7 +1747,7 @@ html:has(.quests[open]) { overflow: hidden; }
   body { background: #fff; color: #111; padding: 0; font-size: 9pt; line-height: 1.45; }
   .bar, .rail, .dock, .skip, .hero__field, .strip, .hero__actions, .hero__photo, .trace, .photos,
   .acc__icon, .toast, .confetti, .eggs, .quests, .lightbox, .offclock, .keys, .head__intro, .project__go,
-  .onboard, .mode-chip, .foot__mode,
+  .onboard, .mode-switch, .foot__mode,
   .section--contact .contact__title { display: none !important; }
   /* the side projects print as a compact list */
   .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6pt; }
