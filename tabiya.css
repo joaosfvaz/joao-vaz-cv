@@ -72,7 +72,7 @@
   font-family: var(--mono);
   font-size: 12px;
   letter-spacing: 0.2em;
-  color: var(--accent);
+  color: var(--accent-soft);
   margin-bottom: 16px;
 }
 .feat__text h2 {

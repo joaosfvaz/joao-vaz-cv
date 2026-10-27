@@ -9,8 +9,11 @@
    Load order: home.css, project.css, <page>.css
    ================================================================== */
 
-/* the names the page sheets were written against, pointed at home.css */
+/* the names the page sheets were written against, pointed at home.css.
+   A page's fill is its own accent (the home page's deeper blue would
+   follow it here from :root otherwise) */
 .page {
+  --fill: var(--accent);
   --accent-3: var(--accent-soft);
   --ink-dim: var(--dim);
   --ink-faint: var(--faint);
@@ -74,7 +77,7 @@
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-soft);
   margin-bottom: 8px;
 }
 .fact dd { font-size: 15px; line-height: 1.45; }
@@ -244,4 +247,11 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .js :is(.note, .takeaways li, .routine).rv::before, .js .facts::before { transform: none; }
+}
+
+/* on paper a page keeps its dark-ground accents (home.css's print block
+   resets only the root), so these labels keep the accent there, not the
+   pale step meant for a dark screen */
+@media print {
+  .fact dt, .feat__no { color: var(--accent); }
 }

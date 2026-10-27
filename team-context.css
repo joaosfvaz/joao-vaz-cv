@@ -12,6 +12,6 @@
   --on: #0c0e13;           /* dark text on green, which is too light for white */
 }
 /* on paper the green steps down so text in it reads */
-:root[data-theme="light"] .page--mcp { --accent: #0f9f6e; --accent-soft: #0b7d56; --on: #ffffff; }
+:root[data-theme="light"] .page--mcp { --accent: #0f9f6e; --accent-soft: #0b7d56; --on: #ffffff; --fill: var(--accent-soft); }
 
 .proj__title { font-size: clamp(36px, 6.4vw, 80px); }

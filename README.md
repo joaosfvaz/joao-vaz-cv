@@ -357,6 +357,18 @@ All copy lives in the HTML. The palette is the block of variables at the top of 
 `--accent` (blue), `--accent-soft` (its lighter step), `--accent-2` (orange) and `--on`, the text
 colour on an accent fill. Change `--accent` and the whole page follows; a project page overrides
 them on its `body` class.
+
+Every text colour passes WCAG AA (4.5:1, or 3:1 for large text) in both themes and both views;
+Lighthouse accessibility is 100. Keep it there:
+
+- **Fills.** A colour behind text is `--fill` with `--on` on it (and `--fill-2` / `--on-2` for the
+  second colour), never `--accent` itself. In the dark theme the blue fill (`--blue-fill`,
+  `#3268ff`) is a step deeper than the blue, so white on it passes; blue text and lines keep the
+  brighter `--blue`. A project page's fill is its own accent (`project.css`), with dark `--on`
+  where the accent is light (Tabiya, MCP and PM-OS in the dark theme).
+- **Small text in an accent** on a project page uses `--accent-soft`, the step meant for text.
+- **Grey labels** are `--faint`: `#7b8396` dark, `#696f7c` light. Do not go lighter (dark) or
+  darker (light) than that.
 The trace's three runs are the `RUNS` table in `js/home.js`.
 
 ## Tuning the motion
