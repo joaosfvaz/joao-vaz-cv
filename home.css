@@ -1278,6 +1278,109 @@ html:has(.quests[open]) { overflow: hidden; }
 .offclock button { color: var(--accent-2); font-weight: 600; }
 .offclock button:hover { text-decoration: underline; text-underline-offset: 3px; }
 
+/* ---------- The recruiter's tools ---------- */
+/* for a recruiter with one question (js/recruiter.js): the skill finder,
+   quick answers in Contact, and a link to each role and product */
+.bar__find svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+/* the way in under the hero's buttons; it needs the script */
+.hero__more { display: none; margin-top: 18px; font-size: 14.5px; color: var(--dim); }
+.js .hero__more { display: block; }
+.hero__more.rv { --delay: 1.05s; }
+.hero__more :is(button, a) { color: var(--accent); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.hero__more :is(button, a):hover { text-decoration-thickness: 2px; }
+
+/* the finder: a wider panel, skills as chips, then the places */
+.finder__intro { margin: -4px 0 16px; font-size: 14.5px; color: var(--dim); }
+.finder__skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.finder__skill {
+  padding: 6px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-size: 13.5px;
+  line-height: 1.4;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.finder__skill:hover { border-color: var(--accent); }
+.finder__skill[aria-pressed="true"] { border-color: var(--fill); background: var(--fill); color: var(--on); }
+.finder__paste { display: grid; gap: 8px; margin-top: 18px; }
+.finder__paste .meta { font-size: 11px; }
+.finder__paste textarea {
+  width: 100%;
+  min-height: 76px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.finder__paste textarea::placeholder { color: var(--faint); }
+.finder__paste textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+.finder__sum { min-height: 1.5em; margin: 16px 0 8px; font-size: 14px; color: var(--dim); }
+.finder__sum a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.finder__list li { border-top: 1px solid var(--line); }
+.finder__hit { display: grid; gap: 3px; margin: 0 -8px; padding: 11px 8px 12px; border-radius: 6px; transition: background-color 0.2s ease; }
+.finder__hit:hover { background: var(--tint-2); }
+.finder__hit .meta { font-size: 10.5px; }
+.finder__hit b { font-size: 14.5px; font-weight: 600; line-height: 1.35; }
+.finder__line {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--dim);
+}
+.finder__hit i { font-style: normal; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--accent-soft); }
+.finder__note { margin-top: 14px; font-size: 12px; color: var(--faint); }
+
+/* the part the finder or a link points at, marked for a moment */
+.is-found { animation: found 2.6s ease; }
+:is(li, p, .concepts > div).is-found { border-radius: 6px; }
+/* the mark reaches 8px past a part; an accordion's body clips, so it
+   keeps that much room on its right, outside its content */
+.acc__body { padding-right: 10px; margin-right: -10px; }
+@keyframes found {
+  from, 60% {
+    background-color: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 14%, var(--bg));
+  }
+}
+
+/* "copy a link" at the foot of an open role or product */
+.acc__body .share { display: flex; justify-content: flex-end; max-width: none; margin-top: 10px; }
+.share button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  transition: color 0.2s ease;
+}
+.share button:hover { color: var(--accent-soft); }
+.share svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+/* quick answers: plain facts on hairlines, three to a row */
+.answers { margin-top: clamp(48px, 7vh, 72px); }
+.answers__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; }
+.answers__grid > div { display: grid; gap: 4px; align-content: start; padding: 14px 0 18px; border-top: 1px solid var(--line); }
+.answers__grid dt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+.answers__grid dd { font-size: 15.5px; font-weight: 600; line-height: 1.4; }
+/* a placeholder answer: hidden on the live site, marked on a local
+   preview so it is plain what is still to fill in */
+.answers__grid > [data-todo] { display: none; }
+.is-preview .answers__grid > [data-todo] { display: grid; }
+.is-preview [data-todo] dd { justify-self: start; padding: 1px 8px; border: 1px dashed var(--accent-2); border-radius: 4px; font-weight: 400; color: var(--dim); }
+.is-preview [data-todo] dd::before { content: "To fill · "; font-family: var(--mono); font-size: 11px; color: var(--accent-2); }
+
 /* ---------- Responsive ---------- */
 /* ==================================================================
    The two views — recruiter and curious
@@ -1397,7 +1500,7 @@ html:has(.quests[open]) { overflow: hidden; }
 .xp__bar i { display: block; height: 100%; background: var(--accent); transform: scaleX(var(--xp, 0)); transform-origin: 0 50%; transition: transform 0.6s var(--ease); }
 
 /* the quest log and the puzzle: small panels over a dimmed page */
-.qlog, .chess {
+.qlog, .chess, .finder {
   width: min(440px, 100vw - 24px);
   max-height: calc(100dvh - 24px);
   margin: auto;
@@ -1410,13 +1513,13 @@ html:has(.quests[open]) { overflow: hidden; }
   overflow-y: auto;
   overscroll-behavior: contain;
 }
-.qlog::backdrop, .chess::backdrop { background: color-mix(in srgb, var(--bg) 60%, transparent); }
-.qlog[open], .chess[open] { animation: panelIn 0.35s var(--ease); }
+.qlog::backdrop, .chess::backdrop, .finder::backdrop { background: color-mix(in srgb, var(--bg) 60%, transparent); }
+.qlog[open], .chess[open], .finder[open] { animation: panelIn 0.35s var(--ease); }
 @keyframes panelIn { from { opacity: 0; transform: translateY(-8px) scale(0.98); } }
-.qlog__head, .chess__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
-.qlog__head kbd, .chess__head kbd { margin-left: 6px; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
-.qlog__title, .chess__title { margin-bottom: 14px; font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.1; letter-spacing: -0.03em; }
-.qlog__title em, .chess__title em { font-style: normal; color: var(--accent); }
+.qlog__head, .chess__head, .finder__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.qlog__head kbd, .chess__head kbd, .finder__head kbd { margin-left: 6px; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+.qlog__title, .chess__title, .finder__title { margin-bottom: 14px; font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.1; letter-spacing: -0.03em; }
+.qlog__title em, .chess__title em, .finder__title em { font-style: normal; color: var(--accent); }
 .qlog__xp { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .qlog__xp i { flex: 1; height: 6px; border-radius: 3px; background: var(--tint-2); overflow: hidden; }
 .qlog__xp b { display: block; height: 100%; background: var(--accent); transform: scaleX(var(--k, 0)); transform-origin: 0 50%; transition: transform 0.8s var(--ease) 0.15s; }
@@ -1434,6 +1537,7 @@ html:has(.quests[open]) { overflow: hidden; }
 
 /* the puzzle: a board of buttons, tap a piece, then a square */
 .chess { width: min(460px, 100vw - 24px); }
+.finder { width: min(620px, 100vw - 24px); }
 .chess__board {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
@@ -1765,6 +1869,11 @@ html:has(.quests[open]) { overflow: hidden; }
   .bar .btn--sm { height: 40px; }
   .trace__asks button { min-height: 44px; padding: 10px 14px; }
   .offclock button { padding: 10px 0; }
+  .hero__more button { padding: 6px 0; }
+  .finder__skill { min-height: 40px; }
+  .share button { min-height: 44px; }
+  .answers__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; }
+  .answers__wide { grid-column: 1 / -1; }
 
   /* the agent concepts: a row of cards to swipe through, the next one
      peeking in from the edge */
@@ -1859,6 +1968,17 @@ html:has(.quests[open]) { overflow: hidden; }
   .runcard__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 /* on the narrowest phones the switch needs the label's room */
+/* a narrow phone's bar has no room for the finder: the hero's line
+   under the buttons opens it */
+@media screen and (max-width: 400px) {
+  .bar__find { display: none; }
+}
+/* phones: the skills in one row to swipe, so the places show sooner */
+@media screen and (max-width: 560px) {
+  .finder__skills { flex-wrap: nowrap; overflow-x: auto; margin-inline: -22px; padding: 2px 22px; scrollbar-width: none; }
+  .finder__skills::-webkit-scrollbar { display: none; }
+  .finder__skill { flex: none; }
+}
 @media screen and (max-width: 374px) {
   .mode-switch__label { display: none; }
 }
@@ -1894,6 +2014,10 @@ html:has(.quests[open]) { overflow: hidden; }
   .js .kit__group.rv .tags li { opacity: 1; transform: none; }
   .quests__load { display: none; }
   .js .trace__spans li.st::after { transform: none; }
+  .is-found {
+    background-color: color-mix(in srgb, var(--accent) 14%, var(--bg));
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 14%, var(--bg));
+  }
 }
 
 /* ==================================================================
@@ -1913,6 +2037,7 @@ html:has(.quests[open]) { overflow: hidden; }
   .acc__icon, .toast, .confetti, .eggs, .quests, .lightbox, .offclock, .keys, .head__intro, .project__go,
   .onboard, .mode-switch, .foot__mode, .mode-wipe, .contact__row--cv,
   .qlog, .chess, .runcard, .quest__play, .quest__back, .quest__turn,
+  .hero__more, .finder, .share, .answers,
   .section--contact .contact__title { display: none !important; }
   /* the side projects print as a compact list */
   .projects { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6pt; }
@@ -1951,6 +2076,8 @@ html:has(.quests[open]) { overflow: hidden; }
   .acc__body { padding-left: 34pt; }
   .acc__body p, .role__sum { font-size: 9pt; margin-bottom: 4pt; }
   .acc__body > :last-child { margin-bottom: 5pt; }
+  /* "copy a link" does not print: the part above it ends the body */
+  .acc__body > :has(+ .share:last-child) { margin-bottom: 5pt; }
   .role { gap: 10pt; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
   .wins > div { padding: 5pt 7pt; }
   .wins dt { font-size: 12pt; margin-bottom: 2pt; }

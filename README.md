@@ -146,6 +146,25 @@ contact.
   Contact both point at the PDF and download it as `Joao-Vaz-CV.pdf`. Every fact in the CV is on
   this page too, so change both together, then run `sh make-cv.sh` and commit the new PDF.
   `/cv/` itself is not linked and asks search engines not to list it.
+- **The recruiter's tools** (`js/recruiter.js`, recruiter view only), for a visitor who came with
+  one question. A line under the hero's buttons leads to two of them.
+  - **The skill finder.** The magnifier in the bar (hidden on phones under 400px, where the hero
+    line opens it) and "Find a skill in my work" open a panel with 12 skills as chips and a box for
+    a job description. A chip, or the skills a pasted text asks for (a keyword list per skill in
+    `SKILLS`), lists the places on the page that show them: deliveries, products, outcomes, agent
+    concepts and projects first, then summaries and the toolkit; the most chosen skills first
+    within each. A place opens its role or product, scrolls to it and marks it for a moment. What
+    each part shows is in its `data-ev` tag (skill keys from `SKILLS`), so a new delivery needs a
+    tag to be found, and the finder makes no claim the page does not. The pasted text is matched
+    in the browser and never stored or sent; typing in the box fires no easter egg.
+  - **A link to one role or product.** Each product and role has an id (`#product-…`, `#role-…`),
+    and an open one ends with "Copy a link to this …": `/?mode=recruiter#role-pm` opens that role in
+    the recruiter view for anyone, whatever view they saw last.
+  - **Quick answers** in Contact (`#answers`): the facts a recruiter asks first. A row with
+    `data-todo` is a placeholder: it shows, marked "To fill", on a local preview only (localhost),
+    and stays hidden on the live site. **Before a push, `grep -n '<div data-todo' index.html` must
+    find nothing**: fill the row in and remove the attribute, or delete the row.
+  - On paper none of it prints, and the print of the page is unchanged.
 
 ## Side quests
 
@@ -325,6 +344,7 @@ joao-vaz-cv.pdf   # the CV as a file (1 page); make it again with make-cv.sh, ne
 robots.txt        # lets every crawler in and points at the sitemap
 sitemap.xml       # the four pages, for search engines; update lastmod when a page changes
 js/game.js        # the curious view's game: XP, quest log, puzzle, run card
+js/recruiter.js   # the recruiter view's tools: skill finder, links to a role, quick answers
 ```
 
 The home page's `<head>` also carries search data (schema.org `Person`: name, role, employer,

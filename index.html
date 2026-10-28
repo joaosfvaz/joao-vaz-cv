@@ -41,7 +41,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-28d" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-28e" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if the scripts never run. -->
   <script>
@@ -97,6 +97,7 @@
       <a href="#projects" data-nav="projects">Projects</a>
     </nav>
     <div class="bar__end">
+      <button class="bar__icon bar__find" type="button" data-finder-open data-for="recruiter" aria-label="Find a skill in my work" title="Find a skill"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.2" /><path d="M15.2 15.2L20 20" /></svg></button>
       <button class="bar__icon quests-btn" type="button" data-quests-open data-for="recruiter" aria-label="Side quests — the personal side" title="Side quests"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 8.5h9a4 4 0 0 1 3.9 4.9l-.9 3.6a2.3 2.3 0 0 1-3.9 1l-1.8-2h-3.6l-1.8 2a2.3 2.3 0 0 1-3.9-1l-.9-3.6a4 4 0 0 1 3.9-4.9z" /><path d="M8.5 11.5v3M7 13h3" /><circle cx="15.5" cy="12" r=".9" /><circle cx="17" cy="14" r=".9" /></svg></button>
       <button class="bar__icon quests-btn xp" type="button" data-qlog-open data-for="curious" aria-label="Quest log" title="Quest log"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 8.5h9a4 4 0 0 1 3.9 4.9l-.9 3.6a2.3 2.3 0 0 1-3.9 1l-1.8-2h-3.6l-1.8 2a2.3 2.3 0 0 1-3.9-1l-.9-3.6a4 4 0 0 1 3.9-4.9z" /><path d="M8.5 11.5v3M7 13h3" /><circle cx="15.5" cy="12" r=".9" /><circle cx="17" cy="14" r=".9" /></svg><b class="xp__lv" aria-hidden="true"></b><i class="xp__bar" aria-hidden="true"><i></i></i></button>
       <button class="bar__icon theme" type="button" data-theme-toggle aria-label="Switch to the light theme">
@@ -168,7 +169,7 @@
           <!-- The two numbers are underlined in blue, one after the other,
                once the line has landed. -->
           <p class="hero__line rv" data-for="recruiter">I build tools for <b>12,000+ car dealers</b> and <b>10M+ visitors</b>.</p>
-          <p class="hero__pitch rv" data-for="recruiter">Product Manager at OLX Group (Motors, B2B), part of Prosus. I set
+          <p class="hero__pitch rv" data-for="recruiter" data-ev="strategy leading b2b">Product Manager at OLX Group (Motors, B2B), part of Prosus. I set
             the strategy for a 10-person team, and I build my own agents along the way.</p>
           <p class="hero__line rv" data-for="curious">Tools for car dealers by day. After hours, <b>chess, sport</b> and <b>a camera</b>.</p>
           <p class="hero__pitch rv" data-for="curious">The lighter version of my site: what I do for fun, some of my
@@ -194,6 +195,10 @@
             </a>
             <span class="sr-only" aria-live="polite" data-copy-status></span>
           </div>
+          <!-- Two ways in for a recruiter with one question: the skill
+               finder (js/recruiter.js) and the quick answers in Contact.
+               It needs the script, so it only shows with .js. -->
+          <p class="hero__more rv" data-for="recruiter">Hiring for something specific? <button type="button" data-finder-open>Find a skill in my work</button> or read the <a href="#answers">quick answers</a>.</p>
         </div>
         <figure class="hero__photo rv">
           <div class="hero__frame">
@@ -207,7 +212,7 @@
            counts up to it. If the script never runs, the number is right. -->
       <dl class="figures wrap" data-for="recruiter">
         <div class="rv"><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement across 3 data products, in 18 months</dd></div>
-        <div class="rv"><dt data-count="12" data-suffix="k+">12k+</dt><dd>professional car dealers in PT · PL · RO</dd></div>
+        <div class="rv" data-ev="b2b stakeholders"><dt data-count="12" data-suffix="k+">12k+</dt><dd>professional car dealers in PT · PL · RO</dd></div>
         <div class="rv"><dt data-count="40" data-suffix="+">40+</dt><dd>experiments — A/B, AA &amp; fake-door</dd></div>
         <div class="rv"><dt data-count="75" data-suffix="+">75+</dt><dd>in-person dealer interviews</dd></div>
         <div class="rv"><dt data-count="90" data-suffix="+">90+</dt><dd>PMs trained on AI tooling</dd></div>
@@ -263,13 +268,13 @@
         <header class="head">
           <p class="meta rv"><b>01</b> Products</p>
           <h2 class="rv">The products I lead <em>for car dealers.</em></h2>
-          <p class="head__intro rv">Six products with one job: help a dealer buy the right cars, price
+          <p class="head__intro rv" data-ev="strategy b2b">Six products with one job: help a dealer buy the right cars, price
             them well and sell them faster. I own the strategy and the roadmap across them, from the data
             pipelines underneath to the screens dealers use.</p>
         </header>
 
         <div class="acc" data-acc>
-          <div class="acc__item rv is-open">
+          <div class="acc__item rv is-open" id="product-agents" data-ev="agents evals">
             <h3><button class="acc__head" type="button" aria-expanded="true">
               <span class="acc__n">01</span>
               <span class="acc__title">AI agents for pricing and performance</span>
@@ -285,7 +290,7 @@
               <ul class="keys"><li>Agent specs</li><li>MCP tools</li><li>Evals</li><li>Traces</li></ul>
             </div></div>
           </div>
-          <div class="acc__item rv">
+          <div class="acc__item rv" id="product-fair-price" data-ev="ml">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">02</span>
               <span class="acc__title">Fair-price estimates</span>
@@ -299,7 +304,7 @@
               <ul class="keys"><li>ML model</li><li>Price-to-market</li><li>Time to sell</li></ul>
             </div></div>
           </div>
-          <div class="acc__item rv">
+          <div class="acc__item rv" id="product-market" data-ev="ml analytics">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">03</span>
               <span class="acc__title">A live view of the car market</span>
@@ -313,7 +318,7 @@
               <ul class="keys"><li>Supply &amp; demand</li><li>Days of supply</li><li>Competitor listings</li></ul>
             </div></div>
           </div>
-          <div class="acc__item rv">
+          <div class="acc__item rv" id="product-performance" data-ev="ml analytics">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">04</span>
               <span class="acc__title">Listing performance</span>
@@ -327,7 +332,7 @@
               <ul class="keys"><li>Funnel metrics</li><li>Benchmarks</li></ul>
             </div></div>
           </div>
-          <div class="acc__item rv">
+          <div class="acc__item rv" id="product-home" data-ev="ml">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">05</span>
               <span class="acc__title">The business at a glance</span>
@@ -341,7 +346,7 @@
               <ul class="keys"><li>Stock health</li><li>Alerts</li><li>Multi-branch</li></ul>
             </div></div>
           </div>
-          <div class="acc__item rv">
+          <div class="acc__item rv" id="product-recommendations" data-ev="ml">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">06</span>
               <span class="acc__title">Recommendations on every listing</span>
@@ -394,14 +399,14 @@
           </figure>
 
           <dl class="concepts">
-            <div class="rv"><dt>Evals</dt><dd>Test questions with known answers for my domain, graded on correctness, groundedness, scope and refusals — so a change is judged on evidence, not on a demo.</dd></div>
-            <div class="rv"><dt>Traces</dt><dd>I read agent runs span by span to catch invented values, routing errors and the same question getting two different answers.</dd></div>
-            <div class="rv"><dt>Mandates</dt><dd>What an agent may do for a user: read-only or acting, whether an action can be reverted, and when a human must confirm.</dd></div>
-            <div class="rv"><dt>Automation classes</dt><dd>Assist, one-click, two-turn and scheduled — each capability gets the lightest class its risk allows.</dd></div>
-            <div class="rv"><dt>Tools &amp; MCP</dt><dd>Domain data behind MCP tools the agent calls, so answers come from the source, not from the model's memory.</dd></div>
-            <div class="rv"><dt>Context</dt><dd>Personas, playbooks under a token budget, what an agent is not for and where it hands over.</dd></div>
-            <div class="rv"><dt>Human-in-the-loop</dt><dd>Human review on critical paths until there are enough traces to trust an LLM judge.</dd></div>
-            <div class="rv"><dt>Skills for PMs</dt><dd>I wrote the Claude skills rolled out to every PM in our unit, to define their domain's agent and to decide when a change needs a spec.</dd></div>
+            <div class="rv" data-ev="evals"><dt>Evals</dt><dd>Test questions with known answers for my domain, graded on correctness, groundedness, scope and refusals — so a change is judged on evidence, not on a demo.</dd></div>
+            <div class="rv" data-ev="evals"><dt>Traces</dt><dd>I read agent runs span by span to catch invented values, routing errors and the same question getting two different answers.</dd></div>
+            <div class="rv" data-ev="agents"><dt>Mandates</dt><dd>What an agent may do for a user: read-only or acting, whether an action can be reverted, and when a human must confirm.</dd></div>
+            <div class="rv" data-ev="agents"><dt>Automation classes</dt><dd>Assist, one-click, two-turn and scheduled — each capability gets the lightest class its risk allows.</dd></div>
+            <div class="rv" data-ev="agents"><dt>Tools &amp; MCP</dt><dd>Domain data behind MCP tools the agent calls, so answers come from the source, not from the model's memory.</dd></div>
+            <div class="rv" data-ev="agents"><dt>Context</dt><dd>Personas, playbooks under a token budget, what an agent is not for and where it hands over.</dd></div>
+            <div class="rv" data-ev="evals agents"><dt>Human-in-the-loop</dt><dd>Human review on critical paths until there are enough traces to trust an LLM judge.</dd></div>
+            <div class="rv" data-ev="leading building agents"><dt>Skills for PMs</dt><dd>I wrote the Claude skills rolled out to every PM in our unit, to define their domain's agent and to decide when a change needs a spec.</dd></div>
           </dl>
         </div>
       </div>
@@ -419,7 +424,7 @@
              count up when the role opens) and what shipped (deliveries,
              one line each). -->
         <div class="acc acc--roles" data-acc>
-          <div class="acc__item rv is-open">
+          <div class="acc__item rv is-open" id="role-pm">
             <h3><button class="acc__head" type="button" aria-expanded="true">
               <span class="acc__n">2025 —</span>
               <span class="acc__title">Product Manager <small>OLX Group · Prosus · Motors B2B</small></span>
@@ -427,32 +432,32 @@
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
-              <p class="role__sum">Strategy for dealer insights, pricing and recommendations — from the data pipelines to the screens, with stakeholders in five markets.</p>
+              <p class="role__sum" data-ev="strategy stakeholders">Strategy for dealer insights, pricing and recommendations — from the data pipelines to the screens, with stakeholders in five markets.</p>
               <div class="role">
                 <div class="role__col">
                   <p class="role__k">Outcomes</p>
                   <dl class="wins">
-                    <div><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement, 3 data products</dd></div>
-                    <div><dt data-count="72" data-prefix="~" data-suffix="%">~72%</dt><dd>average OKR completion, 2.5 years</dd></div>
-                    <div><dt data-count="40" data-suffix="+">40+</dt><dd>experiments — A/B, AA, fake-door</dd></div>
-                    <div><dt data-count="90" data-suffix="+">90+</dt><dd>PMs trained on AI tools, 75% now use them</dd></div>
+                    <div data-ev="ml analytics"><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement, 3 data products</dd></div>
+                    <div data-ev="strategy delivery"><dt data-count="72" data-prefix="~" data-suffix="%">~72%</dt><dd>average OKR completion, 2.5 years</dd></div>
+                    <div data-ev="experiments"><dt data-count="40" data-suffix="+">40+</dt><dd>experiments — A/B, AA, fake-door</dd></div>
+                    <div data-ev="leading building"><dt data-count="90" data-suffix="+">90+</dt><dd>PMs trained on AI tools, 75% now use them</dd></div>
                   </dl>
                 </div>
                 <div class="role__col role__col--ships">
                   <p class="role__k">Deliveries</p>
                   <ul class="ships">
-                    <li><b>AI agents for my domain</b><span>Defined what my domain's agents in the dealers' AI assistant can answer about pricing and listing performance, and tested them with evals and trace reviews.</span></li>
-                    <li><b>Market insights redesign</b><span>Rebuilt the view where dealers see supply, demand and prices for every car segment, on desktop and mobile.</span></li>
-                    <li><b>Segment drill-down</b><span>Let dealers go from a market segment straight to the competing listings in it, with price, mileage and days on market.</span></li>
-                    <li><b>Consistent listing statistics</b><span>Moved listing statistics to one data source, so leads count the same in the product, in sales reports and in BI.</span></li>
-                    <li><b>Product workshop for ~100 people</b><span>Co-designed a two-day workshop for 8 teams, with 8 Claude skills that turn dealer interviews into a scored roadmap.</span></li>
-                    <li><b>AI skills for every PM</b><span>Wrote Claude skills that help each PM define what their domain's AI agent should do, and decide when a change needs a spec.</span></li>
+                    <li data-ev="agents evals"><b>AI agents for my domain</b><span>Defined what my domain's agents in the dealers' AI assistant can answer about pricing and listing performance, and tested them with evals and trace reviews.</span></li>
+                    <li data-ev="ml analytics"><b>Market insights redesign</b><span>Rebuilt the view where dealers see supply, demand and prices for every car segment, on desktop and mobile.</span></li>
+                    <li data-ev="ml"><b>Segment drill-down</b><span>Let dealers go from a market segment straight to the competing listings in it, with price, mileage and days on market.</span></li>
+                    <li data-ev="analytics stakeholders"><b>Consistent listing statistics</b><span>Moved listing statistics to one data source, so leads count the same in the product, in sales reports and in BI.</span></li>
+                    <li data-ev="leading research strategy"><b>Product workshop for ~100 people</b><span>Co-designed a two-day workshop for 8 teams, with 8 Claude skills that turn dealer interviews into a scored roadmap.</span></li>
+                    <li data-ev="leading building agents"><b>AI skills for every PM</b><span>Wrote Claude skills that help each PM define what their domain's AI agent should do, and decide when a change needs a spec.</span></li>
                   </ul>
                 </div>
               </div>
             </div></div>
           </div>
-          <div class="acc__item rv">
+          <div class="acc__item rv" id="role-apm">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">2024</span>
               <span class="acc__title">Associate Product Manager <small>OLX Group · Prosus · Motors B2B</small></span>
@@ -460,27 +465,27 @@
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
-              <p class="role__sum">Same team and scope, on the machine-learning side of the product.</p>
+              <p class="role__sum" data-ev="ml">Same team and scope, on the machine-learning side of the product.</p>
               <div class="role">
                 <div class="role__col">
                   <p class="role__k">Outcomes</p>
                   <dl class="wins">
-                    <div><dt data-count="75" data-suffix="+">75+</dt><dd>in-person dealer interviews, PL · RO · PT</dd></div>
+                    <div data-ev="research b2b"><dt data-count="75" data-suffix="+">75+</dt><dd>in-person dealer interviews, PL · RO · PT</dd></div>
                     <div><dt data-count="12" data-suffix=" mo">12 mo</dt><dd>to promotion to Product Manager</dd></div>
                   </dl>
                 </div>
                 <div class="role__col role__col--ships">
                   <p class="role__k">Deliveries</p>
                   <ul class="ships">
-                    <li><b>Fair-price estimates</b><span>Brought a machine-learning price estimate into the product, so dealers see what each car is worth next to their asking price.</span></li>
-                    <li><b>Time-to-sell estimates</b><span>Added how long similar cars take to sell, estimated from a car's specs.</span></li>
-                    <li><b>Dealer research</b><span>Interviewed dealers in person in Poland, Romania and Portugal to understand how they price and sell their cars.</span></li>
+                    <li data-ev="ml"><b>Fair-price estimates</b><span>Brought a machine-learning price estimate into the product, so dealers see what each car is worth next to their asking price.</span></li>
+                    <li data-ev="ml"><b>Time-to-sell estimates</b><span>Added how long similar cars take to sell, estimated from a car's specs.</span></li>
+                    <li data-ev="research stakeholders b2b"><b>Dealer research</b><span>Interviewed dealers in person in Poland, Romania and Portugal to understand how they price and sell their cars.</span></li>
                   </ul>
                 </div>
               </div>
             </div></div>
           </div>
-          <div class="acc__item rv">
+          <div class="acc__item rv" id="role-trainee">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">2023</span>
               <span class="acc__title">Product Management Trainee <small>OLX Group</small></span>
@@ -498,14 +503,14 @@
                 <div class="role__col role__col--ships">
                   <p class="role__k">Deliveries</p>
                   <ul class="ships">
-                    <li><b>Lead-generation discovery</b><span>Researched how professional dealers get their leads, to find where the product could help them get more.</span></li>
-                    <li><b>Recommendation experiments</b><span>Ran A/B tests with Data Science on which types of recommendation to show next to paid-visibility products.</span></li>
+                    <li data-ev="research b2b"><b>Lead-generation discovery</b><span>Researched how professional dealers get their leads, to find where the product could help them get more.</span></li>
+                    <li data-ev="experiments ml"><b>Recommendation experiments</b><span>Ran A/B tests with Data Science on which types of recommendation to show next to paid-visibility products.</span></li>
                   </ul>
                 </div>
               </div>
             </div></div>
           </div>
-          <div class="acc__item rv">
+          <div class="acc__item rv" id="role-accelerator">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">2026</span>
               <span class="acc__title">Prosus AI Accelerator <small>Selected · Amsterdam · 1 month</small></span>
@@ -525,7 +530,7 @@
                 <div class="role__col role__col--ships">
                   <p class="role__k">Deliveries</p>
                   <ul class="ships">
-                    <li><b>Seller-inbox prototype</b><span>Built with my team a prototype inbox where an AI assistant screens out buyers who aren't serious.</span></li>
+                    <li data-ev="building agents"><b>Seller-inbox prototype</b><span>Built with my team a prototype inbox where an AI assistant screens out buyers who aren't serious.</span></li>
                     <li><b>Live demo on stage</b><span>Presented the prototype on stage to the whole programme in Amsterdam.</span></li>
                   </ul>
                 </div>
@@ -545,31 +550,31 @@
         <div class="kit">
           <h3 class="kit__title rv">Toolkit</h3>
           <div class="kit__grid">
-            <section class="kit__group kit__group--lead rv">
+            <section class="kit__group kit__group--lead rv" data-ev="agents evals">
               <h4>Agentic AI</h4>
               <ul class="tags">
                 <li>Evals &amp; test sets</li><li>Tracing &amp; observability</li><li>Mandates &amp; permissions</li><li>Guardrails &amp; refusals</li><li>MCP servers &amp; tools</li><li>Agent routing &amp; handover</li><li>Context engineering</li><li>LLM-as-judge</li><li>Human-in-the-loop</li>
               </ul>
             </section>
-            <section class="kit__group rv">
+            <section class="kit__group rv" data-ev="building">
               <h4>AI-assisted building</h4>
               <ul class="tags">
                 <li>Claude Code</li><li>Cursor</li><li>Lovable</li><li>Claude skills</li><li>Scheduled agents</li><li>Video with HyperFrames</li>
               </ul>
             </section>
-            <section class="kit__group rv">
+            <section class="kit__group rv" data-ev="analytics experiments research">
               <h4>Data &amp; experimentation</h4>
               <ul class="tags">
                 <li>SQL</li><li>GA4</li><li>A/B, AA &amp; fake-door tests</li><li>Maze</li><li>Moderated &amp; unmoderated usability tests</li>
               </ul>
             </section>
-            <section class="kit__group rv">
+            <section class="kit__group rv" data-ev="delivery">
               <h4>Delivery &amp; technical</h4>
               <ul class="tags">
                 <li>Jira &amp; Atlassian</li><li>LaunchDarkly</li><li>New Relic SLIs/SLOs</li><li>Postman</li><li>GraphQL</li><li>Event-driven &amp; microservices</li><li>Sprints &amp; kanban</li>
               </ul>
             </section>
-            <section class="kit__group rv">
+            <section class="kit__group rv" data-ev="stakeholders">
               <h4>CRM &amp; go-to-market</h4>
               <ul class="tags">
                 <li>Braze</li><li>Intercom</li><li>Campaigns tied to in-product behaviour</li><li>Five markets</li>
@@ -592,28 +597,28 @@
           <h2 class="rv">Things I built myself, <em>from idea to working product.</em></h2>
         </header>
         <div class="projects">
-          <a class="project rv" href="/pm-os/">
+          <a class="project rv" href="/pm-os/" data-ev="building agents">
             <span class="meta">Knowledge · Scheduled agents</span>
             <h3>PM-OS</h3>
             <p>A knowledge base my team's answers live in, kept true by seven scheduled Claude
               routines: meetings file themselves and stale pages are made to admit it.</p>
             <span class="project__go">Read more <i aria-hidden="true">→</i></span>
           </a>
-          <a class="project rv" href="/team-context/">
+          <a class="project rv" href="/team-context/" data-ev="building agents stakeholders">
             <span class="meta">MCP · Python</span>
             <h3>Team-context MCP</h3>
             <p>A read-only MCP server that lets the company's internal AI assistant answer
               stakeholders' questions about my team's work — served from a laptop through a tunnel.</p>
             <span class="project__go">Read more <i aria-hidden="true">→</i></span>
           </a>
-          <a class="project rv" href="https://joaosfvaz.github.io/portugal-explicado/" target="_blank" rel="noopener">
+          <a class="project rv" href="https://joaosfvaz.github.io/portugal-explicado/" data-ev="building" target="_blank" rel="noopener">
             <span class="meta">Civic · Next.js · Open data</span>
             <h3>Portugal Explicado</h3>
             <p>Taxes, Parliament, laws and the economy of Portugal in plain Portuguese — every number
               linked to an official source, with open data imported every day.</p>
             <span class="project__go">Visit the site <i aria-hidden="true">↗</i></span>
           </a>
-          <a class="project rv" href="/tabiya/">
+          <a class="project rv" href="/tabiya/" data-ev="building delivery">
             <span class="meta">Chess · AWS serverless</span>
             <h3>Tabiya</h3>
             <p>A chess coach that explains every move in plain English: a serverless pipeline
@@ -635,6 +640,23 @@
           <!-- the CV as a file: the print of this page, made by make-cv.sh -->
           <a class="contact__row contact__row--cv rv" href="/joao-vaz-cv.pdf" download="Joao-Vaz-CV.pdf"><span class="meta">CV</span><strong>PDF · 1 page</strong><i aria-hidden="true">↓</i></a>
         </div>
+        <!-- Quick answers to a recruiter's first questions. A row with
+             data-todo is a placeholder: it shows on a local preview only
+             (js/recruiter.js) and must be filled in before a push. -->
+        <section class="answers rv" id="answers" data-for="recruiter" aria-labelledby="answers-title">
+          <h3 class="kit__title" id="answers-title">Quick answers</h3>
+          <dl class="answers__grid">
+            <div><dt>Current role</dt><dd>Product Manager, OLX Group · Prosus</dd></div>
+            <div><dt>Experience</dt><dd>4 years in product</dd></div>
+            <div><dt>Languages</dt><dd>Portuguese, native · English, C2</dd></div>
+            <div><dt>Based in</dt><dd>Lisbon, Portugal</dd></div>
+            <div><dt>Work setup</dt><dd>Hybrid</dd></div>
+            <div><dt>Relocation</dt><dd>Open to relocation</dd></div>
+            <div><dt>Right to work</dt><dd>Portuguese and EU citizen: no visa in the EU</dd></div>
+            <div><dt>Notice period</dt><dd>30 days</dd></div>
+            <div class="answers__wide"><dt>Open to</dt><dd>Product Manager, AI Product Manager, Data Product Manager and Product Builder roles</dd></div>
+          </dl>
+        </section>
         <p class="offclock rv" data-for="recruiter">Off the clock? <button type="button" data-quests-open>Open the side quests →</button></p>
         <!-- The curious view's end screen: the visitor's run so far, from
              js/game.js. It shows once the visitor gets here. -->
@@ -886,6 +908,27 @@
     </div>
   </dialog>
 
+  <!-- THE SKILL FINDER — the recruiter view's search. Pick a skill, or
+       paste a job description, and it lists the places on this page that
+       show it, each one a link to its place. js/recruiter.js fills it
+       from the data-ev tags; the pasted text never leaves the browser. -->
+  <dialog class="finder" id="finder" aria-labelledby="finder-title">
+    <div class="finder__head">
+      <p class="meta"><b>Find</b> Skills</p>
+      <button class="btn btn--line btn--sm" type="button" data-finder-close>Close <kbd>Esc</kbd></button>
+    </div>
+    <h2 class="finder__title" id="finder-title">Looking for <em>something specific?</em></h2>
+    <p class="finder__intro">Pick a skill, or paste a job description. You get the places on this page that show it.</p>
+    <div class="finder__skills" role="group" aria-label="Skills" data-finder-skills></div>
+    <label class="finder__paste">
+      <span class="meta">Or paste a job description</span>
+      <textarea rows="3" data-finder-text placeholder="Paste the text of the role here"></textarea>
+    </label>
+    <p class="finder__sum" data-finder-sum aria-live="polite"></p>
+    <ol class="finder__list" data-finder-list></ol>
+    <p class="finder__note">The text you paste stays in this browser. Nothing is sent anywhere.</p>
+  </dialog>
+
   <footer class="foot wrap">
     <span>© 2026 João Vaz</span>
     <span>Hand-built · no framework · a little AI</span>
@@ -894,8 +937,9 @@
     <span class="eggs" data-eggs hidden>Easter eggs found: <b>0</b> / 4</span>
   </footer>
 
-  <script src="/js/scroll.js?v=2026-10-28d"></script>
-  <script src="/js/home.js?v=2026-10-28d"></script>
-  <script src="/js/game.js?v=2026-10-28d"></script>
+  <script src="/js/scroll.js?v=2026-10-28e"></script>
+  <script src="/js/home.js?v=2026-10-28e"></script>
+  <script src="/js/game.js?v=2026-10-28e"></script>
+  <script src="/js/recruiter.js?v=2026-10-28e"></script>
 </body>
 </html>
