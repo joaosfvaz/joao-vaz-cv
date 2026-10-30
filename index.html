@@ -40,8 +40,8 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-28e" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/home.css?v=2026-10-30a" />
   <!-- Motion is opt-in: every animated state is gated on .js, so the page
        renders finished if the scripts never run. -->
   <script>
@@ -113,32 +113,32 @@
   <!-- Wide screens: an index down the left edge. Each number is a link;
        the line beside it fills as the section is read. -->
   <nav class="rail" aria-label="Section index" data-for="recruiter">
-    <a href="#products" data-nav="products"><b>01</b><span>Products</span><i></i></a>
-    <a href="#ai" data-nav="ai"><b>02</b><span>AI</span><i></i></a>
-    <a href="#work" data-nav="work"><b>03</b><span>Experience</span><i></i></a>
-    <a href="#projects" data-nav="projects"><b>04</b><span>Projects</span><i></i></a>
-    <a href="#contact" data-nav="contact"><b>05</b><span>Contact</span><i></i></a>
+    <a href="#products" data-nav="products"><span>Products</span><i></i></a>
+    <a href="#ai" data-nav="ai"><span>AI</span><i></i></a>
+    <a href="#work" data-nav="work"><span>Experience</span><i></i></a>
+    <a href="#projects" data-nav="projects"><span>Projects</span><i></i></a>
+    <a href="#contact" data-nav="contact"><span>Contact</span><i></i></a>
   </nav>
   <nav class="rail" aria-label="Section index" data-for="curious">
-    <a href="#quests" data-nav="quests"><b>01</b><span>Side quests</span><i></i></a>
-    <a href="#dayjob" data-nav="dayjob"><b>02</b><span>Day job</span><i></i></a>
-    <a href="#projects" data-nav="projects"><b>03</b><span>Projects</span><i></i></a>
-    <a href="#contact" data-nav="contact"><b>04</b><span>Contact</span><i></i></a>
+    <a href="#quests" data-nav="quests"><span>Side quests</span><i></i></a>
+    <a href="#dayjob" data-nav="dayjob"><span>Day job</span><i></i></a>
+    <a href="#projects" data-nav="projects"><span>Projects</span><i></i></a>
+    <a href="#contact" data-nav="contact"><span>Contact</span><i></i></a>
   </nav>
 
   <!-- Phones: the same sections in a dock at the bottom, under the thumb. -->
   <nav class="dock" aria-label="Sections" data-for="recruiter">
-    <a href="#products" data-nav="products"><b>01</b>Products</a>
-    <a href="#ai" data-nav="ai"><b>02</b>AI</a>
-    <a href="#work" data-nav="work"><b>03</b>Work</a>
-    <a href="#projects" data-nav="projects"><b>04</b>Projects</a>
-    <a href="#contact" data-nav="contact"><b>05</b>Contact</a>
+    <a href="#products" data-nav="products">Products</a>
+    <a href="#ai" data-nav="ai">AI</a>
+    <a href="#work" data-nav="work">Work</a>
+    <a href="#projects" data-nav="projects">Projects</a>
+    <a href="#contact" data-nav="contact">Contact</a>
   </nav>
   <nav class="dock" aria-label="Sections" data-for="curious">
-    <a href="#quests" data-nav="quests"><b>01</b>Quests</a>
-    <a href="#dayjob" data-nav="dayjob"><b>02</b>Day job</a>
-    <a href="#projects" data-nav="projects"><b>03</b>Projects</a>
-    <a href="#contact" data-nav="contact"><b>04</b>Contact</a>
+    <a href="#quests" data-nav="quests">Quests</a>
+    <a href="#dayjob" data-nav="dayjob">Day job</a>
+    <a href="#projects" data-nav="projects">Projects</a>
+    <a href="#contact" data-nav="contact">Contact</a>
   </nav>
 
   <main>
@@ -159,11 +159,9 @@
               <a href="/?mode=curious" data-mode-switch="curious"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="M15.5 8.5l-2 5-5 2 2-5z" /></svg>Just curious</a>
             </div>
           </div>
-          <p class="meta rv" data-for="recruiter">Product Manager · OLX Group · Prosus</p>
-          <p class="meta rv" data-for="curious">Product Manager · Chess · Sport · Photos</p>
-          <h1 class="hero__name" aria-label="João Vaz">
-            <span class="line"><span data-split>João</span></span>
-            <span class="line"><span data-split>Vaz</span><span class="ch name-dot" style="--d:7" aria-hidden="true">.</span></span>
+          <h1 class="hero__name">
+            <span class="line"><span>João</span></span>
+            <span class="line"><span>Vaz</span></span>
           </h1>
           <p class="hero__print"><a href="mailto:joaosfvaz@gmail.com">joaosfvaz@gmail.com</a> · <a href="https://linkedin.com/in/joaovaz00">linkedin.com/in/joaovaz00</a> · <a href="https://joao-vaz.com">joao-vaz.com</a></p>
           <!-- The two numbers are underlined in blue, one after the other,
@@ -204,7 +202,12 @@
           <div class="hero__frame">
             <img src="/assets/portrait.jpg" alt="Portrait of João Vaz with a Prosus AI Accelerator lanyard" width="1200" height="1600" fetchpriority="high" />
           </div>
-          <figcaption class="meta">Prosus AI Accelerator · Amsterdam 2026</figcaption>
+          <!-- a second photo laid on the portrait like a print: me on the
+               stage for a recruiter, one of my football photos for the
+               curious view -->
+          <img class="hero__snap" data-for="recruiter" src="/assets/joao-stage-sm.jpg" alt="João Vaz on stage with a microphone at the Prosus AI Accelerator in Amsterdam" width="640" height="800" />
+          <img class="hero__snap" data-for="curious" src="/assets/life/sports-5-sm.jpg" alt="One of my football photos: a captain in blue strikes a volley" width="640" height="800" loading="lazy" />
+          <figcaption class="meta"><span data-for="recruiter">Me at the Prosus AI Accelerator, Amsterdam 2026, and on its stage.</span><span data-for="curious">Me at the Prosus AI Accelerator, Amsterdam 2026. The football photo is one of mine.</span></figcaption>
         </figure>
       </div>
 
@@ -212,29 +215,38 @@
            counts up to it. If the script never runs, the number is right. -->
       <dl class="figures wrap" data-for="recruiter">
         <div class="rv"><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement across 3 data products, in 18 months</dd></div>
-        <div class="rv" data-ev="b2b stakeholders"><dt data-count="12" data-suffix="k+">12k+</dt><dd>professional car dealers in PT · PL · RO</dd></div>
-        <div class="rv"><dt data-count="40" data-suffix="+">40+</dt><dd>experiments — A/B, AA &amp; fake-door</dd></div>
+        <div class="rv" data-ev="b2b stakeholders"><dt data-count="12" data-suffix="k+">12k+</dt><dd>professional car dealers in Portugal, Poland and Romania</dd></div>
+        <div class="rv"><dt data-count="40" data-suffix="+">40+</dt><dd>experiments: A/B, AA and fake-door</dd></div>
         <div class="rv"><dt data-count="75" data-suffix="+">75+</dt><dd>in-person dealer interviews</dd></div>
         <div class="rv"><dt data-count="90" data-suffix="+">90+</dt><dd>PMs trained on AI tooling</dd></div>
       </dl>
     </section>
 
-    <!-- A strip of big type that runs sideways and speeds up with the
-         scroll; it turns round when the scroll does. Decorative. -->
+    <!-- A strip that runs sideways and speeds up with the scroll; it turns
+         round when the scroll does. A recruiter sees what I work on, the
+         curious view sees my photos. Decorative: the side quests show the
+         same photos with what is in each. The words go narrow, wide,
+         narrow, so keep their number even or the copied set flips them. -->
     <div class="strip" aria-hidden="true">
       <div class="strip__track" data-strip>
-        <span data-for="recruiter">AI agents</span><b data-for="recruiter">✳</b><span data-for="recruiter">Evals</span><b data-for="recruiter">✳</b><span data-for="recruiter">Traces</span><b data-for="recruiter">✳</b><span data-for="recruiter">MCP</span><b data-for="recruiter">✳</b><span data-for="recruiter">Data products</span><b data-for="recruiter">✳</b><span data-for="recruiter">Experimentation</span><b data-for="recruiter">✳</b><span data-for="recruiter">Dealer research</span><b data-for="recruiter">✳</b>
-        <span data-for="curious">Chess</span><b data-for="curious">✳</b><span data-for="curious">Tennis</span><b data-for="curious">✳</b><span data-for="curious">Football</span><b data-for="curious">✳</b><span data-for="curious">Triathlon</span><b data-for="curious">✳</b><span data-for="curious">Guitar</span><b data-for="curious">✳</b><span data-for="curious">Photography</span><b data-for="curious">✳</b><span data-for="curious">Hiking</span><b data-for="curious">✳</b>
+        <span data-for="recruiter">AI agents</span><b data-for="recruiter">+</b><i data-for="recruiter">Evals</i><b data-for="recruiter">+</b><span data-for="recruiter">Traces</span><b data-for="recruiter">+</b><i data-for="recruiter">MCP</i><b data-for="recruiter">+</b><span data-for="recruiter">Data products</span><b data-for="recruiter">+</b><i data-for="recruiter">Pricing</i><b data-for="recruiter">+</b><span data-for="recruiter">Experimentation</span><b data-for="recruiter">+</b><i data-for="recruiter">Dealer research</i><b data-for="recruiter">+</b>
+        <img data-for="curious" src="/assets/life/sports-1-sm.jpg" alt="" width="640" height="800" decoding="async" />
+        <img data-for="curious" src="/assets/life/landscape-2-sm.jpg" alt="" width="640" height="1056" decoding="async" />
+        <img data-for="curious" src="/assets/life/sports-2-sm.jpg" alt="" width="640" height="800" decoding="async" />
+        <img data-for="curious" src="/assets/life/landscape-3-sm.jpg" alt="" width="640" height="960" decoding="async" />
+        <img data-for="curious" src="/assets/life/sports-8-sm.jpg" alt="" width="640" height="1138" decoding="async" />
+        <img data-for="curious" src="/assets/life/landscape-5-sm.jpg" alt="" width="640" height="960" decoding="async" />
+        <img data-for="curious" src="/assets/life/sports-3-sm.jpg" alt="" width="640" height="800" decoding="async" />
+        <img data-for="curious" src="/assets/life/landscape-7-sm.jpg" alt="" width="640" height="960" decoding="async" />
       </div>
     </div>
 
     <!-- SIDE QUESTS, on the page — the curious view only. The content is
          the side quests panel's own: js/home.js moves it in here, so it is
          written once. -->
-    <section class="section" id="quests" data-for="curious">
+    <section class="section invert" id="quests" data-for="curious">
       <div class="wrap">
         <header class="head">
-          <p class="meta rv"><b>01</b> Side quests</p>
           <h2 class="rv">What I do <em>when the laptop closes.</em></h2>
         </header>
         <div class="quests-inline" data-quests-inline></div>
@@ -245,7 +257,6 @@
     <section class="section" id="dayjob" data-for="curious">
       <div class="wrap">
         <header class="head">
-          <p class="meta rv"><b>02</b> Day job</p>
           <h2 class="rv">I build tools for <em>12,000+ car dealers.</em></h2>
           <p class="head__intro rv">I am a Product Manager at OLX Group (Motors, B2B), part of Prosus. My
             team builds the products dealers use to price and sell their cars, and I lead the AI agents
@@ -266,17 +277,15 @@
     <section class="section" id="products" data-for="recruiter">
       <div class="wrap">
         <header class="head">
-          <p class="meta rv"><b>01</b> Products</p>
-          <h2 class="rv">The products I lead <em>for car dealers.</em></h2>
-          <p class="head__intro rv" data-ev="strategy b2b">Six products with one job: help a dealer buy the right cars, price
-            them well and sell them faster. I own the strategy and the roadmap across them, from the data
+          <h2 class="rv">Six products, <em>one job.</em></h2>
+          <p class="head__intro rv" data-ev="strategy b2b">Help a dealer buy the right cars, price them well and sell them
+            faster. I own the strategy and the roadmap across them, from the data
             pipelines underneath to the screens dealers use.</p>
         </header>
 
         <div class="acc" data-acc>
           <div class="acc__item rv is-open" id="product-agents" data-ev="agents evals">
             <h3><button class="acc__head" type="button" aria-expanded="true">
-              <span class="acc__n">01</span>
               <span class="acc__title">AI agents for pricing and performance</span>
               <span class="tag">AI agents</span>
               <i class="acc__icon" aria-hidden="true"></i>
@@ -292,70 +301,65 @@
           </div>
           <div class="acc__item rv" id="product-fair-price" data-ev="ml">
             <h3><button class="acc__head" type="button" aria-expanded="false">
-              <span class="acc__n">02</span>
               <span class="acc__title">Fair-price estimates</span>
               <span class="tag">Machine learning</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
               <p>A machine-learning estimate of what each car is worth from its specs, and how long
-                cars like it take to sell — shown next to the dealer's asking price, and behind the
+                cars like it take to sell, shown next to the dealer's asking price, and behind the
                 price label buyers see.</p>
               <ul class="keys"><li>ML model</li><li>Price-to-market</li><li>Time to sell</li></ul>
             </div></div>
           </div>
           <div class="acc__item rv" id="product-market" data-ev="ml analytics">
             <h3><button class="acc__head" type="button" aria-expanded="false">
-              <span class="acc__n">03</span>
               <span class="acc__title">A live view of the car market</span>
               <span class="tag">Market intelligence</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
               <p>Supply, demand, prices and selling speed for every segment of the market, down to the
-                individual competing listings in it — so a dealer can decide what to buy next and how
+                individual competing listings in it, so a dealer can decide what to buy next and how
                 to price what is already on the lot.</p>
               <ul class="keys"><li>Supply &amp; demand</li><li>Days of supply</li><li>Competitor listings</li></ul>
             </div></div>
           </div>
           <div class="acc__item rv" id="product-performance" data-ev="ml analytics">
             <h3><button class="acc__head" type="button" aria-expanded="false">
-              <span class="acc__n">04</span>
               <span class="acc__title">Listing performance</span>
               <span class="tag">Analytics</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
               <p>Views, clicks, saves, messages and calls for every car and for the whole stock,
-                benchmarked against similar cars — the one analytics product every dealer gets, on
+                benchmarked against similar cars: the one analytics product every dealer gets, on
                 every plan.</p>
               <ul class="keys"><li>Funnel metrics</li><li>Benchmarks</li></ul>
             </div></div>
           </div>
           <div class="acc__item rv" id="product-home" data-ev="ml">
             <h3><button class="acc__head" type="button" aria-expanded="false">
-              <span class="acc__n">05</span>
               <span class="acc__title">The business at a glance</span>
               <span class="tag">Home screen</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
               <p>The first screen a dealer sees: how the dealership is doing, the health of its stock
-                and alerts that lead straight to the cars that need action — across every branch of a
+                and alerts that lead straight to the cars that need action, across every branch of a
                 group.</p>
               <ul class="keys"><li>Stock health</li><li>Alerts</li><li>Multi-branch</li></ul>
             </div></div>
           </div>
           <div class="acc__item rv" id="product-recommendations" data-ev="ml">
             <h3><button class="acc__head" type="button" aria-expanded="false">
-              <span class="acc__n">06</span>
               <span class="acc__title">Recommendations on every listing</span>
               <span class="tag">Next-best action</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
-              <p>One concrete next step per car — renew it before it expires, raise an underpriced car
-                towards its market value, or give it more visibility — from an engine that combines the
+              <p>One concrete next step per car (renew it before it expires, raise an underpriced car
+                towards its market value, or give it more visibility) from an engine that combines the
                 signals of every product above.</p>
               <ul class="keys"><li>Pricing</li><li>Renewal</li><li>Visibility</li></ul>
             </div></div>
@@ -368,16 +372,14 @@
     <!-- A playable trace: pick a dealer question and the run plays out —
          routing, tool calls, the mandate check, the answer, the evals.
          The markup holds the first run finished; js/home.js takes over. -->
-    <section class="section" id="ai" data-for="recruiter">
+    <section class="section invert" id="ai" data-for="recruiter">
       <div class="wrap">
         <header class="head">
-          <p class="meta rv"><b>02</b> AI &amp; agents</p>
-          <h2 class="rv">I don't just spec agents. <em>I read their traces.</em></h2>
+          <h2 class="rv">An agent change is judged on evidence, <em>not on a demo.</em></h2>
         </header>
 
         <div class="ai">
           <figure class="trace rv" data-trace>
-            <div class="trace__chrome"><i></i><i></i><i></i><span>trace · illustrative</span></div>
             <div class="trace__asks" role="tablist" aria-label="Pick a dealer question">
               <button type="button" role="tab" aria-selected="true" data-run="0">Why no leads?</button>
               <button type="button" role="tab" aria-selected="false" data-run="1">Change my price</button>
@@ -389,20 +391,20 @@
                 <li style="--s:0;--w:14"><span>route → pricing &amp; performance agent</span><em>38 ms</em></li>
                 <li style="--s:8;--w:30" class="is-tool"><span>tool · listing_performance(car)</span><em>212 ms</em></li>
                 <li style="--s:10;--w:26" class="is-tool"><span>tool · fair_price(car)</span><em>187 ms</em></li>
-                <li style="--s:40;--w:6" class="is-check"><span>mandate · assist · read-only ✓</span><em>2 ms</em></li>
+                <li style="--s:40;--w:6" class="is-check"><span>mandate · read-only ✓</span><em>2 ms</em></li>
                 <li style="--s:46;--w:44"><span>answer · grounded in 2 tool results</span><em>1.4 s</em></li>
               </ol>
               <p class="trace__a"><span>assistant</span>“It's priced 9% above similar A4s and views fell after day 12. Cars like it sell in about 24 days at market price.”</p>
               <ul class="trace__evals"><li>correctness</li><li>groundedness</li><li>scope</li><li>plain language</li></ul>
             </div>
-            <figcaption><button class="trace__again" type="button" data-again hidden>Run again ↻</button><span>Illustrative runs that show the concepts — not the product, not real data.</span></figcaption>
+            <figcaption><button class="trace__again" type="button" data-again hidden>Run again ↻</button><span>Illustrative runs that show the concepts. Not the product, not real data.</span></figcaption>
           </figure>
 
           <dl class="concepts">
-            <div class="rv" data-ev="evals"><dt>Evals</dt><dd>Test questions with known answers for my domain, graded on correctness, groundedness, scope and refusals — so a change is judged on evidence, not on a demo.</dd></div>
+            <div class="rv" data-ev="evals"><dt>Evals</dt><dd>Test questions with known answers for my domain, graded on correctness, groundedness, scope and refusals, so a change is judged on evidence, not on a demo.</dd></div>
             <div class="rv" data-ev="evals"><dt>Traces</dt><dd>I read agent runs span by span to catch invented values, routing errors and the same question getting two different answers.</dd></div>
             <div class="rv" data-ev="agents"><dt>Mandates</dt><dd>What an agent may do for a user: read-only or acting, whether an action can be reverted, and when a human must confirm.</dd></div>
-            <div class="rv" data-ev="agents"><dt>Automation classes</dt><dd>Assist, one-click, two-turn and scheduled — each capability gets the lightest class its risk allows.</dd></div>
+            <div class="rv" data-ev="agents"><dt>Automation by risk</dt><dd>Each capability gets the lightest level of automation its risk allows.</dd></div>
             <div class="rv" data-ev="agents"><dt>Tools &amp; MCP</dt><dd>Domain data behind MCP tools the agent calls, so answers come from the source, not from the model's memory.</dd></div>
             <div class="rv" data-ev="agents"><dt>Context</dt><dd>Personas, playbooks under a token budget, what an agent is not for and where it hands over.</dd></div>
             <div class="rv" data-ev="evals agents"><dt>Human-in-the-loop</dt><dd>Human review on critical paths until there are enough traces to trust an LLM judge.</dd></div>
@@ -416,8 +418,7 @@
     <section class="section" id="work" data-for="recruiter">
       <div class="wrap">
         <header class="head">
-          <p class="meta rv"><b>03</b> Experience</p>
-          <h2 class="rv">Three years on one problem: <em>helping dealers sell cars.</em></h2>
+          <h2 class="rv">Helping dealers sell cars, <em>since 2023.</em></h2>
         </header>
 
         <!-- Each role splits into what changed (outcomes, as numbers that
@@ -426,20 +427,20 @@
         <div class="acc acc--roles" data-acc>
           <div class="acc__item rv is-open" id="role-pm">
             <h3><button class="acc__head" type="button" aria-expanded="true">
-              <span class="acc__n">2025 —</span>
-              <span class="acc__title">Product Manager <small>OLX Group · Prosus · Motors B2B</small></span>
-              <span class="acc__when">Mar 2025 — now</span>
+              <span class="acc__n">2025</span>
+              <span class="acc__title">Product Manager <small>OLX Group, Prosus, Motors B2B</small></span>
+              <span class="acc__when">Mar 2025 to now</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
-              <p class="role__sum" data-ev="strategy stakeholders">Strategy for dealer insights, pricing and recommendations — from the data pipelines to the screens, with stakeholders in five markets.</p>
+              <p class="role__sum" data-ev="strategy stakeholders">Strategy for dealer insights, pricing and recommendations, from the data pipelines to the screens, with stakeholders in five markets.</p>
               <div class="role">
                 <div class="role__col">
                   <p class="role__k">Outcomes</p>
                   <dl class="wins">
                     <div data-ev="ml analytics"><dt data-count="150" data-prefix="+" data-suffix="%">+150%</dt><dd>weekly engagement, 3 data products</dd></div>
                     <div data-ev="strategy delivery"><dt data-count="72" data-prefix="~" data-suffix="%">~72%</dt><dd>average OKR completion, 2.5 years</dd></div>
-                    <div data-ev="experiments"><dt data-count="40" data-suffix="+">40+</dt><dd>experiments — A/B, AA, fake-door</dd></div>
+                    <div data-ev="experiments"><dt data-count="40" data-suffix="+">40+</dt><dd>experiments: A/B, AA, fake-door</dd></div>
                     <div data-ev="leading building"><dt data-count="90" data-suffix="+">90+</dt><dd>PMs trained on AI tools, 75% now use them</dd></div>
                   </dl>
                 </div>
@@ -460,8 +461,8 @@
           <div class="acc__item rv" id="role-apm">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">2024</span>
-              <span class="acc__title">Associate Product Manager <small>OLX Group · Prosus · Motors B2B</small></span>
-              <span class="acc__when">Mar 2024 — Mar 2025</span>
+              <span class="acc__title">Associate Product Manager <small>OLX Group, Prosus, Motors B2B</small></span>
+              <span class="acc__when">Mar 2024 to Mar 2025</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
@@ -470,7 +471,7 @@
                 <div class="role__col">
                   <p class="role__k">Outcomes</p>
                   <dl class="wins">
-                    <div data-ev="research b2b"><dt data-count="75" data-suffix="+">75+</dt><dd>in-person dealer interviews, PL · RO · PT</dd></div>
+                    <div data-ev="research b2b"><dt data-count="75" data-suffix="+">75+</dt><dd>in-person dealer interviews in PL, RO and PT</dd></div>
                     <div><dt data-count="12" data-suffix=" mo">12 mo</dt><dd>to promotion to Product Manager</dd></div>
                   </dl>
                 </div>
@@ -489,7 +490,7 @@
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">2023</span>
               <span class="acc__title">Product Management Trainee <small>OLX Group</small></span>
-              <span class="acc__when">Sep 2023 — Feb 2024</span>
+              <span class="acc__when">Sep 2023 to Feb 2024</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
             <div class="acc__panel"><div class="acc__body">
@@ -513,7 +514,7 @@
           <div class="acc__item rv" id="role-accelerator">
             <h3><button class="acc__head" type="button" aria-expanded="false">
               <span class="acc__n">2026</span>
-              <span class="acc__title">Prosus AI Accelerator <small>Selected · Amsterdam · 1 month</small></span>
+              <span class="acc__title">Prosus AI Accelerator <small>Selected, Amsterdam, 1 month</small></span>
               <span class="acc__when">Sep 2026</span>
               <i class="acc__icon" aria-hidden="true"></i>
             </button></h3>
@@ -582,44 +583,43 @@
             </section>
           </div>
           <dl class="kit__cv">
-            <div class="rv"><dt>Education</dt><dd><b>MSc Industrial Engineering &amp; Management</b><span>University of Minho &amp; TU Graz · 2021–2023</span></dd></div>
-            <div class="rv"><dt>Languages</dt><dd><b>Portuguese</b><span>native</span></dd><dd><b>English</b><span>C2 · proficient</span></dd></div>
+            <div class="rv"><dt>Education</dt><dd><b>MSc Industrial Engineering &amp; Management</b><span>University of Minho &amp; TU Graz, 2021 to 2023</span></dd></div>
+            <div class="rv"><dt>Languages</dt><dd><b>Portuguese</b><span>native</span></dd><dd><b>English</b><span>C2, proficient</span></dd></div>
           </dl>
         </div>
       </div>
     </section>
 
     <!-- PROJECTS -->
-    <section class="section" id="projects">
+    <section class="section invert" id="projects">
       <div class="wrap">
         <header class="head">
-          <p class="meta rv"><b><span data-for="recruiter">04</span><span data-for="curious">03</span></b> Projects</p>
-          <h2 class="rv">Things I built myself, <em>from idea to working product.</em></h2>
+          <h2 class="rv">Things I built <em>myself.</em></h2>
         </header>
         <div class="projects">
           <a class="project rv" href="/pm-os/" data-ev="building agents">
-            <span class="meta">Knowledge · Scheduled agents</span>
+            <span class="meta">Knowledge, scheduled agents</span>
             <h3>PM-OS</h3>
             <p>A knowledge base my team's answers live in, kept true by seven scheduled Claude
               routines: meetings file themselves and stale pages are made to admit it.</p>
             <span class="project__go">Read more <i aria-hidden="true">→</i></span>
           </a>
           <a class="project rv" href="/team-context/" data-ev="building agents stakeholders">
-            <span class="meta">MCP · Python</span>
+            <span class="meta">MCP, Python</span>
             <h3>Team-context MCP</h3>
             <p>A read-only MCP server that lets the company's internal AI assistant answer
-              stakeholders' questions about my team's work — served from a laptop through a tunnel.</p>
+              stakeholders' questions about my team's work, served from a laptop through a tunnel.</p>
             <span class="project__go">Read more <i aria-hidden="true">→</i></span>
           </a>
           <a class="project rv" href="https://joaosfvaz.github.io/portugal-explicado/" data-ev="building" target="_blank" rel="noopener">
-            <span class="meta">Civic · Next.js · Open data</span>
+            <span class="meta">Civic, Next.js, open data</span>
             <h3>Portugal Explicado</h3>
-            <p>Taxes, Parliament, laws and the economy of Portugal in plain Portuguese — every number
+            <p>Taxes, Parliament, laws and the economy of Portugal in plain Portuguese: every number
               linked to an official source, with open data imported every day.</p>
             <span class="project__go">Visit the site <i aria-hidden="true">↗</i></span>
           </a>
           <a class="project rv" href="/tabiya/" data-ev="building delivery">
-            <span class="meta">Chess · AWS serverless</span>
+            <span class="meta">Chess, AWS serverless</span>
             <h3>Tabiya</h3>
             <p>A chess coach that explains every move in plain English: a serverless pipeline
               downloads my games, analyses them with Stockfish and writes a report.</p>
@@ -632,13 +632,12 @@
     <!-- CONTACT -->
     <section class="section section--contact" id="contact">
       <div class="wrap">
-        <p class="meta rv"><b><span data-for="recruiter">05</span><span data-for="curious">04</span></b> Contact</p>
-        <h2 class="contact__title rv">Let's build something <em>worth shipping.</em></h2>
+        <h2 class="contact__title rv">Makes sense? <em>Email me.</em></h2>
         <div class="contact__rows">
           <a class="contact__row rv" href="mailto:joaosfvaz@gmail.com"><span class="meta">Email</span><strong>joaosfvaz@gmail.com</strong><i aria-hidden="true">→</i></a>
           <a class="contact__row rv" href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener"><span class="meta">LinkedIn</span><strong>in/joaovaz00</strong><i aria-hidden="true">↗</i></a>
           <!-- the CV as a file: the print of this page, made by make-cv.sh -->
-          <a class="contact__row contact__row--cv rv" href="/joao-vaz-cv.pdf" download="Joao-Vaz-CV.pdf"><span class="meta">CV</span><strong>PDF · 1 page</strong><i aria-hidden="true">↓</i></a>
+          <a class="contact__row contact__row--cv rv" href="/joao-vaz-cv.pdf" download="Joao-Vaz-CV.pdf"><span class="meta">CV</span><strong>PDF, 1 page</strong><i aria-hidden="true">↓</i></a>
         </div>
         <!-- Quick answers to a recruiter's first questions. A row with
              data-todo is a placeholder: it shows on a local preview only
@@ -646,9 +645,9 @@
         <section class="answers rv" id="answers" data-for="recruiter" aria-labelledby="answers-title">
           <h3 class="kit__title" id="answers-title">Quick answers</h3>
           <dl class="answers__grid">
-            <div><dt>Current role</dt><dd>Product Manager, OLX Group · Prosus</dd></div>
+            <div><dt>Current role</dt><dd>Product Manager, OLX Group (Prosus)</dd></div>
             <div><dt>Experience</dt><dd>4 years in product</dd></div>
-            <div><dt>Languages</dt><dd>Portuguese, native · English, C2</dd></div>
+            <div><dt>Languages</dt><dd>Portuguese (native), English (C2)</dd></div>
             <div><dt>Based in</dt><dd>Lisbon, Portugal</dd></div>
             <div><dt>Work setup</dt><dd>Hybrid</dd></div>
             <div><dt>Relocation</dt><dd>Open to relocation</dd></div>
@@ -698,7 +697,7 @@
           <h3>João Vaz</h3>
           <dl class="player__class">
             <div><dt>Main class</dt><dd>Product Manager</dd></div>
-            <div><dt>Side classes</dt><dd>Athlete · Musician · Photographer</dd></div>
+            <div><dt>Side classes</dt><dd>Athlete, Musician, Photographer</dd></div>
           </dl>
           <ul class="player__stats">
             <li><b>9</b> side quests</li>
@@ -729,7 +728,7 @@
             <div class="quest__top"><svg class="quest__ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7" /><path d="M12 13.5V9.8M10 3.5h4M12 3.5v3M17.5 7.5l1.4-1.4" /></svg><span class="quest__status">Now and then</span></div>
             <button class="quest__shot" type="button" data-full="/assets/life/triathlon-1.jpg"><img src="/assets/life/triathlon-1-sm.jpg" alt="João walking under the finish arch at Ironman 70.3 Málaga" width="320" height="400" loading="lazy" /></button>
             <h4>Triathlon</h4>
-            <p>Swim, bike, run — a race every now and then, like Ironman 70.3 Málaga.</p>
+            <p>Swim, bike, run: a race every now and then, like Ironman 70.3 Málaga.</p>
           </li>
           <li class="quest quest--daily">
             <div class="quest__top"><svg class="quest__ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 8v8M17.5 8v8M4 10v4M20 10v4M6.5 12h11" /></svg><span class="quest__status">Daily</span></div>
@@ -931,15 +930,15 @@
 
   <footer class="foot wrap">
     <span>© 2026 João Vaz</span>
-    <span>Hand-built · no framework · a little AI</span>
+    <span>Hand-built, no framework, a little AI</span>
     <a class="foot__mode" href="/?mode=curious" data-mode-switch="curious" data-for="recruiter">Switch to the curious view</a>
     <a class="foot__mode" href="/?mode=recruiter" data-mode-switch="recruiter" data-for="curious">Switch to the recruiter view</a>
     <span class="eggs" data-eggs hidden>Easter eggs found: <b>0</b> / 4</span>
   </footer>
 
-  <script src="/js/scroll.js?v=2026-10-28e"></script>
-  <script src="/js/home.js?v=2026-10-28e"></script>
-  <script src="/js/game.js?v=2026-10-28e"></script>
-  <script src="/js/recruiter.js?v=2026-10-28e"></script>
+  <script src="/js/scroll.js?v=2026-10-30a"></script>
+  <script src="/js/home.js?v=2026-10-30a"></script>
+  <script src="/js/game.js?v=2026-10-30a"></script>
+  <script src="/js/recruiter.js?v=2026-10-30a"></script>
 </body>
 </html>

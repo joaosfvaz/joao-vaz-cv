@@ -42,21 +42,8 @@
   }
 
   /* ------------------------------------------------------------------
-   * The name — split into characters that rise out of their lines.
-   * The index runs on across both lines, so "Vaz" follows "João".
+   * The name — each line rises out of its mask, "Vaz" just after "João".
    * ---------------------------------------------------------------- */
-  let charIndex = 0;
-  $$("[data-split]").forEach((el) => {
-    const text = el.textContent;
-    el.textContent = "";
-    for (const c of text) {
-      const s = document.createElement("span");
-      s.className = "ch";
-      s.textContent = c;
-      s.style.setProperty("--d", String(charIndex++));
-      el.appendChild(s);
-    }
-  });
   requestAnimationFrame(() => $$(".hero__name .line").forEach((l) => l.classList.add("is-lit")));
 
   /* ------------------------------------------------------------------
@@ -444,7 +431,7 @@
         ["route → pricing & performance agent", "38 ms", 0, 14, ""],
         ["tool · listing_performance(car)", "212 ms", 8, 30, "is-tool"],
         ["tool · fair_price(car)", "187 ms", 10, 26, "is-tool"],
-        ["mandate · assist · read-only ✓", "2 ms", 40, 6, "is-check"],
+        ["mandate · read-only ✓", "2 ms", 40, 6, "is-check"],
         ["answer · grounded in 2 tool results", "1.4 s", 46, 44, ""],
       ],
       a: "It's priced 9% above similar A4s and views fell after day 12. Cars like it sell in about 24 days at market price.",
@@ -455,12 +442,12 @@
       spans: [
         ["route → pricing agent", "41 ms", 0, 12, ""],
         ["tool · fair_price(car)", "176 ms", 8, 22, "is-tool"],
-        ["mandate · one-click · changes data", "3 ms", 31, 5, "is-check"],
+        ["mandate · changes data", "3 ms", 31, 5, "is-check"],
         ["human · the dealer confirms the price", "4.2 s", 37, 32, "is-human"],
         ["tool · update_price(car) · revert supported", "264 ms", 70, 14, "is-tool"],
         ["answer · change made, undo offered", "0.9 s", 85, 15, ""],
       ],
-      a: "Done — your Golf is now listed at €18,400, the market price for its specs. You can undo this change.",
+      a: "Done. Your Golf is now listed at €18,400, the market price for its specs. You can undo this change.",
       evals: ["correctness", "confirmation asked", "revertible", "scope"],
     },
     {
@@ -480,7 +467,7 @@
         ["route → about-the-builder agent", "29 ms", 0, 12, ""],
         ["tool · read_cv(\"João Vaz\")", "143 ms", 8, 24, "is-tool"],
         ["tool · git_log(\"joao-vaz.com\")", "201 ms", 10, 30, "is-tool"],
-        ["mandate · assist · read-only ✓", "2 ms", 42, 6, "is-check"],
+        ["mandate · read-only ✓", "2 ms", 42, 6, "is-check"],
         ["answer · grounded in 2 tool results", "0.8 s", 50, 40, ""],
       ],
       a: "João Vaz — a product manager who reads agent traces for fun. He built this site by hand: no framework, one scroll driver, a little AI. You found the hidden run.",
@@ -634,6 +621,52 @@
   }
   S.onScroll(sync);
   S.onMeasure((st) => sync(st));
+
+  /* ------------------------------------------------------------------
+   * The bands — every other section in the other theme's colours. Each
+   * one opens to the full width as it reaches the middle of the screen
+   * and closes again as it leaves (--g, read by home.css). The bar, the
+   * index and the dock take a band's colours while it is under them.
+   * ---------------------------------------------------------------- */
+  const bands = $$(".section.invert").filter(S.inMode);
+  if (bands.length) {
+    let spans = [];
+    S.onMeasure(() => {
+      spans = bands.map((el) => {
+        const r = el.getBoundingClientRect();
+        return { el: el, top: r.top + window.scrollY, bottom: r.bottom + window.scrollY, g: -1 };
+      });
+    });
+    if (!reduced) {
+      S.onFrame((st) => {
+        for (let i = 0; i < spans.length; i++) {
+          const b = spans[i];
+          const g = S.smoothstep(clamp(Math.min(st.y + st.vh - b.top, b.bottom - st.y) / (st.vh * 0.5), 0, 1));
+          if (Math.abs(g - b.g) < 0.001) continue;
+          b.g = g;
+          b.el.style.setProperty("--g", g.toFixed(3));
+        }
+      });
+    }
+    /* each fixed part reads the page at its own height */
+    const dock = $$(".dock").filter(S.inMode)[0];
+    const parts = [[bar, () => 32], [rail, (st) => st.vh / 2], [dock, (st) => st.vh - 32]].filter((p) => p[0]);
+    const fades = new Map();
+    const tint = (st) => parts.forEach((p) => {
+      const el = p[0];
+      const y = st.y + p[1](st);
+      const on = spans.some((b) => y >= b.top && y < b.bottom);
+      if (on === el.classList.contains("invert")) return;
+      if (!reduced) {
+        el.classList.add("theme-fade");
+        clearTimeout(fades.get(el));
+        fades.set(el, setTimeout(() => el.classList.remove("theme-fade"), 450));
+      }
+      el.classList.toggle("invert", on);
+    });
+    S.onScroll(tint);
+    S.onMeasure((st) => tint(st));
+  }
 
   /* ------------------------------------------------------------------
    * Theme — light or dark. The head script set it before the first
