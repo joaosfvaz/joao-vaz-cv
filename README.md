@@ -56,7 +56,7 @@ The movement is kept to a few places on purpose, so each one is noticed:
 - **The mark's flight** — the big mark and the small one in the bar are one mark. Its place follows the
   scroll both ways (`js/home.js`, one `transform` on `.hero__mark`): it rises on the right, travels left
   under the bar and docks up beside the name. On the way it shrinks, loses the portrait (`--pr`) and takes
-  the colour of the text (`--t`). Then the small mark shows. With reduced motion, or without the script, the two stay apart.
+  the colour of the text (`--t`). Then the small mark shows. On a touch screen the browser scrolls apart from the script, so a mark moved by it would stutter: there the mark stays on the page and the small one slides into the bar as the big one passes under it. With reduced motion, or without the script, the two also stay apart.
 - **Scroll** (`js/home.js`) — on a mouse or a trackpad the wheel moves a target and the page follows on a
   critically damped spring, so its speed never jumps. A section that fits the window is one step: the first
   input already aims at the next section, so there is one motion and no second push. A longer section scrolls

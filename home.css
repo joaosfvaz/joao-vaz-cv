@@ -243,17 +243,21 @@ ul, ol { list-style: none; }
 /* At the top of the home page the bar holds only the name, which view this
    is and the way to get in touch: the big mark is right below it. The rest
    arrives with the scroll, or sooner under the pointer or the keyboard. */
-.bar .jv { width: 29.7px; transition: fill 0.2s ease; }
+.bar .jv { width: 29.7px; transition: fill 0.2s ease, width 0.35s var(--ease), margin 0.35s var(--ease), opacity 0.2s ease; }
 .bar :is(.bar__links, .bar__icon) { transition: opacity 0.3s ease, color 0.2s ease; }
 @media screen {
   .js .bar.is-top .jv { width: 0; margin-right: -10px; opacity: 0; }
   .js .bar.is-top .bar__name .wordmark { display: block; }
   /* with the flight the small mark's place opens as the big one arrives
      (--slot), and it shows once the big one has landed on it */
-  .js .bar.has-flight .jv { width: calc(var(--slot, 0) * 29.7px); margin-right: calc((var(--slot, 0) - 1) * 10px); opacity: 1; visibility: hidden; }
+  .js .bar.has-flight .jv { width: calc(var(--slot, 0) * 29.7px); margin-right: calc((var(--slot, 0) - 1) * 10px); opacity: 1; visibility: hidden; transition: fill 0.2s ease; }
   .js .bar.has-flight.is-landed .jv { visibility: visible; }
   .js .bar.is-top:not(:hover, :focus-within) :is(.bar__links, .bar__icon) { opacity: 0; }
 }
+/* with no pointer nothing can reveal them: hidden, they must not take taps,
+   and on a narrow screen they must not push the view switch out of the bar */
+@media screen and (hover: none) { .js .bar.is-top .bar__links { visibility: hidden; } }
+@media screen and (hover: none), screen and (max-width: 767px) { .js .bar.is-top .bar__icon { display: none; } }
 .bar__links { display: flex; gap: 28px; margin-left: auto; font-size: 14px; color: var(--dim); }
 .bar__links a { position: relative; padding: 6px 0; transition: color 0.2s ease; }
 .bar__links a::after {
@@ -367,13 +371,21 @@ html:not(.js) .theme { display: none; }
 }
 /* no room beside the mark: the sentence, the buttons, then the mark, which
    still stands on the strip. The orders keep the markup out of it */
-@media screen and (max-width: 999px), screen and (max-aspect-ratio: 1 / 1) {
+@media screen and (max-aspect-ratio: 1 / 1), screen and (max-width: 999px) and (min-height: 501px) {
   .hero { --mw: min(88vw, 46svh * 104 / 84); min-height: 0; padding-top: 76px; }
   .hero__grid { display: flex; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
   .hero__copy, .hero__lead, .hero__rest { display: contents; }
   .hero__role { order: 1; margin: 12px var(--gut) 8px; }
   .hero .hero__lead .hero__line { order: 1; max-width: 12em; margin: 0 var(--gut) 20px; font-size: clamp(28px, 8vw, 48px); }
   .hero__actions { order: 2; margin: 0 var(--gut) 36px; }
+}
+/* a phone on its side keeps the wide layout, or the mark falls below the
+   fold: the sentence beside the mark, both above the strip. The height sets
+   the type here */
+@media screen and (max-height: 500px) and (min-aspect-ratio: 1 / 1) {
+  .hero__grid { min-height: 0; }
+  .hero__role { margin-bottom: 6px; font-size: 13px; }
+  .hero__lead .hero__line { margin-bottom: 14px; font-size: clamp(22px, 8.4svh, 64px); }
 }
 /* the contact line is for paper only (see Print) */
 .hero__print { display: none; }
@@ -413,6 +425,9 @@ html:not(.js) .theme { display: none; }
     height: calc(var(--mw) * 84 / 104);
     margin: 0;
   }
+  @supports (background: color-mix(in srgb, red, blue)) {
+    .hero__mark.is-flying .hero__form { background: color-mix(in srgb, var(--ink) calc(var(--t, 0) * 100%), var(--form)); }
+  }
   /* the figure keeps the mark's place on the page; the mark itself can leave
      it. With the script it is fixed to the window and flies to the bar as the
      page scrolls (js/home.js), so it stays above the bar and everything else */
@@ -426,7 +441,7 @@ html:not(.js) .theme { display: none; }
     inset: 0;
     overflow: hidden;
     isolation: isolate;
-    background: color-mix(in srgb, var(--ink) calc(var(--t, 0) * 100%), var(--form));
+    background: var(--form);
   }
   .hero__form--j { clip-path: url(#clip-j); }
   .hero__form--v { clip-path: url(#clip-v); }
@@ -455,7 +470,7 @@ html:not(.js) .theme { display: none; }
   .js .hero__photo.is-in .hero__form { translate: 0 0; transition: translate 1.3s var(--ease) 0.1s; }
   .js .hero__photo.is-in.is-settled .hero__form { transition: none; }
 }
-@media screen and (max-width: 999px), screen and (max-aspect-ratio: 1 / 1) {
+@media screen and (max-aspect-ratio: 1 / 1), screen and (max-width: 999px) and (min-height: 501px) {
   .hero__photo { order: 3; position: relative; right: auto; align-self: center; flex: none; }
 }
 @media print { .hero__clips, .hero__form { display: none; } }
@@ -611,6 +626,8 @@ html:not(.js) .theme { display: none; }
     --s: calc((1 - var(--g)) * 120px);
     clip-path: polygon(calc(var(--m) + var(--s)) 0, calc(100% - var(--m)) 0, calc(100% - var(--m) - var(--s)) 100%, var(--m) 100%);
   }
+  /* a phone has no margin to open from: the band would cut its own words */
+  @media (max-width: 767px) { .section.invert::after { --m: 0px; --s: 0px; } }
   /* the band's edges are the dividers here */
   .section.invert::before, .section.invert + .section::before { display: none; }
 }
@@ -668,9 +685,11 @@ html:not(.js) .theme { display: none; }
 
 /* the AI heading: "a demo" struck through by hand, "evidence" written
    over it once the line is drawn */
-.strike { position: relative; text-decoration: none; color: var(--dim); }
+.strike { position: relative; text-decoration: none; color: var(--dim); white-space: nowrap; }
 .strike .mark { position: absolute; left: -3%; top: 52%; width: 106%; height: 0.3em; translate: 0 -50%; color: var(--accent-2); }
-.strike .mark path { stroke-width: 5; --md: 0.55s; }
+/* stretched to the width of the words, so the stroke scales with them: at a
+   fixed width the dash (one pathLength) would stop short of the last letters */
+.strike .mark path { vector-effect: none; stroke-width: 7; --md: 0.55s; }
 .scrawl {
   display: inline-block;
   font-family: var(--script);
@@ -686,6 +705,8 @@ html:not(.js) .theme { display: none; }
 .js .h-split.is-in .scrawl .w > span { transition-delay: 1.15s; }
 
 .project__note .mark { position: absolute; left: -44px; top: 12px; width: 44px; height: 38px; }
+/* to its left is the edge of the phone */
+@media (max-width: 1280px) { .project__note .mark { display: none; } }
 
 /* Contact: a sign-off under the heading */
 .contact__sign {
@@ -1867,7 +1888,8 @@ html:has(.quests[open]) { overflow: hidden; }
 .chat__alt a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .chat__alt a:hover { color: var(--accent-soft); }
 @media (max-width: 520px) {
-  .chat { inset: auto 12px 12px 12px; width: auto; }
+  /* from the top: at the bottom the phone's keyboard would cover it */
+  .chat { inset: 64px 12px auto 12px; width: auto; }
   .chat__foot { flex-direction: column; align-items: stretch; }
   .chat__close kbd { display: none; }
   .chat__send { justify-content: center; }
@@ -2179,7 +2201,7 @@ html:has(.quests[open]) { overflow: hidden; }
   .acc__body > .viz { grid-column: 1; grid-row: auto; order: 2; min-height: 0; margin: 4px 0 0; padding: 20px 16px 36px; }
   .acc__body:has(> .viz) > .share { order: 3; }
   .viz text { font-size: 16px; }
-  .viz__note { font-size: 19px; }
+  .viz__note { font-size: 19px; white-space: normal; max-width: 50%; line-height: 1.05; }
   .concepts dt button { padding: 7px 12px; font-size: 15.5px; }
   .js .concepts { gap: 6px; }
   .concepts__panel { min-height: 0; }
@@ -2266,7 +2288,8 @@ html:has(.quests[open]) { overflow: hidden; }
   .quest__top { display: contents; }
   .quest__ic { grid-row: 1 / span 3; }
   .quest__status { grid-column: 2; justify-self: start; margin-bottom: 8px; }
-  .quest h4, .quest p { grid-column: 2; }
+  .quest h4, .quest p, .quest__play { grid-column: 2; }
+  .quest__play { justify-self: start; text-align: left; }
   .quest__shot { top: 46px; right: 18px; }
   /* a reel runs to the edges of the screen; the viewer fits above the
      browser's own toolbar */
@@ -2281,7 +2304,8 @@ html:has(.quests[open]) { overflow: hidden; }
   /* the bar keeps the mark and the view switch; my name is in the hero
      and Contact is in the dock */
   .bar__name .wordmark { display: none; }
-  /* here the mark takes the name's place: the name fades as the mark lands */
+  /* a narrow window with a mouse still has the flight: the mark takes the
+     name's place, and the name fades as the mark lands */
   .js .bar.has-flight:not(.is-landed) .jv { width: 0; margin-right: -10px; }
   .js .bar.has-flight:not(.is-landed) .bar__name .wordmark { display: block; opacity: calc(1 - var(--slot, 0)); }
   .bar__end > .btn { display: none; }

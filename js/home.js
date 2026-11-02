@@ -163,14 +163,20 @@
    * the right, clear of the words, travels left under the bar and docks up
    * into its place beside the name. On the way it shrinks, loses the
    * portrait and takes the colour of the text. Then the small mark shows.
-   * Without the script, or with reduced motion, the two stay apart.
+   * On a touch screen the browser scrolls apart from this script, so a mark
+   * moved by it would stutter: there the mark stays on the page and the
+   * small one slides into the bar as the big one passes under it. The same
+   * goes without the script, or with reduced motion.
    * ---------------------------------------------------------------- */
   const photo = $(".hero__photo");
   const heroBar = $("#bar");
-  if (photo && heroBar && !reduced) {
+  const pointerFine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (photo && !reduced) {
     onEnter.push((el) => {
       if (el === photo) setTimeout(() => photo.classList.add("is-settled"), 2500);
     });
+  }
+  if (photo && heroBar && !reduced && pointerFine) {
     const mark = $(".hero__mark", photo);
     /* the small mark's size in the bar: 24px high, at the mark's proportions */
     const SMALL_W = 24 * 104 / 84, SMALL_H = 24;
@@ -890,7 +896,11 @@
     }
     if (bar) bar.classList.toggle("is-scrolled", st.y > 8);
     /* the home page only: see "At the top of the home page" in home.css */
-    if (bar && hero && !bar.classList.contains("has-flight")) bar.classList.toggle("is-top", st.y < st.vh * 0.4);
+    /* no flight: the small mark comes in as the big one passes under the bar */
+    if (bar && photo && !bar.classList.contains("has-flight")) {
+      const r = photo.getBoundingClientRect();
+      bar.classList.toggle("is-top", r.top + r.height / 2 > bar.offsetHeight);
+    }
   }
   S.onScroll(sync);
   S.onMeasure((st) => sync(st));
