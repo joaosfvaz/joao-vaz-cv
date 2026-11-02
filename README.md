@@ -57,10 +57,13 @@ The movement is kept to a few places on purpose, so each one is noticed:
   scroll both ways (`js/home.js`, one `transform` on `.hero__mark`): it rises on the right, travels left
   under the bar and docks up beside the name. On the way it shrinks, loses the portrait (`--pr`) and takes
   the colour of the text (`--t`). Then the small mark shows. With reduced motion, or without the script, the two stay apart.
-- **Section glide** (`js/home.js`) — on a mouse or a trackpad the page moves by sections. A section that
-  fits the window is one step: a turn of the wheel glides to the next. A longer one scrolls freely and glides
-  on only near its end. Scrollbar drags, links and open dialogs are left alone, and a new input cancels a
-  glide. Phones keep their native scroll, and reduced motion turns it off.
+- **Scroll** (`js/home.js`) — on a mouse or a trackpad the wheel moves a target and the page follows on a
+  critically damped spring, so its speed never jumps. A section that fits the window is one step: the first
+  input already aims at the next section, so there is one motion and no second push. A longer section scrolls
+  freely and joins the next near its end, while the page is still moving; it never stops and then moves again
+  by itself. Keys, the scrollbar, links and dialogs keep the browser's own scroll, phones keep their native
+  scroll, and reduced motion turns it off. CSS scroll snapping was tested and rejected: one wheel tick bounces
+  back to the same section.
 - **The bar at the top of the page** — the name, the view switch and Contact. The section links and the
   icons arrive as the mark lands, or sooner under the pointer or the keyboard (`.bar.is-top`, set in the
   markup of the home page).
@@ -102,11 +105,11 @@ and five quick clicks make it jump (an easter egg).
 
 - The mark is an inline SVG (`.jv` in `home.css`) in the bar of every page, on the first-visit
   question and on the 404 page. It takes the colour of the text around it.
-- `favicon.svg` (and the same file as `assets/brand/logo.svg`) is the mark alone, ink on a light
-  tab bar and paper on a dark one.
+- `favicon.svg` is the mark in the blue of the hero, with no ground, for light and dark tab bars.
+  `assets/brand/logo.svg` is the mark alone, ink on a light ground and paper on a dark one.
 - `assets/brand/favicon-32.png` and `favicon.ico` are the fallbacks for browsers without SVG icons:
-  paper on a dark square, the mark filling more of it so it holds at that size.
-- `apple-touch-icon.png` (180px) and `assets/brand/icon-192.png` / `icon-512.png` are the mark on
+  blue on the dark ground, the mark filling more of it so it holds at that size.
+- `apple-touch-icon.png` (180px) and `assets/brand/icon-192.png` / `icon-512.png` are the blue mark on
   the dark ground, full-bleed, because phones round the corners themselves; `site.webmanifest`
   lists the last two.
 - `assets/brand/og.jpg` (1200×630) is the card a shared link shows: the name, the line, the

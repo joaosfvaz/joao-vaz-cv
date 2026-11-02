@@ -1475,59 +1475,95 @@
   });
 
   /* ------------------------------------------------------------------
-   * Section glide — on a mouse or a trackpad the page moves by sections. A
-   * section that fits the window is one step: a turn of the wheel glides
-   * to the next one. A longer section scrolls freely, so it can be read,
-   * and glides on only when its end is close. A scrollbar drag, a link or
-   * an open dialog is left alone. A new input cancels a glide at once.
-   * Phones keep their native scroll; reduced motion turns this off.
+   * Scroll — on a mouse or a trackpad the wheel moves a target, and the
+   * page follows it on a spring. Its speed never jumps, so there is one
+   * motion from the first input to the stop. A section that fits the
+   * window is one step: the first input already aims at the next section,
+   * so there is no second push. A longer section scrolls freely and joins
+   * the next only near its end, while the page is still moving; it never
+   * stops and then moves again by itself, and going up never bounces back.
+   * Keys, the
+   * scrollbar, links and dialogs keep the browser's own scroll. Phones
+   * keep their native scroll; reduced motion turns this off.
    * ---------------------------------------------------------------- */
   if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-    const NEAR = 0.3;      // of the window: how close counts as near a section's edge
-    const NUDGE = 30;      // px: less than this is not a move, it settles back
-    const keys = ["ArrowDown", "ArrowUp", "PageDown", "PageUp", " "];
-    let anchorY = window.scrollY, anim = 0, gliding = false, intentAt = -1e9, timer = 0;
-    let lastWheel = 0, lastAbs = 0, doneAt = -1e9;
+    const STIFF = 11;     // the spring: higher follows closer, lower floats more
+    const NEAR = 0.22;    // of the window: how close counts as near a section's edge
+    const NUDGE = 24;     // px: less than this is not a move, it settles back
+    const PUSH = 14000;   // px/s2: the most the page may speed up, so a long move eases in
+    let y = window.scrollY, target = y, speed = 0, from = y;
+    let raf = 0, last = 0, idle = 0;
+    const STEP = 30;      // px: this much input in a section that fits is one step
+    let lastWheel = 0, lastSize = 0, peak = 0, tail = false, locked = false, pend = 0;
 
-    const room = () => window.innerHeight - (bar ? bar.clientHeight : 0);
+    const off = () => (bar ? bar.offsetHeight : 0);
+    const limit = () => document.documentElement.scrollHeight - window.innerHeight;
     /* read fresh each time: an open accordion moves everything below it */
     const bounds = () => {
-      const off = bar ? bar.clientHeight : 0;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const max = limit();
       const tops = $$("main > section").filter((el) => el.getClientRects().length)
-        .map((el) => Math.round(el.getBoundingClientRect().top + window.scrollY - off))
+        .map((el) => Math.round(el.getBoundingClientRect().top + window.scrollY - off()))
         .filter((t) => t > 1 && t < max - 1);
       return [0].concat(tops, [max]);
     };
-    /* the section a position is in: its start, its end, and whether it fits */
-    const place = (b, y) => {
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+      speed = 0;
+      clearTimeout(idle);
+      y = target = from = window.scrollY;
+    };
+    const frame = (now) => {
+      /* a critically damped spring, stepped with a capped frame time */
+      const dt = Math.min((now - last) / 1000, 1 / 30);
+      last = now;
+      let push = STIFF * STIFF * (target - y) - 2 * STIFF * speed;
+      if (push * speed >= 0) push = clamp(push, -PUSH, PUSH);
+      speed += push * dt;
+      y += speed * dt;
+      if (Math.abs(target - y) < 0.4 && Math.abs(speed) < 6) {
+        window.scrollTo({ top: target, behavior: "instant" });
+        y = target;
+        speed = 0;
+        raf = 0;
+        return;
+      }
+      window.scrollTo({ top: y, behavior: "instant" });
+      raf = requestAnimationFrame(frame);
+    };
+    const run = () => {
+      if (raf) return;
+      last = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+    /* the section a position is in: its start, its end, whether it fits */
+    const place = (b, at) => {
       let i = 0;
-      while (i < b.length - 2 && b[i + 1] <= y + 1) i++;
-      /* the first block may run a little over: on the home page it is the hero and the strip */
-      return { i: i, cur: b[i], next: b[i + 1], fits: b[i + 1] - b[i] <= room() * (i === 0 ? 1.35 : 1.1) };
+      while (i < b.length - 2 && b[i + 1] <= at + 1) i++;
+      const room = window.innerHeight - off();
+      return { i: i, cur: b[i], next: b[i + 1], fits: b[i + 1] - b[i] <= room * (i === 0 ? 1.35 : 1.1), room: room };
     };
-    const busy = () => !!$("dialog[open], .quests.is-playing");
-
-    const stop = () => { cancelAnimationFrame(anim); anim = 0; gliding = false; };
-    const glide = (to) => {
-      const from = window.scrollY, dist = to - from;
-      if (Math.abs(dist) < 2) { anchorY = to; return; }
-      const dur = clamp(420 + Math.abs(dist) * 0.42, 420, 950);
-      const t0 = performance.now();
-      gliding = true;
-      const step = (now) => {
-        const k = clamp((now - t0) / dur, 0, 1);
-        const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-        window.scrollTo({ top: from + dist * e, behavior: "instant" });
-        if (k < 1) { anim = requestAnimationFrame(step); return; }
-        anim = 0;
-        gliding = false;
-        anchorY = to;
-        doneAt = performance.now();
-      };
-      anim = requestAnimationFrame(step);
+    /* the input has ended: choose where a free move comes to rest */
+    const land = () => {
+      pend = 0;
+      const moved = target - from;
+      const at = place(bounds(), target);
+      const cur = at.cur, next = at.next, fits = at.fits;
+      const size = next - cur;
+      const near = at.room * NEAR;
+      let to = target;
+      if (Math.abs(moved) < NUDGE) {
+        if (fits) to = target - cur < next - target ? cur : next;
+      } else if (moved > 0) {
+        const crossed = from < cur - 1;
+        if (fits) to = crossed && target - cur < size / 2 ? cur : next;
+        else if (crossed && target - cur <= near) to = cur;
+        else if (next - target <= near) to = next;
+      } else if (fits || target - cur <= near) to = cur;
+      target = to;
+      from = to;
+      run();
     };
-
     /* something inside the page that scrolls by itself keeps its wheel */
     const ownScroll = (el) => {
       for (let n = el; n && n !== document.body && n.nodeType === 1; n = n.parentElement) {
@@ -1535,66 +1571,79 @@
       }
       return false;
     };
-
     window.addEventListener("wheel", (ev) => {
-      const now = performance.now();
-      const abs = Math.abs(ev.deltaY);
-      const gap = now - lastWheel;
-      const rising = abs > lastAbs + 8 && abs > 20;
-      lastWheel = now;
-      lastAbs = abs;
-      intentAt = now;
-      if (ev.ctrlKey || Math.abs(ev.deltaX) > abs || !abs || busy() || ownScroll(ev.target)) { stop(); return; }
-      /* during a glide, and for the tail of a trackpad's flick after it, the
-         wheel moves nothing. A pause or a harder push is a new step */
-      const tail = now - doneAt < 900 && gap < 120 && !rising;
-      if (gliding || tail) { ev.preventDefault(); return; }
-      const b = bounds();
-      const y = window.scrollY;
-      const at = place(b, y);
-      if (!at.fits) return;
-      let to = null;
-      if (ev.deltaY > 0) to = at.next;
-      else if (y > at.cur + 2) to = at.cur;
-      /* at the top of a section, going up: one step if the one above fits;
-         if it is long, the free scroll takes it from its end */
-      else if (at.i > 0 && place(b, b[at.i - 1]).fits) to = b[at.i - 1];
-      if (to === null) return;
+      if (ev.ctrlKey || Math.abs(ev.deltaX) > Math.abs(ev.deltaY) || !ev.deltaY) return;
+      if ($("dialog[open], .quests.is-playing") || ownScroll(ev.target)) { stop(); return; }
       ev.preventDefault();
-      glide(to);
-    }, { passive: false });
-
-    window.addEventListener("keydown", (ev) => {
-      if (keys.indexOf(ev.key) < 0 || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(ev.target.tagName || "")) { stop(); return; }
-      stop();
-      intentAt = performance.now();
-    });
-    window.addEventListener("pointerdown", stop, { passive: true });
-
-    /* when a free scroll comes to rest: settle on an edge if it is close */
-    const settle = () => {
-      const y = window.scrollY;
-      const moved = y - anchorY;
-      const started = anchorY;
-      anchorY = y;
-      if (performance.now() - intentAt > 1600 || busy()) return;
-      const at = place(bounds(), y);
-      const near = room() * NEAR;
-      if (Math.abs(moved) < NUDGE) {
-        if (at.fits && y !== at.cur) glide(y - at.cur < at.next - y ? at.cur : at.next);
+      const px = ev.deltaMode === 1 ? ev.deltaY * 40 : ev.deltaMode === 2 ? ev.deltaY * window.innerHeight : ev.deltaY;
+      const size = Math.abs(px);
+      const now = performance.now();
+      const gap = now - lastWheel;
+      lastWheel = now;
+      /* the last small steps of a trackpad's flick move nothing: the landing
+         is already chosen. A pause or a new push starts a new move */
+      if (tail && gap < 70 && size <= lastSize + 1) {
+        lastSize = size;
+        clearTimeout(idle);
+        idle = setTimeout(() => { idle = 0; tail = false; }, 110);
         return;
       }
-      if (moved > 0) {
-        /* it came in from the section above: align with this one's start */
-        if (started < at.cur - 1 && (at.fits || y - at.cur <= near)) glide(at.cur);
-        else if (at.fits || at.next - y <= near) glide(at.next);
-      } else if (at.fits || y - at.cur <= near) glide(at.cur);
-    };
-    window.addEventListener("scroll", () => {
-      if (gliding) return;
-      clearTimeout(timer);
-      timer = setTimeout(settle, 140);
-    }, { passive: true });
+      tail = false;
+      if (!raf && !idle) { y = target = from = window.scrollY; locked = false; pend = 0; }
+      /* after a step, the rest of the same gesture moves nothing: a pause, a
+         harder push, or steady input once the page has arrived is a new step */
+      if (locked) {
+        const fresh = gap > 70 || (size > lastSize + 4 && size > 10) || (size >= lastSize && Math.abs(target - y) < 120);
+        lastSize = size;
+        clearTimeout(idle);
+        idle = setTimeout(() => { idle = 0; locked = false; }, 110);
+        if (!fresh) return;
+        locked = false;
+        pend = 0;
+      }
+      /* which section this input moves in: going up from a section's start,
+         it is the one above */
+      const b = bounds();
+      const at = place(b, px < 0 && Math.abs(target - place(b, target).cur) <= 2 ? target - 3 : target);
+      if (at.fits) {
+        pend += px;
+        if (Math.abs(pend) >= STEP) {
+          const inside = target > at.cur + 2;
+          const came = from < at.cur - 1;
+          const to = px > 0 ? (inside && came ? at.cur : at.next) : at.cur;
+          pend = 0;
+          target = to;
+          from = to;
+          locked = true;
+          lastSize = size;
+          run();
+          clearTimeout(idle);
+          idle = setTimeout(() => { idle = 0; locked = false; }, 110);
+          return;
+        }
+      }
+      if (gap > 70) peak = 0;
+      peak = Math.max(peak, size);
+      target = clamp(target + px, 0, limit());
+      run();
+      clearTimeout(idle);
+      /* a flick that is dying away lands now, while the page still has its
+         speed, so it does not slow down and then speed up again */
+      if (peak >= 14 && size < 3 && size <= lastSize) {
+        lastSize = size;
+        tail = true;
+        idle = setTimeout(() => { idle = 0; tail = false; }, 110);
+        land();
+        return;
+      }
+      lastSize = size;
+      idle = setTimeout(() => { idle = 0; land(); }, 110);
+    }, { passive: false });
+    /* anything else that moves the page takes over from the spring */
+    window.addEventListener("keydown", (ev) => {
+      if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].indexOf(ev.key) >= 0) stop();
+    });
+    window.addEventListener("pointerdown", stop, { passive: true });
   }
 
   /* metrics shift when the webfonts swap in; the first measure also
