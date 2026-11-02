@@ -35,7 +35,7 @@ The movement is kept to a few places on purpose, so each one is noticed:
   pointer, on focus or on a tap. Paper shows every line.
 - **The marker** — a second hand on the page, in Caveat and the second colour, used a handful of
   times: "a demo" struck through and "evidence"
-  written over it in the AI heading, a ring round "dealer" as its habit lights up, a note on the
+  written over it in the AI heading, a note on the
   Tabiya screen and the sign-off under Contact. The strokes are SVG paths with `pathLength="1"`,
   drawn on with `stroke-dashoffset` when their part arrives.
 - **The mark in the hero** — the first page is the mark, one sentence and two buttons. The hero and the
@@ -44,7 +44,7 @@ The movement is kept to a few places on purpose, so each one is noticed:
   `mix-blend-mode: screen` over the fill turns black into the colour and leaves white alone, and a mask
   fades the print out at the collar, so the rest of the V is flat colour too. Under the pointer the
   print turns to full colour. The forms arrive from above and from below, each along its own lean, and
-  lock; as the page scrolls they move apart along the same lines. Below 1000px, or on a tall screen,
+  lock. Below 1000px, or on a tall screen,
   the sentence and the buttons come first and the mark under them. The name is once on screen, small,
   in the bar; the `<h1>` is for screen readers and for paper.
 - **The message box** (`<dialog id="chat">`) — "Message me" and "Say hi" open a small chat window; without
@@ -53,9 +53,17 @@ The movement is kept to a few places on purpose, so each one is noticed:
   tab) and opens the LinkedIn profile, where they press Message and paste. A visitor who is not logged in
   meets LinkedIn's login wall, which returns them to the profile afterwards. The email link under it takes
   the text to their mail app (`mailto:` with a `body`). Nothing leaves the page by itself.
-- **The bar at the top of the page** — the name, the view switch and Contact. The section links, the
-  icons and the small mark arrive with the scroll, or sooner under the pointer or the keyboard
-  (`.bar.is-top`, set in the markup of the home page and toggled by `js/home.js`).
+- **The mark's flight** — the big mark and the small one in the bar are one mark. Its place follows the
+  scroll both ways (`js/home.js`, one `transform` on `.hero__mark`): it rises on the right, travels left
+  under the bar and docks up beside the name. On the way it shrinks, loses the portrait (`--pr`) and takes
+  the colour of the text (`--t`). Then the small mark shows. With reduced motion, or without the script, the two stay apart.
+- **Section glide** (`js/home.js`) — on a mouse or a trackpad the page moves by sections. A section that
+  fits the window is one step: a turn of the wheel glides to the next. A longer one scrolls freely and glides
+  on only near its end. Scrollbar drags, links and open dialogs are left alone, and a new input cancels a
+  glide. Phones keep their native scroll, and reduced motion turns it off.
+- **The bar at the top of the page** — the name, the view switch and Contact. The section links and the
+  icons arrive as the mark lands, or sooner under the pointer or the keyboard (`.bar.is-top`, set in the
+  markup of the home page).
 - **The load sequence** — one pass on arrival, choreographed in `home.css` (`--delay` on the hero's
   reveals): the bar drops in, the sentence and the buttons rise while the two forms lock. The hero has
   no row of numbers on screen: they are in the sentence and in the roles. The figures strip under the

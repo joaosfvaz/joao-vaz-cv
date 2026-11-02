@@ -158,37 +158,73 @@
   }
 
   /* ------------------------------------------------------------------
-   * The photo — wiped in by CSS when it reveals; after that it drifts a
-   * little against the scroll.
+   * The mark's flight — the big mark in the hero and the small one in the
+   * bar are one mark. Its place follows the scroll, both ways: it rises on
+   * the right, clear of the words, travels left under the bar and docks up
+   * into its place beside the name. On the way it shrinks, loses the
+   * portrait and takes the colour of the text. Then the small mark shows.
+   * Without the script, or with reduced motion, the two stay apart.
    * ---------------------------------------------------------------- */
   const photo = $(".hero__photo");
-  if (photo && !reduced) {
-    const formJ = $(".hero__form--j", photo);
-    const formV = $(".hero__form--v", photo);
+  const heroBar = $("#bar");
+  if (photo && heroBar && !reduced) {
     onEnter.push((el) => {
       if (el === photo) setTimeout(() => photo.classList.add("is-settled"), 2500);
     });
+    const mark = $(".hero__mark", photo);
+    /* the small mark's size in the bar: 24px high, at the mark's proportions */
+    const SMALL_W = 24 * 104 / 84, SMALL_H = 24;
+    let left = 0, top = 0, w = 1, range = 1, endX = 0, endY = 0, last = -1;
+    S.onMeasure(() => {
+      const r = photo.getBoundingClientRect();
+      left = r.left;
+      top = r.top + window.scrollY;
+      w = r.width;
+      /* it lands before its place would have left the window */
+      range = (top + r.height) * 0.75;
+      endX = parseFloat(getComputedStyle(heroBar).paddingLeft) || 0;
+      endY = (heroBar.clientHeight - SMALL_H) / 2;
+      mark.style.width = w + "px";
+      mark.style.height = r.height + "px";
+      last = -1;
+    });
+    mark.classList.add("is-flying");
+    heroBar.classList.add("has-flight");
     S.onFrame((st) => {
-      if (st.y > st.vh * 1.4) return;
-      /* each along its own lean: the J goes up, the V comes down */
-      formJ.style.setProperty("--fx", (st.y * 0.12 * 0.2126).toFixed(1) + "px");
-      formJ.style.setProperty("--fy", (st.y * -0.12).toFixed(1) + "px");
-      formV.style.setProperty("--fx", (st.y * -0.07 * 0.534).toFixed(1) + "px");
-      formV.style.setProperty("--fy", (st.y * 0.07).toFixed(1) + "px");
-      photo.style.setProperty("--py", (st.y * -0.03).toFixed(1) + "px");
+      const p = clamp(st.y / range, 0, 1);
+      if (p === last) return;
+      last = p;
+      /* left, later than up, so it does not cross the words */
+      const x = S.lerp(left, endX, S.smoothstep(S.invLerp(0.25, 0.9, p)));
+      /* up to just under the bar, then up into its place: it never crosses the name */
+      const under = endY + SMALL_H + 20;
+      const y = p < 0.88
+        ? S.lerp(top, under, S.smoothstep(S.invLerp(0, 0.7, p)))
+        : S.lerp(under, endY, S.smoothstep(S.invLerp(0.88, 1, p)));
+      /* a size shrinks evenly as a ratio, not by equal steps of pixels */
+      const scale = Math.pow(SMALL_W / w, S.smoothstep(p));
+      mark.style.transform = "translate3d(" + x.toFixed(2) + "px," + y.toFixed(2) + "px,0) scale(" + scale.toFixed(4) + ")";
+      mark.style.setProperty("--pr", (1 - S.invLerp(0.12, 0.55, p)).toFixed(3));
+      mark.style.setProperty("--t", S.invLerp(0.5, 0.92, p).toFixed(3));
+      mark.style.visibility = p >= 1 ? "hidden" : "";
+      mark.classList.toggle("is-home", p < 0.02);
+      heroBar.style.setProperty("--slot", S.invLerp(0.72, 1, p).toFixed(3));
+      heroBar.classList.toggle("is-top", p < 0.8);
+      heroBar.classList.toggle("is-landed", p >= 1);
     });
   }
 
   /* ------------------------------------------------------------------
-   * Scroll depth — as the hero leaves, its copy lifts a little faster
-   * than the page and dims, so the name and the photo part company.
+   * Scroll depth — as the hero leaves, its words lift a little faster than
+   * the page and fade, which clears the way for the mark.
    * ---------------------------------------------------------------- */
   const heroCopy = $(".hero__copy");
   if (heroCopy && !reduced) {
     S.onFrame((st) => {
       if (st.y > st.vh * 1.4) return;
       heroCopy.style.transform = "translate3d(0," + (st.y * -0.14).toFixed(1) + "px,0)";
-      heroCopy.style.opacity = (1 - clamp(st.y / st.vh, 0, 1) * 0.55).toFixed(3);
+      /* gone before the mark crosses its place on the way to the bar */
+      heroCopy.style.opacity = (1 - clamp(st.y / (st.vh * 0.36), 0, 1)).toFixed(3);
     });
   }
 
@@ -854,7 +890,7 @@
     }
     if (bar) bar.classList.toggle("is-scrolled", st.y > 8);
     /* the home page only: see "At the top of the home page" in home.css */
-    if (bar && hero) bar.classList.toggle("is-top", st.y < st.vh * 0.4);
+    if (bar && hero && !bar.classList.contains("has-flight")) bar.classList.toggle("is-top", st.y < st.vh * 0.4);
   }
   S.onScroll(sync);
   S.onMeasure((st) => sync(st));
@@ -903,19 +939,6 @@
     });
     S.onScroll(tint);
     S.onMeasure((st) => tint(st));
-  }
-
-  /* ------------------------------------------------------------------
-   * How I work — each habit lights up as it reaches the reading line,
-   * two thirds of the way down the window, and dims again above it.
-   * ---------------------------------------------------------------- */
-  const habits = $$(".how__row").filter(S.inMode);
-  if (habits.length) {
-    let tops = [];
-    S.onMeasure(() => { tops = habits.map((el) => el.getBoundingClientRect().top + window.scrollY); });
-    const light = (st) => habits.forEach((el, i) => el.classList.toggle("is-lit", reduced || st.y + st.vh * 0.66 >= tops[i]));
-    S.onScroll(light);
-    S.onMeasure((st) => light(st));
   }
 
   /* ------------------------------------------------------------------
@@ -1450,6 +1473,129 @@
       history.replaceState(null, "", "#" + id);
     });
   });
+
+  /* ------------------------------------------------------------------
+   * Section glide — on a mouse or a trackpad the page moves by sections. A
+   * section that fits the window is one step: a turn of the wheel glides
+   * to the next one. A longer section scrolls freely, so it can be read,
+   * and glides on only when its end is close. A scrollbar drag, a link or
+   * an open dialog is left alone. A new input cancels a glide at once.
+   * Phones keep their native scroll; reduced motion turns this off.
+   * ---------------------------------------------------------------- */
+  if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    const NEAR = 0.3;      // of the window: how close counts as near a section's edge
+    const NUDGE = 30;      // px: less than this is not a move, it settles back
+    const keys = ["ArrowDown", "ArrowUp", "PageDown", "PageUp", " "];
+    let anchorY = window.scrollY, anim = 0, gliding = false, intentAt = -1e9, timer = 0;
+    let lastWheel = 0, lastAbs = 0, doneAt = -1e9;
+
+    const room = () => window.innerHeight - (bar ? bar.clientHeight : 0);
+    /* read fresh each time: an open accordion moves everything below it */
+    const bounds = () => {
+      const off = bar ? bar.clientHeight : 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const tops = $$("main > section").filter((el) => el.getClientRects().length)
+        .map((el) => Math.round(el.getBoundingClientRect().top + window.scrollY - off))
+        .filter((t) => t > 1 && t < max - 1);
+      return [0].concat(tops, [max]);
+    };
+    /* the section a position is in: its start, its end, and whether it fits */
+    const place = (b, y) => {
+      let i = 0;
+      while (i < b.length - 2 && b[i + 1] <= y + 1) i++;
+      /* the first block may run a little over: on the home page it is the hero and the strip */
+      return { i: i, cur: b[i], next: b[i + 1], fits: b[i + 1] - b[i] <= room() * (i === 0 ? 1.35 : 1.1) };
+    };
+    const busy = () => !!$("dialog[open], .quests.is-playing");
+
+    const stop = () => { cancelAnimationFrame(anim); anim = 0; gliding = false; };
+    const glide = (to) => {
+      const from = window.scrollY, dist = to - from;
+      if (Math.abs(dist) < 2) { anchorY = to; return; }
+      const dur = clamp(420 + Math.abs(dist) * 0.42, 420, 950);
+      const t0 = performance.now();
+      gliding = true;
+      const step = (now) => {
+        const k = clamp((now - t0) / dur, 0, 1);
+        const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+        window.scrollTo({ top: from + dist * e, behavior: "instant" });
+        if (k < 1) { anim = requestAnimationFrame(step); return; }
+        anim = 0;
+        gliding = false;
+        anchorY = to;
+        doneAt = performance.now();
+      };
+      anim = requestAnimationFrame(step);
+    };
+
+    /* something inside the page that scrolls by itself keeps its wheel */
+    const ownScroll = (el) => {
+      for (let n = el; n && n !== document.body && n.nodeType === 1; n = n.parentElement) {
+        if (n.scrollHeight > n.clientHeight + 1 && /auto|scroll/.test(getComputedStyle(n).overflowY)) return true;
+      }
+      return false;
+    };
+
+    window.addEventListener("wheel", (ev) => {
+      const now = performance.now();
+      const abs = Math.abs(ev.deltaY);
+      const gap = now - lastWheel;
+      const rising = abs > lastAbs + 8 && abs > 20;
+      lastWheel = now;
+      lastAbs = abs;
+      intentAt = now;
+      if (ev.ctrlKey || Math.abs(ev.deltaX) > abs || !abs || busy() || ownScroll(ev.target)) { stop(); return; }
+      /* during a glide, and for the tail of a trackpad's flick after it, the
+         wheel moves nothing. A pause or a harder push is a new step */
+      const tail = now - doneAt < 900 && gap < 120 && !rising;
+      if (gliding || tail) { ev.preventDefault(); return; }
+      const b = bounds();
+      const y = window.scrollY;
+      const at = place(b, y);
+      if (!at.fits) return;
+      let to = null;
+      if (ev.deltaY > 0) to = at.next;
+      else if (y > at.cur + 2) to = at.cur;
+      /* at the top of a section, going up: one step if the one above fits;
+         if it is long, the free scroll takes it from its end */
+      else if (at.i > 0 && place(b, b[at.i - 1]).fits) to = b[at.i - 1];
+      if (to === null) return;
+      ev.preventDefault();
+      glide(to);
+    }, { passive: false });
+
+    window.addEventListener("keydown", (ev) => {
+      if (keys.indexOf(ev.key) < 0 || /^(INPUT|TEXTAREA|SELECT|BUTTON|A)$/.test(ev.target.tagName || "")) { stop(); return; }
+      stop();
+      intentAt = performance.now();
+    });
+    window.addEventListener("pointerdown", stop, { passive: true });
+
+    /* when a free scroll comes to rest: settle on an edge if it is close */
+    const settle = () => {
+      const y = window.scrollY;
+      const moved = y - anchorY;
+      const started = anchorY;
+      anchorY = y;
+      if (performance.now() - intentAt > 1600 || busy()) return;
+      const at = place(bounds(), y);
+      const near = room() * NEAR;
+      if (Math.abs(moved) < NUDGE) {
+        if (at.fits && y !== at.cur) glide(y - at.cur < at.next - y ? at.cur : at.next);
+        return;
+      }
+      if (moved > 0) {
+        /* it came in from the section above: align with this one's start */
+        if (started < at.cur - 1 && (at.fits || y - at.cur <= near)) glide(at.cur);
+        else if (at.fits || at.next - y <= near) glide(at.next);
+      } else if (at.fits || y - at.cur <= near) glide(at.cur);
+    };
+    window.addEventListener("scroll", () => {
+      if (gliding) return;
+      clearTimeout(timer);
+      timer = setTimeout(settle, 140);
+    }, { passive: true });
+  }
 
   /* metrics shift when the webfonts swap in; the first measure also
      lands whatever is already on screen */

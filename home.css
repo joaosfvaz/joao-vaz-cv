@@ -8,7 +8,7 @@
    A project page swaps --accent (and --accent-2 where its brand needs
    it); nothing else changes.
    The movement lives in a few places on purpose — the dot field in the
-   hero, the name and the photo arriving, the word strip, the bands
+   hero, the mark and its flight to the bar, the word strip, the bands
    opening, the accordions and the playable trace.
    Every animated state is gated on `.js`, so the document renders
    finished when the scripts do not run.
@@ -243,11 +243,15 @@ ul, ol { list-style: none; }
 /* At the top of the home page the bar holds only the name, which view this
    is and the way to get in touch: the big mark is right below it. The rest
    arrives with the scroll, or sooner under the pointer or the keyboard. */
-.bar .jv { width: 29.7px; transition: fill 0.2s ease, width 0.35s var(--ease), margin 0.35s var(--ease), opacity 0.2s ease; }
+.bar .jv { width: 29.7px; transition: fill 0.2s ease; }
 .bar :is(.bar__links, .bar__icon) { transition: opacity 0.3s ease, color 0.2s ease; }
 @media screen {
   .js .bar.is-top .jv { width: 0; margin-right: -10px; opacity: 0; }
   .js .bar.is-top .bar__name .wordmark { display: block; }
+  /* with the flight the small mark's place opens as the big one arrives
+     (--slot), and it shows once the big one has landed on it */
+  .js .bar.has-flight .jv { width: calc(var(--slot, 0) * 29.7px); margin-right: calc((var(--slot, 0) - 1) * 10px); opacity: 1; visibility: hidden; }
+  .js .bar.has-flight.is-landed .jv { visibility: visible; }
   .js .bar.is-top:not(:hover, :focus-within) :is(.bar__links, .bar__icon) { opacity: 0; }
 }
 .bar__links { display: flex; gap: 28px; margin-left: auto; font-size: 14px; color: var(--dim); }
@@ -320,7 +324,7 @@ html:not(.js) .theme { display: none; }
    it. A wide screen only; smaller ones stack (see the end of this block) */
 .hero { position: relative; }
 .hero__field { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-.hero__grid { position: relative; z-index: 1; }
+.hero__grid { position: relative; }
 @media screen {
   .hero {
     /* the strip's type and padding, so its top edge meets the fold's rule */
@@ -331,7 +335,7 @@ html:not(.js) .theme { display: none; }
     padding-top: 64px;
     overflow: clip;
   }
-  .hero__grid { height: var(--mh); min-height: 420px; overflow: clip; }
+  .hero__grid { height: var(--mh); min-height: 420px; }
   .hero__copy {
     position: absolute;
     inset: 0;
@@ -405,12 +409,25 @@ html:not(.js) .theme { display: none; }
     position: absolute;
     right: var(--gut);
     bottom: 0;
-    z-index: 1;
     width: var(--mw);
     height: calc(var(--mw) * 84 / 104);
     margin: 0;
   }
-  .hero__form { position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: var(--form); }
+  /* the figure keeps the mark's place on the page; the mark itself can leave
+     it. With the script it is fixed to the window and flies to the bar as the
+     page scrolls (js/home.js), so it stays above the bar and everything else */
+  .hero__mark { position: absolute; inset: 0; overflow: clip; }
+  .hero__mark.is-flying { position: fixed; inset: auto; left: 0; top: 0; z-index: 60; transform-origin: 0 0; will-change: transform; }
+  .hero__mark.is-flying:not(.is-home) * { pointer-events: none; }
+  /* on the way, the print fades (--pr) and the colour turns to the colour of
+     the text (--t), which is the colour of the small mark in the bar */
+  .hero__form {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    isolation: isolate;
+    background: color-mix(in srgb, var(--ink) calc(var(--t, 0) * 100%), var(--form));
+  }
   .hero__form--j { clip-path: url(#clip-j); }
   .hero__form--v { clip-path: url(#clip-v); }
   /* the face sits in the wide top of the V; from the collar down the
@@ -422,7 +439,7 @@ html:not(.js) .theme { display: none; }
     width: 57%;
     max-width: none;
     height: auto;
-    translate: 0 var(--py, 0px);
+    opacity: var(--pr, 1);
     -webkit-mask-image: linear-gradient(#000 43%, transparent 58%);
     mask-image: linear-gradient(#000 43%, transparent 58%);
   }
@@ -432,11 +449,10 @@ html:not(.js) .theme { display: none; }
   :root[data-theme="light"] .hero__mono { filter: grayscale(1) contrast(1.38) brightness(0.8); }
   .hero__colour { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s ease; }
   @media (hover: hover) { .hero__form--v:hover .hero__colour { opacity: 1; } }
-  /* they arrive from above and from below, each along its own lean, and
-     lock. After that the script moves them apart as the page scrolls */
+  /* they arrive from above and from below, each along its own lean, and lock */
   .js .hero__form--j { translate: 18% -105%; }
   .js .hero__form--v { translate: -45% 105%; }
-  .js .hero__photo.is-in .hero__form { translate: var(--fx, 0px) var(--fy, 0px); transition: translate 1.3s var(--ease) 0.1s; }
+  .js .hero__photo.is-in .hero__form { translate: 0 0; transition: translate 1.3s var(--ease) 0.1s; }
   .js .hero__photo.is-in.is-settled .hero__form { transition: none; }
 }
 @media screen and (max-width: 999px), screen and (max-aspect-ratio: 1 / 1) {
@@ -604,41 +620,32 @@ html:not(.js) .theme { display: none; }
    the list runs past it. A habit lights from grey to ink as it reaches
    the reading line (js/home.js), and a short rule in the accent draws
    over it; without the script they are all lit */
+.section.how { padding-block: clamp(44px, 8vh, 76px); }
 .how__grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
-  column-gap: clamp(32px, 6vw, 96px);
+  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 72px);
   align-items: start;
 }
-.how__head { position: sticky; top: 112px; margin-bottom: 0; }
-.how__head h2 { font-stretch: 112%; font-size: clamp(52px, 7.4vw, 112px); line-height: 0.9; letter-spacing: -0.05em; max-width: 5em; }
+.how__head { margin-bottom: 0; }
+.how__head h2 { font-stretch: 112%; font-size: clamp(44px, 5.6vw, 84px); line-height: 0.92; letter-spacing: -0.05em; }
 .how__list { border-top: 1px solid var(--line); }
-.how__row { position: relative; padding: 30px 0 32px; border-bottom: 1px solid var(--line); }
-.how__row::before {
-  content: "";
-  position: absolute; left: 0; top: -1px;
-  width: 72px; height: 2px;
-  background: var(--c);
-  transform: scaleX(0); transform-origin: 0 50%;
-  transition: transform 0.7s var(--ease);
-}
+.how__row { padding: clamp(10px, 1.5vh, 14px) 0; border-bottom: 1px solid var(--line); }
 .how__row dt {
-  margin-bottom: 10px;
   font-family: var(--display);
-  font-weight: 800;
+  font-weight: 700;
   font-stretch: 104%;
-  font-size: clamp(24px, 2.5vw, 36px);
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  transition: color 0.5s ease;
+  font-size: clamp(19px, 1.9vw, 26px);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
-.how__row dd { max-width: 36em; font-size: 16px; color: var(--dim); }
-.js .how__row:not(.is-lit) dt { color: var(--dim); }
-.how__row.is-lit::before, html:not(.js) .how__row::before { transform: none; }
+/* on screen a habit is one line; the longer line stays for paper and for
+   the skill finder, which reads it from here */
+@media screen { .how__row dd { display: none; } }
 
 /* ---------- Marker ---------- */
 /* a second hand on the page: a few notes in a marker script and strokes
-   drawn on as their part arrives (an arrow, a strike-through, a ring),
+   drawn on as their part arrives (an arrow, a strike-through),
    all in the second colour. A handful on purpose, so each one is found */
 .note {
   font-family: var(--script);
@@ -651,7 +658,7 @@ html:not(.js) .theme { display: none; }
 .mark { display: block; overflow: visible; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
 .mark path { stroke-dasharray: 1 1; vector-effect: non-scaling-stroke; }
 .js .mark path { stroke-dashoffset: 1; }
-.js :is(.h-split.is-in .strike, .how__row.is-lit .ring, .project.is-in .project__note, .acc__item.is-open.is-in .viz__note) .mark path {
+.js :is(.h-split.is-in .strike, .project.is-in .project__note, .acc__item.is-open.is-in .viz__note) .mark path {
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 0.7s var(--ease) var(--md, 0.5s);
 }
@@ -678,23 +685,6 @@ html:not(.js) .theme { display: none; }
 .scrawl .w { padding: 0.12em 0.06em 0.22em; margin: -0.12em -0.06em -0.22em; }
 .js .h-split.is-in .scrawl .w > span { transition-delay: 1.15s; }
 
-/* How I work: the dealer gets a ring as its habit lights up */
-.ring { position: relative; white-space: nowrap; }
-.ring { margin-left: 0.06em; }
-.ring .mark { position: absolute; left: -0.16em; top: -0.2em; width: calc(100% + 0.34em); height: calc(100% + 0.4em); color: var(--accent-2); pointer-events: none; }
-.ring .mark path { stroke-width: 3; --md: 0.35s; }
-
-/* Projects: a note over the corner of the lead project's screen */
-.project__note {
-  grid-area: shot;
-  justify-self: end;
-  align-self: start;
-  position: relative;
-  z-index: 2;
-  translate: 6px -36px;
-  rotate: 5deg;
-  pointer-events: none;
-}
 .project__note .mark { position: absolute; left: -44px; top: 12px; width: 44px; height: 38px; }
 
 /* Contact: a sign-off under the heading */
@@ -2171,7 +2161,7 @@ html:has(.quests[open]) { overflow: hidden; }
 }
 @media (max-width: 900px) {
   .how__grid { grid-template-columns: minmax(0, 1fr); }
-  .how__head { position: static; margin-bottom: clamp(28px, 5vh, 44px); }
+  .how__head { margin-bottom: 4px; }
 }
 @media (max-width: 767px) {
   body { padding-bottom: 88px; }
@@ -2290,6 +2280,9 @@ html:has(.quests[open]) { overflow: hidden; }
   /* the bar keeps the mark and the view switch; my name is in the hero
      and Contact is in the dock */
   .bar__name .wordmark { display: none; }
+  /* here the mark takes the name's place: the name fades as the mark lands */
+  .js .bar.has-flight:not(.is-landed) .jv { width: 0; margin-right: -10px; }
+  .js .bar.has-flight:not(.is-landed) .bar__name .wordmark { display: block; opacity: calc(1 - var(--slot, 0)); }
   .bar__end > .btn { display: none; }
   .mode-switch a { padding: 6px 8px; font-size: 12.5px; }
   .foot__mode { padding: 12px 0; }
@@ -2424,7 +2417,6 @@ html:has(.quests[open]) { overflow: hidden; }
   .how__grid { display: block; }
   .how__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14pt; border-top: 0; }
   .how__row { padding: 4pt 0; border-bottom: 0; break-inside: avoid; }
-  .how__row::before { display: none; }
   .how__row dt { font-size: 9.5pt; margin-bottom: 2pt; color: var(--ink) !important; }
   .how__row dd { font-size: 8pt; }
   .ai { display: block; }
