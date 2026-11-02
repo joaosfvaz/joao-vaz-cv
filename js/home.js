@@ -403,17 +403,25 @@
   }
 
   /* ------------------------------------------------------------------
-   * The large mark behind Contact slides along its own lean with the
-   * scroll.
+   * The large mark behind Contact: its two strokes come along their lean
+   * from opposite sides and lock as the band lands, the way they do in
+   * the hero. The scroll drives them, both ways.
    * ---------------------------------------------------------------- */
   const contactMark = $(".contact__mark");
   if (contactMark && !reduced) {
-    let top = 0;
-    S.onMeasure(() => { top = contactMark.parentElement.getBoundingClientRect().top + window.scrollY; });
+    const strokes = $$("path", contactMark);
+    let top = 0, was = -1;
+    S.onMeasure(() => {
+      top = contactMark.parentElement.getBoundingClientRect().top + window.scrollY;
+      was = -1;
+    });
     S.onFrame((st) => {
-      if (st.y + st.vh < top) return;
-      const d = (st.y + st.vh - top) * 0.12;
-      contactMark.style.transform = "translate3d(" + (d * 0.2126).toFixed(1) + "px," + (-d).toFixed(1) + "px,0)";
+      const p = S.smoothstep(S.invLerp(top - st.vh, top - heroBar.offsetHeight, st.y));
+      if (p === was) return;
+      was = p;
+      const d = (1 - p) * 64;
+      strokes[0].style.transform = "translate(" + (d * 0.2126).toFixed(2) + "px," + (-d).toFixed(2) + "px)";
+      strokes[1].style.transform = "translate(" + (-d * 0.2126).toFixed(2) + "px," + d.toFixed(2) + "px)";
     });
   }
 
@@ -493,6 +501,8 @@
       panel.id = "acc-" + ++accId;
       head.setAttribute("aria-controls", panel.id);
       head.addEventListener("click", () => {
+        /* in the products' scene a title is a place on the scroll */
+        if (stage && stage.to(item)) return;
         const open = !item.classList.contains("is-open");
         items.forEach((other) => set(other, false));
         set(item, open);
@@ -503,6 +513,100 @@
       });
     });
   });
+
+  /* ------------------------------------------------------------------
+   * The products as one scene. On a wide screen with a mouse or a trackpad
+   * the list stays in place and the scroll moves through it: the titles
+   * stand along the mark's lean, a marker runs down that lean with the
+   * scroll, and each stop opens one product and plays its picture. One
+   * wheel step is one stop (see bounds() below). A touch screen, a short
+   * window, reduced motion and paper keep the accordion.
+   * ---------------------------------------------------------------- */
+  const stage = (() => {
+    const group = $("#products [data-acc]");
+    if (!group || !S.inMode(group) || reduced) return null;
+    const wide = window.matchMedia("screen and (hover: hover) and (pointer: fine) and (min-width: 1001px) and (min-height: 700px) and (min-aspect-ratio: 1 / 1)");
+    const LEAN = 0.2126;
+    const items = $$(":scope > .acc__item", group);
+    const heads = items.map((it) => $("h3", it));
+    const lastStop = items.length - 1;
+    const part = (tag, name) => {
+      const el = document.createElement(tag);
+      el.className = name;
+      el.setAttribute("aria-hidden", "true");
+      return el;
+    };
+    const line = part("i", "stage__line"), tick = part("i", "stage__tick"), run = part("div", "stage__run");
+    run.style.setProperty("--stops", String(lastStop));
+    group.prepend(line, tick);
+    group.after(run);
+    let on = false, top = 0, step = 0, end = 0, ys = [], now = -1, was = -1;
+
+    function show(i) {
+      items.forEach((it, k) => {
+        it.classList.toggle("is-open", k === i);
+        $(".acc__head", it).setAttribute("aria-expanded", String(k === i));
+      });
+      now = i;
+    }
+    function apply() {
+      on = wide.matches;
+      group.classList.toggle("acc--stage", on);
+      if (!on) heads.forEach((h) => { h.style.transform = ""; });
+      now = was = -1;
+    }
+    apply();
+    wide.addEventListener("change", () => { apply(); S.measure(); });
+
+    S.onMeasure(() => {
+      if (!on) return;
+      /* where it would pin: a pinned element's own position says nothing */
+      group.style.position = "static";
+      top = Math.round(group.getBoundingClientRect().top + window.scrollY - heroBar.offsetHeight);
+      group.style.position = "";
+      step = run.offsetHeight / lastStop;
+      const first = heads[0].offsetTop;
+      end = heads[lastStop].offsetTop + heads[lastStop].offsetHeight;
+      line.style.top = first + "px";
+      line.style.height = end - first + "px";
+      ys = heads.map((h) => h.offsetTop + h.offsetHeight / 2);
+      heads.forEach((h, i) => { h.style.transform = "translateX(" + ((end - ys[i]) * LEAN).toFixed(1) + "px)"; });
+      was = -1;
+    });
+    S.onFrame((st) => {
+      if (!on || !step) return;
+      const f = clamp((st.y - top) / step, 0, lastStop);
+      if (f === was) return;
+      was = f;
+      const i = Math.round(f);
+      if (i !== now) show(i);
+      const a = Math.floor(f);
+      const y = S.lerp(ys[a], ys[Math.min(a + 1, lastStop)], f - a);
+      tick.style.translate = ((end - y) * LEAN).toFixed(1) + "px " + y.toFixed(1) + "px";
+    });
+    /* a page's worth of keys is one stop here, as a wheel step is */
+    window.addEventListener("keydown", (ev) => {
+      if (!on || ev.altKey || ev.ctrlKey || ev.metaKey) return;
+      const key = ev.key;
+      if (!(key === "PageDown" || key === "PageUp" || (key === " " && ev.target === document.body))) return;
+      const back = key === "PageUp" || (key === " " && ev.shiftKey);
+      const f = (window.scrollY - top) / step;
+      if (f < -0.01 || f > lastStop + 0.01) return;
+      const to = back ? Math.ceil(f - 0.01) - 1 : Math.floor(f + 0.01) + 1;
+      if (to < 0 || to > lastStop) return;
+      ev.preventDefault();
+      window.scrollTo({ top: top + to * step, behavior: "smooth" });
+    });
+    return {
+      to(item) {
+        const i = items.indexOf(item);
+        if (!on || i < 0) return false;
+        window.scrollTo({ top: top + i * step, behavior: "smooth" });
+        return true;
+      },
+      stops: () => (on ? items.map((_, i) => Math.round(top + i * step)) : []),
+    };
+  })();
 
   /* ------------------------------------------------------------------
    * The trace — three illustrative runs. Each plays part by part: the
@@ -875,6 +979,34 @@
   const ids = navLinks.map((a) => a.dataset.nav).filter((id, i, all) => all.indexOf(id) === i);
   let active = "";
 
+  /* one marker per menu: it travels to the active link, so the eye can
+     follow where the page went */
+  const inds = $$(".bar__links, .dock").map((menu) => {
+    const mark = document.createElement("i");
+    mark.className = "nav-ind";
+    mark.setAttribute("aria-hidden", "true");
+    menu.prepend(mark);
+    menu.classList.add("has-ind");
+    return { menu: menu, mark: mark };
+  });
+  function placeInds() {
+    inds.forEach(({ menu, mark }) => {
+      const a = $("a.is-active", menu);
+      if (!a) { mark.classList.remove("is-on"); return; }
+      /* the first time it appears where it belongs, it does not slide in */
+      const first = !mark.classList.contains("is-on");
+      if (first) mark.classList.remove("is-live");
+      mark.style.translate = a.offsetLeft + "px 0";
+      mark.style.scale = (a.offsetWidth / 60).toFixed(3) + " 1";
+      if (first) {
+        void mark.offsetWidth;
+        if (!reduced) mark.classList.add("is-live");
+        mark.classList.add("is-on");
+      }
+    });
+  }
+  S.onMeasure(placeInds);
+
   function sync(st) {
     const line = st.y + st.vh * 0.34;
     let next = "";
@@ -893,6 +1025,7 @@
         if (on) a.setAttribute("aria-current", "true");
         else a.removeAttribute("aria-current");
       });
+      placeInds();
     }
     if (bar) bar.classList.toggle("is-scrolled", st.y > 8);
     /* the home page only: see "At the top of the home page" in home.css */
@@ -1125,7 +1258,7 @@
 
   /* the curious view's game (js/game.js) shares the toasts, the confetti
      and the easter eggs */
-  window.Home = { toast: toast, confetti: confetti, eggs: found, EGGS: EGGS };
+  window.Home = { toast: toast, confetti: confetti, eggs: found, EGGS: EGGS, stage: stage };
 
   /* typing "evals", and the Konami code — never while typing in a field */
   const KONAMI = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];
@@ -1514,7 +1647,7 @@
       const tops = $$("main > section").filter((el) => el.getClientRects().length)
         .map((el) => Math.round(el.getBoundingClientRect().top + window.scrollY - off()))
         .filter((t) => t > 1 && t < max - 1);
-      return [0].concat(tops, [max]);
+      return [0].concat(tops, stage ? stage.stops() : [], [max]).sort((a, b) => a - b);
     };
     const stop = () => {
       cancelAnimationFrame(raf);

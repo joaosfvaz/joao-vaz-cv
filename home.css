@@ -1234,7 +1234,8 @@ html:not(.js) .concepts__hint, .concepts__panel { display: none; }
 .contact__band .note { color: inherit; }
 /* the mark, very large and very quiet, behind the last section; it slides
    along its own lean as the page scrolls (js/home.js) */
-.contact__mark { position: absolute; top: -12%; right: -18vw; height: 124%; width: auto; max-width: none; fill: var(--on-form); }
+/* it rests a little up its lean, so the foot of each stroke shows above the band's edge */
+.contact__mark { position: absolute; top: -12%; right: -18vw; height: 124%; width: auto; max-width: none; overflow: visible; fill: var(--on-form); translate: 2.5% -14.7%; }
 @media (max-width: 1000px) { .contact__mark { opacity: 0.16; } }
 .contact__rows { border-top: 1px solid var(--line); }
 .contact__row {
@@ -2344,12 +2345,130 @@ html:has(.quests[open]) { overflow: hidden; }
 }
 
 /* ==================================================================
+   Small motion details
+   ================================================================== */
+/* the bar and the dock: one marker that travels to the active link. Its
+   width is 60px, scaled to the link */
+.bar__links { position: relative; }
+.nav-ind {
+  position: absolute; left: 0; bottom: 0;
+  width: 60px; height: 2px;
+  background: var(--accent);
+  transform-origin: 0 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-ind.is-on { opacity: 1; }
+.nav-ind.is-live { transition: translate 0.45s var(--ease), scale 0.45s var(--ease), opacity 0.2s ease; }
+/* the bar changes colour over a band with .theme-fade: the marker keeps moving */
+.theme-fade .nav-ind.is-live { transition: translate 0.45s var(--ease), scale 0.45s var(--ease), opacity 0.2s ease, background-color 0.4s ease !important; }
+.has-ind a.is-active::after { transform: scaleX(0); }
+.dock .nav-ind { top: 5px; bottom: 5px; height: auto; background: var(--fill); transform: skewX(var(--slant)); }
+.dock.has-ind a.is-active::before { background: transparent; }
+
+@media screen and (hover: hover) and (pointer: fine) {
+  /* a link leans like the mark when it is pointed at */
+  .bar__links a { transition: color 0.2s ease, transform 0.25s var(--ease); }
+  .bar__links a:hover { transform: skewX(var(--slant)); }
+  /* a line button fills along its lean */
+  .btn--line { transition: transform 0.12s var(--ease), color 0.2s ease; }
+  .btn--line::after {
+    content: "";
+    position: absolute; inset: 0;
+    z-index: -1;
+    background: var(--fill);
+    transform: skewX(var(--slant)) scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.35s var(--ease);
+  }
+  .btn--line:hover { color: var(--on); }
+  .btn--line:hover::before { border-color: var(--fill); }
+  .btn--line:hover::after { transform: skewX(var(--slant)) scaleX(1); }
+}
+/* the one project with a screen arrives behind an edge that leans like the mark */
+@media screen {
+  .js .project__shot { clip-path: polygon(0 0, 0 0, -22% 100%, 0 100%); }
+  .js .project.is-in .project__shot { clip-path: polygon(0 0, 124% 0, 100% 100%, 0 100%); transition: clip-path 1.1s var(--wipe) 0.15s; }
+}
+
+/* ==================================================================
+   The products as one scene (js/home.js): the titles stand along the
+   mark's lean, and a marker runs down it. Only with the script, on a wide
+   screen and a pointer; anywhere else this is the accordion
+   ================================================================== */
+.stage__line, .stage__tick, .stage__run { display: none; }
+@media screen and (hover: hover) and (pointer: fine) and (min-width: 1001px) and (min-height: 700px) and (min-aspect-ratio: 1 / 1) {
+  #products:has(.acc--stage) { padding-bottom: 0; }
+  .acc--stage + .stage__run { display: block; height: calc(var(--stops) * 50svh); }
+  .acc--stage {
+    /* the list and the picture sit in the middle of the room left under the bar */
+    --pad: max(16px, calc((100svh - 64px - 610px) / 2));
+    position: sticky; top: 64px;
+    height: calc(100svh - 64px);
+    padding-top: var(--pad);
+    border-top: 0;
+  }
+  /* the line is one long stroke; skewed from its foot, so the top leans right */
+  .acc--stage .stage__line {
+    display: block;
+    position: absolute; left: 0;
+    width: 1px;
+    background: var(--line-2);
+    transform: skewX(var(--slant));
+    transform-origin: 0 100%;
+  }
+  .acc--stage .stage__tick {
+    display: block;
+    position: absolute; left: -2px; top: 0;
+    width: 5px; height: 34px;
+    margin-top: -17px;
+    background: var(--c);
+    transform: skewX(var(--slant));
+  }
+  .acc--stage .acc__item.rv { position: static; width: 42%; transform: none; }
+  .acc--stage .acc__item::before, .acc--stage .acc__item::after { display: none; }
+  .acc--stage .acc__head { grid-template-columns: minmax(0, 1fr); padding: clamp(9px, 1.7svh, 15px) 0 clamp(9px, 1.7svh, 15px) 24px; }
+  .acc--stage .acc__head .tag, .acc--stage .acc__icon { display: none; }
+  /* the lean moves a title right by up to this much: it must not reach the picture */
+  .acc--stage .acc__title {
+    max-width: calc(100% - 104px);
+    font-size: clamp(19px, 2.8svh, 26px);
+    font-stretch: 112%;
+    color: var(--faint);
+    transition: color 0.25s ease, transform 0.3s var(--ease);
+  }
+  .acc--stage .is-open .acc__title { color: var(--ink); }
+  .acc--stage .acc__head:hover .acc__title { color: var(--ink); }
+  .acc--stage .acc__panel {
+    position: absolute; top: var(--pad); left: 46%; right: 0;
+    display: block;
+    visibility: hidden;
+    transition: visibility 0s 0.3s;
+  }
+  .acc--stage .is-open .acc__panel { z-index: 1; visibility: visible; transition-delay: 0s; }
+  .acc--stage .acc__body:has(> .viz) { display: block; }
+  /* the next picture comes in behind an edge that leans like the mark */
+  .js .acc--stage .acc__body > .viz {
+    margin-bottom: 20px;
+    opacity: 1;
+    transform: none;
+    clip-path: polygon(0 0, 0 0, -22% 100%, 0 100%);
+    transition: clip-path 0.2s ease;
+  }
+  .js .acc--stage .is-open .acc__body > .viz {
+    clip-path: polygon(0 0, 124% 0, 100% 100%, 0 100%);
+    transition: clip-path 0.6s var(--wipe);
+  }
+}
+
+/* ==================================================================
    Reduced motion — a different branch, not a shorter animation.
    Everything renders at its end state, and nothing moves on its own.
    ================================================================== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 0.01ms !important; animation: none !important; }
   .js .rv, .js .rv.is-in { opacity: 1; transform: none; }
+  .js .project__shot { clip-path: none; }
   .js .hero__name .line > span { transform: none; }
   .js .mark path { stroke-dashoffset: 0; }
   .js .hero__form { translate: none; }

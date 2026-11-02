@@ -57,6 +57,15 @@ The movement is kept to a few places on purpose, so each one is noticed:
   scroll both ways (`js/home.js`, one `transform` on `.hero__mark`): it rises on the right, travels left
   under the bar and docks up beside the name. On the way it shrinks, loses the portrait (`--pr`) and takes
   the colour of the text (`--t`). Then the small mark shows. On a touch screen the browser scrolls apart from the script, so a mark moved by it would stutter: there the mark stays on the page and the small one slides into the bar as the big one passes under it. With reduced motion, or without the script, the two also stay apart.
+- **The products' scene** (`js/home.js`, `.acc--stage` in `home.css`) — on a wide screen with a pointer the
+  list of products pins. The titles stand along the mark's lean, a marker runs down that lean with the scroll,
+  and each stop opens one product and plays its picture. One wheel step or one PageDown is one stop: the stops
+  join the spring's bounds. A click on a title, the skill finder and a link to a product scroll to its stop. A
+  touch screen, a window under 1001×700, reduced motion and paper keep the accordion.
+- **Small moves from the mark** — one marker travels between the links of the bar and of the dock (`.nav-ind`).
+  Under a mouse a link leans like the mark, and a line button fills along its lean. The Tabiya screen arrives
+  behind a leaning edge. The two strokes behind Contact come along their lean from opposite sides and lock as
+  the band lands, driven by the scroll.
 - **Scroll** (`js/home.js`) — on a mouse or a trackpad the wheel moves a target and the page follows on a
   critically damped spring, so its speed never jumps. A section that fits the window is one step: the first
   input already aims at the next section, so there is one motion and no second push. A longer section scrolls
@@ -473,6 +482,8 @@ The trace's three runs are the `RUNS` table in `js/home.js`.
   per-character step and 250ms start of the name.
 - **The word strip** — the base pace (`0.6` px per frame) and the scroll boost (`0.3`) in the
   strip block of `js/home.js`.
+- **The products' scene** — the distance per stop (`50svh` on `.stage__run`). The gate is written twice, in
+  `wide` in `js/home.js` and in the media query in `home.css`: change both.
 - **The trace** — the per-part delays in `play()` (600ms for the question and the answer, 420ms per
   span, 140ms per eval).
 - **The PM-OS graph** — the zone table at the top of `js/graph.js`.

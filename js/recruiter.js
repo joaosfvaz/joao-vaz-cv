@@ -47,6 +47,17 @@
   }
   function go(el) {
     const item = el.closest(".acc__item");
+    /* in the products' scene the page scrolls to that product's stop */
+    if (item && H && H.stage && H.stage.to(item)) {
+      /* the open product is its own mark; a part inside it gets the mark */
+      const spot = el === item ? $(".acc__head", item) : el;
+      setTimeout(() => {
+        if (el !== item) mark(el);
+        if (spot.tabIndex < 0 && !spot.hasAttribute("tabindex")) spot.setAttribute("tabindex", "-1");
+        spot.focus({ preventScroll: true });
+      }, 900);
+      return;
+    }
     const opening = item && !item.classList.contains("is-open");
     const behavior = reduced ? "auto" : "smooth";
     if (opening) {
