@@ -1,14 +1,15 @@
 /* ==================================================================
    João Vaz — home page
-   Flat: a deep ground, a bold grotesque for display, hairline
-   dividers instead of panels, and two colours on top of white and grey
-   — blue carries the accents, orange is the second voice, used sparingly.
+   The brand comes from the mark: a J and a V locked across a thin gap,
+   leaning forward. Heavy italic for display, 12° on anything that leans,
+   sharp corners, hairline dividers, and two colours on top of white and
+   grey — blue carries the accents, orange is the second voice.
    Every other section is a band in the other theme's colours.
    A project page swaps --accent (and --accent-2 where its brand needs
    it); nothing else changes.
    The movement lives in a few places on purpose — the dot field in the
-   hero, the photo reveal, the bands opening, the accordions and the
-   playable trace.
+   hero, the name and the photo arriving, the word strip, the bands
+   opening, the accordions and the playable trace.
    Every animated state is gated on `.js`, so the document renders
    finished when the scripts do not run.
    ================================================================== */
@@ -54,10 +55,18 @@
   --display: "Archivo", "Helvetica Neue", system-ui, sans-serif;
   --sans: "Archivo", "Helvetica Neue", system-ui, sans-serif;
   --mono: "Geist Mono", "SF Mono", ui-monospace, monospace;
+  /* a second hand: a marker script for the few notes on the page */
+  --script: "Caveat", "Bradley Hand", "Segoe Print", cursive;
   --wrap: 1180px;
   --gut: clamp(20px, 5vw, 56px);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --wipe: cubic-bezier(0.7, 0, 0.2, 1);
+  /* the lean of the mark: everything that leans, leans by this */
+  --slant: -12deg;
+  --tan: 0.2126;
+  /* the colour the mark is printed in, and what reads on it */
+  --form: var(--blue-fill);
+  --on-form: #ffffff;
 }
 
 /* the light theme: the same system on a warm paper ground. The accents
@@ -93,6 +102,8 @@
     --fill: var(--accent);
     --fill-2: var(--blue-fill);
     --on-2: #ffffff;
+    --form: var(--orange);
+    --on-form: #12151c;
   }
   /* on paper the bright orange is too light for small text: the darker
      step leads, with white on it */
@@ -133,17 +144,22 @@ ul, ol { list-style: none; }
 :focus-visible { outline: 1px solid var(--ink); outline-offset: 3px; }
 
 .wrap { width: min(var(--wrap), 100% - 2 * var(--gut)); margin-inline: auto; }
+.nowrap { white-space: nowrap; }
 .sr-only {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 .skip {
   position: fixed; top: 10px; left: 10px; z-index: 100;
-  padding: 8px 14px; border-radius: 6px;
+  padding: 8px 14px; border-radius: 0;
   background: var(--fill); color: var(--on); font-size: 14px;
   transform: translateY(-150%);
 }
 .skip:focus { transform: none; }
+
+/* the display voice: heavy and leaning, like the mark */
+:is(.hero__name, .head h2, .contact__title, .acc__title, .project h3, .kit__title, .how__row dt, .concepts__panel b, .concepts dt button, .wins dt, .figures dt, .dayjob__facts b, .wordmark, .pick__name, .onboard__title, .quests__title, .qlog__title, .chess__title, .finder__title, .contact__row strong, .strip__track, .quest h4, .proj__title, .lost__title, .lost__code) { font-style: italic; }
+.acc__title small, .scrawl { font-style: normal; }
 
 /* a small label: captions, counts, the name of a row */
 .meta {
@@ -159,21 +175,34 @@ ul, ol { list-style: none; }
   gap: 10px;
   height: 46px;
   padding: 0 20px;
-  border-radius: 6px;
   font-size: 14.5px;
   font-weight: 500;
   white-space: nowrap;
-  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.12s var(--ease);
+  transition: transform 0.12s var(--ease);
 }
 .btn:active { transform: scale(0.97); }
 .btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.3s var(--ease); }
-.btn--ink { background: var(--fill); color: var(--on); }
+/* everything you press leans like the mark: a parallelogram with sharp
+   corners. The shape is a layer behind the label, so the words stay
+   upright */
+:where(.btn, .trace__asks button, .concepts dt button, .finder__skill, .mode-switch a, .dock a) { position: relative; isolation: isolate; }
+:where(.btn, .trace__asks button, .concepts dt button, .finder__skill, .mode-switch a, .dock a)::before {
+  content: "";
+  position: absolute; inset: 0;
+  z-index: -1;
+  border: 1px solid transparent;
+  transform: skewX(var(--slant));
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+:where(.btn, .trace__asks button, .concepts dt button, .finder__skill, .mode-switch a, .dock a):focus-visible { outline: none; }
+:where(.btn, .trace__asks button, .concepts dt button, .finder__skill, .mode-switch a, .dock a):focus-visible::before { outline: 1px solid var(--ink); outline-offset: 3px; }
+.btn--ink { color: var(--on); }
+.btn--ink::before { background: var(--fill); }
 /* hover deepens the fill, so the text on it never loses contrast */
-.btn--ink:hover { background: color-mix(in srgb, var(--fill) 86%, #000); }
-.btn--line { border: 1px solid var(--line-2); }
-.btn--line:hover { border-color: var(--accent); }
+.btn--ink:hover::before { background: color-mix(in srgb, var(--fill) 86%, #000); }
+.btn--line::before { border-color: var(--btn-line, var(--line-2)); }
+.btn--line:hover::before { border-color: var(--accent); }
 .btn--sm { height: 36px; padding: 0 14px; font-size: 13.5px; }
-.btn.is-done { background: var(--ink); color: var(--bg); }
 
 /* ---------- Top bar ---------- */
 .bar {
@@ -192,23 +221,34 @@ ul, ol { list-style: none; }
   transition: border-color 0.3s ease;
 }
 .bar.is-scrolled { border-bottom-color: var(--line); }
-/* the JV monogram and the name; the mark carries the full stop now */
-.bar__name {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
+/* the mark: an italic J with the V close behind it, so the V's left side
+   follows the curve of the J across a thin gap. One colour, no container.
+   Beside it, my name in the display face; on a phone the mark stands
+   alone. Five quick clicks make them jump (an easter egg) */
+.bar__name { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+.jv { display: block; flex: 0 0 auto; height: 24px; width: auto; fill: currentColor; transition: fill 0.2s ease; }
+.bar__name:hover .jv { fill: var(--c); }
+.wordmark {
+  display: inline-block;
   font-family: var(--display);
-  font-weight: 700;
-  font-size: 19px;
+  font-weight: 800;
+  font-stretch: 108%;
+  font-size: 21px;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   white-space: nowrap;
+  transition: color 0.2s ease;
 }
-.bar__mark { width: 30px; height: 30px; flex: 0 0 auto; transition: transform 0.4s var(--ease); }
-.bar__dot { transform-box: fill-box; transform-origin: center; transition: transform 0.4s var(--ease); }
-@media (hover: hover) and (pointer: fine) {
-  .bar__name:hover .bar__mark { transform: rotate(-8deg); }
-  .bar__name:hover .bar__dot { transform: scale(1.35); }
+.bar__name:hover .wordmark { color: var(--c); }
+/* At the top of the home page the bar holds only the name, which view this
+   is and the way to get in touch: the big mark is right below it. The rest
+   arrives with the scroll, or sooner under the pointer or the keyboard. */
+.bar .jv { width: 29.7px; transition: fill 0.2s ease, width 0.35s var(--ease), margin 0.35s var(--ease), opacity 0.2s ease; }
+.bar :is(.bar__links, .bar__icon) { transition: opacity 0.3s ease, color 0.2s ease; }
+@media screen {
+  .js .bar.is-top .jv { width: 0; margin-right: -10px; opacity: 0; }
+  .js .bar.is-top .bar__name .wordmark { display: block; }
+  .js .bar.is-top:not(:hover, :focus-within) :is(.bar__links, .bar__icon) { opacity: 0; }
 }
 .bar__links { display: flex; gap: 28px; margin-left: auto; font-size: 14px; color: var(--dim); }
 .bar__links a { position: relative; padding: 6px 0; transition: color 0.2s ease; }
@@ -222,15 +262,9 @@ ul, ol { list-style: none; }
 .bar__links a:hover, .bar__links a.is-active { color: var(--ink); }
 .bar__links a.is-active::after { transform: none; }
 .bar__end { display: flex; align-items: center; gap: 12px; }
-.bar__icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 6px; color: var(--dim); transition: color 0.2s ease; }
+.bar__icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 0; color: var(--dim); transition: color 0.2s ease; }
 .bar__icon:hover { color: var(--ink); }
 .bar__icon svg { width: 16px; height: 16px; fill: currentColor; }
-/* the reading position, as a hairline under the bar */
-.bar__progress {
-  position: absolute; left: 0; right: 0; bottom: -1px;
-  height: 2px; background: var(--accent);
-  transform: scaleX(var(--p, 0)); transform-origin: 0 50%;
-}
 
 /* ---------- Theme switch ---------- */
 /* the icon is the theme you would switch to: a sun on dark, a moon on
@@ -248,42 +282,6 @@ html:not(.js) .theme { display: none; }
 :root[data-theme="light"] .theme__moon { opacity: 1; transform: none; }
 .theme:active svg { transform: scale(0.9); }
 
-/* ---------- Section index (wide screens) ---------- */
-.rail {
-  position: fixed;
-  left: 24px; top: 50%;
-  z-index: 40;
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-  transform: translateY(-50%);
-}
-.rail a {
-  position: relative;
-  display: grid;
-  grid-template-columns: 2px auto;
-  align-items: center;
-  column-gap: 12px;
-  height: 34px;
-  font-size: 13px;
-  color: var(--faint);
-  transition: color 0.2s ease;
-}
-/* the line beside each name fills as its section is read */
-.rail i { grid-column: 1; grid-row: 1; height: 100%; background: var(--line); position: relative; overflow: hidden; }
-.rail i::after { content: ""; position: absolute; inset: 0; background: var(--c); transform: scaleY(var(--f, 0)); transform-origin: 50% 0; }
-.rail span {
-  grid-column: 2; grid-row: 1;
-  opacity: 0; transform: translateX(-6px);
-  transition: opacity 0.25s ease, transform 0.35s var(--ease);
-}
-.rail a:hover, .rail a.is-active { color: var(--c); }
-/* names only on hover: at rest the index is just lines */
-.rail:hover span { opacity: 1; transform: none; }
-.rail.is-hidden { opacity: 0; pointer-events: none; }
-.rail { transition: opacity 0.3s ease; }
-@media (min-width: 1400px) { .rail { display: flex; } }
-
 /* ---------- Dock (phones) ---------- */
 .dock {
   position: fixed;
@@ -293,7 +291,7 @@ html:not(.js) .theme { display: none; }
   gap: 2px;
   padding: 5px;
   border: 1px solid var(--line-2);
-  border-radius: 12px;
+  border-radius: 0;
   background: var(--glass-2);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
@@ -307,33 +305,72 @@ html:not(.js) .theme { display: none; }
   gap: 1px;
   min-width: 62px;
   padding: 7px 6px 6px;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 11.5px;
   font-weight: 500;
   color: var(--dim);
   transition: background-color 0.25s ease, color 0.25s ease;
 }
-.dock a.is-active { background: var(--fill); color: var(--on); }
+.dock a.is-active { color: var(--on); }
+.dock a.is-active::before { background: var(--fill); }
 
 /* ---------- Hero ---------- */
-.hero {
-  position: relative;
-  min-height: 100svh;
-  padding: 120px 0 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+/* The hero and the strip together fill the first screen: the mark stands
+   on the strip, on the right, and one sentence and two buttons sit beside
+   it. A wide screen only; smaller ones stack (see the end of this block) */
+.hero { position: relative; }
 .hero__field { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-.hero__grid {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  align-items: end;
-  gap: clamp(32px, 6vw, 96px);
+.hero__grid { position: relative; z-index: 1; }
+@media screen {
+  .hero {
+    /* the strip's type and padding, so its top edge meets the fold's rule */
+    --strip: calc(clamp(44px, 7vw, 108px) + 2 * clamp(18px, 3vh, 30px));
+    --mh: calc(100svh - 64px - var(--strip));
+    --mw: calc(var(--mh) * 0.9 * 104 / 84);
+    min-height: calc(100svh - var(--strip));
+    padding-top: 64px;
+    overflow: clip;
+  }
+  .hero__grid { height: var(--mh); min-height: 420px; overflow: clip; }
+  .hero__copy {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 0 var(--gut);
+    pointer-events: none;
+  }
+  .hero__lead, .hero__rest { pointer-events: auto; }
+  /* the heading stays for screen readers and paper; the pitch is for paper */
+  .hero__name {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .hero__pitch { display: none; }
+  /* one sentence, as large as the room beside the mark allows */
+  .hero__role { margin-bottom: 12px; font-size: 15px; color: var(--dim); }
+  .hero__lead .hero__line {
+    max-width: 9.6em;
+    margin: 0 0 clamp(20px, 3.4svh, 32px);
+    font-size: clamp(24px, min(3.9vw, calc((100vw - var(--mw) - 2 * var(--gut) - 24px) / 9.6)), 64px);
+    line-height: 1.14;
+    letter-spacing: -0.03em;
+  }
 }
-.hero__copy { padding-bottom: 8px; }
+/* no room beside the mark: the sentence, the buttons, then the mark, which
+   still stands on the strip. The orders keep the markup out of it */
+@media screen and (max-width: 999px), screen and (max-aspect-ratio: 1 / 1) {
+  .hero { --mw: min(88vw, 46svh * 104 / 84); min-height: 0; padding-top: 76px; }
+  .hero__grid { display: flex; flex-direction: column; height: auto; min-height: 0; overflow: visible; }
+  .hero__copy, .hero__lead, .hero__rest { display: contents; }
+  .hero__role { order: 1; margin: 12px var(--gut) 8px; }
+  .hero .hero__lead .hero__line { order: 1; max-width: 12em; margin: 0 var(--gut) 20px; font-size: clamp(28px, 8vw, 48px); }
+  .hero__actions { order: 2; margin: 0 var(--gut) 36px; }
+}
 /* the contact line is for paper only (see Print) */
 .hero__print { display: none; }
 .hero__name {
@@ -343,12 +380,8 @@ html:not(.js) .theme { display: none; }
   font-size: clamp(72px, 11.4vw, 184px);
   line-height: 0.9;
   letter-spacing: -0.045em;
-  margin: 22px 0 30px;
+  margin: 0 0 clamp(14px, 2.6svh, 28px);
 }
-/* the J and the z descend well below the baseline: the mask is padded
-   down to hold them, and the margin gives the space back */
-.line { display: block; overflow: hidden; padding-bottom: 0.22em; margin-bottom: -0.16em; }
-.line:nth-child(2) { padding-left: 0.42em; }
 .hero__line {
   font-size: clamp(20px, 2.1vw, 27px);
   line-height: 1.35;
@@ -358,63 +391,62 @@ html:not(.js) .theme { display: none; }
 }
 /* the two numbers, bold, each underlined in the accent once the line lands */
 .hero__line b { position: relative; font-weight: 600; white-space: nowrap; }
-.hero__line b::after {
-  content: "";
-  position: absolute; left: 0; right: 0; bottom: -0.06em;
-  height: 0.1em; border-radius: 2px;
-  background: var(--accent);
-  transform-origin: 0 50%;
-}
-.js .hero__line b::after { transform: scaleX(0); }
-.js .hero__line.is-in b::after { transform: none; transition: transform 0.8s var(--ease) 1.15s; }
-.js .hero__line.is-in b:last-child::after { transition-delay: 1.4s; }
 .hero__pitch { max-width: 31em; color: var(--dim); font-size: 16.5px; margin-bottom: 34px; }
 .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
-.hero__photo { position: relative; margin: 0; isolation: isolate; }
-/* a second photo laid on the portrait like a print: me on the stage for
-   a recruiter, a football photo of mine for the curious view. It drops
-   in once the portrait has wiped in, and leans against the pointer
-   (js/home.js writes --bx and --by on the figure) */
-.hero__snap {
-  position: absolute;
-  left: -14%; bottom: 13%;
-  z-index: 2;
-  width: 36%;
-  height: auto;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border: 6px solid #f4f3ef;
-  border-radius: 2px;
-  box-shadow: 0 24px 44px -20px rgba(6, 8, 12, 0.7);
-  transform: translate(calc(var(--bx, 0) * -0.8px), calc(var(--by, 0) * -0.8px)) rotate(-4deg);
-  transition: transform 0.6s var(--ease);
+/* The two forms: boxes the size of the mark, each cut to one letter by a
+   clip path (in the markup). The V holds the portrait, printed in the
+   colour of the mark: `screen` over the fill turns black into the colour
+   and leaves white alone, so the T-shirt runs into the colour of the form.
+   Under the pointer the print turns to full colour. */
+.hero__clips { position: absolute; }
+@media screen {
+  .hero__photo {
+    position: absolute;
+    right: var(--gut);
+    bottom: 0;
+    z-index: 1;
+    width: var(--mw);
+    height: calc(var(--mw) * 84 / 104);
+    margin: 0;
+  }
+  .hero__form { position: absolute; inset: 0; overflow: hidden; isolation: isolate; background: var(--form); }
+  .hero__form--j { clip-path: url(#clip-j); }
+  .hero__form--v { clip-path: url(#clip-v); }
+  /* the face sits in the wide top of the V; from the collar down the
+     print fades out, so the rest of the form is flat colour */
+  .hero__form img {
+    position: absolute;
+    left: 50%;
+    top: -3.4%;
+    width: 57%;
+    max-width: none;
+    height: auto;
+    translate: 0 var(--py, 0px);
+    -webkit-mask-image: linear-gradient(#000 43%, transparent 58%);
+    mask-image: linear-gradient(#000 43%, transparent 58%);
+  }
+  .hero__mono { mix-blend-mode: screen; filter: grayscale(1) contrast(1.38) brightness(0.97); }
+  /* on paper the white wall in the photo would melt into the page and the
+     V would lose its edge: the whites step down to a pale tint of the colour */
+  :root[data-theme="light"] .hero__mono { filter: grayscale(1) contrast(1.38) brightness(0.8); }
+  .hero__colour { position: absolute; inset: 0; opacity: 0; transition: opacity 0.5s ease; }
+  @media (hover: hover) { .hero__form--v:hover .hero__colour { opacity: 1; } }
+  /* they arrive from above and from below, each along its own lean, and
+     lock. After that the script moves them apart as the page scrolls */
+  .js .hero__form--j { translate: 18% -105%; }
+  .js .hero__form--v { translate: -45% 105%; }
+  .js .hero__photo.is-in .hero__form { translate: var(--fx, 0px) var(--fy, 0px); transition: translate 1.3s var(--ease) 0.1s; }
+  .js .hero__photo.is-in.is-settled .hero__form { transition: none; }
 }
-.js .hero__snap { opacity: 0; transform: translateY(48px) rotate(-16deg) scale(1.08); }
-.js .hero__photo.is-in .hero__snap {
-  opacity: 1;
-  transform: translate(calc(var(--bx, 0) * -0.8px), calc(var(--by, 0) * -0.8px)) rotate(-4deg);
-  transition: transform 1s var(--ease) 1.45s, opacity 0.35s ease 1.45s;
+@media screen and (max-width: 999px), screen and (max-aspect-ratio: 1 / 1) {
+  .hero__photo { order: 3; position: relative; right: auto; align-self: center; flex: none; }
 }
-.js .hero__photo.is-in.is-settled .hero__snap { transition: transform 0.6s var(--ease); }
-.hero__frame {
-  position: relative;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border-radius: 6px;
-  background: var(--surface);
-}
-.hero__frame img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; will-change: transform; }
-.hero__photo figcaption { margin-top: 14px; max-width: 34em; }
-/* the photo is wiped in from the bottom and settles from a slight zoom */
-.js .hero__photo .hero__frame { clip-path: inset(100% 0 0 0); }
-.js .hero__photo.is-in .hero__frame { clip-path: inset(0 0 0 0); transition: clip-path 1.3s var(--wipe) 0.5s; }
-.js .hero__photo .hero__frame img { transform: scale(1.24); }
-/* it settles at 1.1, not 1: the overscan is the room the scroll drift moves in */
-.js .hero__photo.is-in .hero__frame img { transform: scale(1.1) translateY(var(--py, 0px)); transition: transform 1.8s var(--ease) 0.5s; }
-.js .hero__photo.is-in.is-settled .hero__frame img { transition: none; }
+@media print { .hero__clips, .hero__form { display: none; } }
 
-/* six numbers in a strip under the hero */
+/* the numbers at a glance: a strip under the name on paper only. On
+   screen they sit in the hero's sentence and in the roles they came from */
+@media screen { .hero .figures { display: none; } }
 .figures {
   position: relative;
   z-index: 1;
@@ -447,11 +479,11 @@ html:not(.js) .theme { display: none; }
 .head { margin-bottom: clamp(40px, 6vh, 64px); }
 .head h2, .contact__title {
   font-family: var(--display);
-  font-weight: 800;
-  font-stretch: 106%;
-  font-size: clamp(38px, 5vw, 74px);
-  line-height: 1.02;
-  letter-spacing: -0.035em;
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: clamp(36px, 4.9vw, 74px);
+  line-height: 1;
+  letter-spacing: -0.045em;
   max-width: 15em;
 }
 /* the turn in a heading is set in italic, and a line in the accent draws
@@ -467,6 +499,16 @@ html:not(.js) .theme { display: none; }
   transition: background-size 0.9s var(--ease) 0.55s;
 }
 .head__intro { max-width: 40em; margin-top: 24px; font-size: 17px; color: var(--dim); }
+/* a heading with its intro beside it rather than under it */
+@media (min-width: 900px) {
+  .head--split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    column-gap: clamp(32px, 5vw, 80px);
+    align-items: end;
+  }
+  .head--split .head__intro { margin-top: 0; padding-bottom: 0.4em; }
+}
 
 /* ---------- Inverted bands ---------- */
 /* every other section is set in the other theme's colours: paper on the
@@ -538,9 +580,9 @@ html:not(.js) .theme { display: none; }
   }
 
   /* the ground is a layer under the section, not the section itself. As
-     a band arrives it opens from a panel just wider than the text to the
-     full width, and closes again as it leaves: js/home.js writes --g,
-     from 0 to 1. Without it the band sits at the full width */
+     a band arrives it opens from a leaning panel, a little wider than the
+     text, to the full width, and closes again as it leaves: js/home.js
+     writes --g, from 0 to 1. Without it the band sits at the full width */
   .section.invert { isolation: isolate; }
   .section.invert::after {
     --g: inherit;
@@ -549,10 +591,118 @@ html:not(.js) .theme { display: none; }
     inset: 0;
     z-index: -1;
     background: var(--bg);
-    clip-path: inset(0 calc((1 - var(--g)) * max(8px, (100% - min(var(--wrap), 100% - 2 * var(--gut))) / 2 - 28px)) round calc((1 - var(--g)) * 28px));
+    --m: calc((1 - var(--g)) * max(8px, (100% - min(var(--wrap), 100% - 2 * var(--gut))) / 2 - 28px));
+    --s: calc((1 - var(--g)) * 120px);
+    clip-path: polygon(calc(var(--m) + var(--s)) 0, calc(100% - var(--m)) 0, calc(100% - var(--m) - var(--s)) 100%, var(--m) 100%);
   }
   /* the band's edges are the dividers here */
   .section.invert::before, .section.invert + .section::before { display: none; }
+}
+
+/* ---------- How I work ---------- */
+/* five habits on hairlines. On wide screens the heading stays put while
+   the list runs past it. A habit lights from grey to ink as it reaches
+   the reading line (js/home.js), and a short rule in the accent draws
+   over it; without the script they are all lit */
+.how__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  column-gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+}
+.how__head { position: sticky; top: 112px; margin-bottom: 0; }
+.how__head h2 { font-stretch: 112%; font-size: clamp(52px, 7.4vw, 112px); line-height: 0.9; letter-spacing: -0.05em; max-width: 5em; }
+.how__list { border-top: 1px solid var(--line); }
+.how__row { position: relative; padding: 30px 0 32px; border-bottom: 1px solid var(--line); }
+.how__row::before {
+  content: "";
+  position: absolute; left: 0; top: -1px;
+  width: 72px; height: 2px;
+  background: var(--c);
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform 0.7s var(--ease);
+}
+.how__row dt {
+  margin-bottom: 10px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-stretch: 104%;
+  font-size: clamp(24px, 2.5vw, 36px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  transition: color 0.5s ease;
+}
+.how__row dd { max-width: 36em; font-size: 16px; color: var(--dim); }
+.js .how__row:not(.is-lit) dt { color: var(--dim); }
+.how__row.is-lit::before, html:not(.js) .how__row::before { transform: none; }
+
+/* ---------- Marker ---------- */
+/* a second hand on the page: a few notes in a marker script and strokes
+   drawn on as their part arrives (an arrow, a strike-through, a ring),
+   all in the second colour. A handful on purpose, so each one is found */
+.note {
+  font-family: var(--script);
+  font-weight: 600;
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--accent-2);
+}
+.mark { display: block; overflow: visible; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.mark path { stroke-dasharray: 1 1; vector-effect: non-scaling-stroke; }
+.js .mark path { stroke-dashoffset: 1; }
+.js :is(.h-split.is-in .strike, .how__row.is-lit .ring, .project.is-in .project__note, .acc__item.is-open.is-in .viz__note) .mark path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.7s var(--ease) var(--md, 0.5s);
+}
+.mark path + path { --md: 1s; }
+
+/* the hero: a note beside the print on the portrait, an arrow to it */
+
+/* the AI heading: "a demo" struck through by hand, "evidence" written
+   over it once the line is drawn */
+.strike { position: relative; text-decoration: none; color: var(--dim); }
+.strike .mark { position: absolute; left: -3%; top: 52%; width: 106%; height: 0.3em; translate: 0 -50%; color: var(--accent-2); }
+.strike .mark path { stroke-width: 5; --md: 0.55s; }
+.scrawl {
+  display: inline-block;
+  font-family: var(--script);
+  font-weight: 700;
+  font-stretch: 100%;
+  font-size: 1.3em;
+  line-height: 0.8;
+  letter-spacing: 0;
+  color: var(--accent-2);
+  rotate: -4deg;
+}
+.scrawl .w { padding: 0.12em 0.06em 0.22em; margin: -0.12em -0.06em -0.22em; }
+.js .h-split.is-in .scrawl .w > span { transition-delay: 1.15s; }
+
+/* How I work: the dealer gets a ring as its habit lights up */
+.ring { position: relative; white-space: nowrap; }
+.ring { margin-left: 0.06em; }
+.ring .mark { position: absolute; left: -0.16em; top: -0.2em; width: calc(100% + 0.34em); height: calc(100% + 0.4em); color: var(--accent-2); pointer-events: none; }
+.ring .mark path { stroke-width: 3; --md: 0.35s; }
+
+/* Projects: a note over the corner of the lead project's screen */
+.project__note {
+  grid-area: shot;
+  justify-self: end;
+  align-self: start;
+  position: relative;
+  z-index: 2;
+  translate: 6px -36px;
+  rotate: 5deg;
+  pointer-events: none;
+}
+.project__note .mark { position: absolute; left: -44px; top: 12px; width: 44px; height: 38px; }
+
+/* Contact: a sign-off under the heading */
+.contact__sign {
+  margin: calc(-1 * clamp(30px, 5vh, 56px)) 0 clamp(36px, 6vh, 64px) 0.15em;
+  font-size: clamp(30px, 3.2vw, 44px);
+  rotate: -3deg;
+  transform-origin: 0 50%;
 }
 
 /* ---------- Tags ---------- */
@@ -622,7 +772,7 @@ html:not(.js) .theme { display: none; }
 .acc__head:hover .acc__n, .is-open .acc__n { color: var(--c); }
 .is-open .acc__icon::before, .is-open .acc__icon::after { background: var(--c); }
 /* a plus that turns into a minus */
-.acc__icon { position: relative; width: 22px; height: 22px; }
+.acc__icon { position: relative; width: 22px; height: 22px; transform: skewX(var(--slant)); }
 .acc__icon::before, .acc__icon::after {
   content: "";
   position: absolute; left: 3px; right: 3px; top: 50%;
@@ -644,7 +794,69 @@ html:not(.js) .theme { display: none; }
 .acc__body p { max-width: 44em; font-size: 16.5px; color: var(--dim); }
 .keys { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 16px; }
 .keys li { font-size: 14.5px; font-weight: 600; }
-.keys li::before { content: "+"; margin-right: 6px; color: var(--c); }
+.keys li::before { content: ""; display: inline-block; width: 0.34em; height: 0.82em; margin-right: 8px; vertical-align: -0.06em; background: var(--c); transform: skewX(var(--slant)); }
+.viz i { font-style: normal; }
+
+/* ---------- Product pictures ---------- */
+/* each product shows what it does as a small moving picture beside one
+   line of text: an illustration in the site's own colours, not the real
+   screen and not real data. It plays when its row opens (and when the
+   open row first scrolls in); the finished frame is the default, so it
+   reads without the script and under reduced motion */
+.acc__body:has(> .viz) {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  column-gap: clamp(24px, 4vw, 64px);
+  align-items: start;
+  align-content: start;
+}
+.acc__body:has(> .viz) > :not(.viz) { grid-column: 1; }
+.acc__body > .viz { grid-column: 2; grid-row: 1 / span 4; margin-bottom: 34px; }
+.viz {
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  min-height: 260px;
+  padding: 26px 26px 40px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--tint);
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.viz__cap { position: absolute; left: 16px; bottom: 12px; font-size: 12px; font-style: italic; color: var(--dim); }
+
+/* the pictures are drawn by js/home.js into each .viz: one idea for all
+   six, each dot is a car (in the agents' picture, a piece of data), in
+   the site's colours, with a note in marker. Muted dots are cars that
+   need nothing; the accent is the point of the picture; the second
+   colour is the car that needs the dealer */
+.viz__draw { position: relative; }
+.viz svg { display: block; width: 100%; height: auto; overflow: visible; }
+.viz text { font-family: var(--sans); font-size: 12.5px; font-weight: 500; fill: var(--dim); }
+.viz circle { transform-box: fill-box; transform-origin: center; }
+.viz .v-m { fill: var(--line-2); }
+.viz .v-a { fill: var(--accent); }
+.viz .v-o { fill: var(--accent-2); }
+.viz .v-band { fill: color-mix(in srgb, var(--accent) 16%, transparent); }
+.viz .v-axis { stroke: var(--line-2); stroke-width: 1.5; }
+.viz .v-link { fill: none; stroke: var(--line-2); stroke-width: 1.5; stroke-dasharray: 3 5; }
+.viz .v-ring { fill: none; stroke: var(--accent-2); stroke-width: 2; }
+.viz .pop { transition: opacity 0.4s ease, scale 0.6s var(--ease); transition-delay: calc(var(--d, 0) * 1ms); }
+.viz .v-car { transition: translate 1.4s var(--ease) 0.8s, opacity 0.3s ease 0.8s; }
+.viz .flow { opacity: 0; }
+.viz__note { position: absolute; z-index: 1; font-size: 24px; font-weight: 700; white-space: nowrap; pointer-events: none; text-shadow: 0 0 3px var(--bg), 0 0 6px var(--bg); transition: opacity 0.5s ease var(--nd, 1.3s); }
+.viz__note .mark { width: 40px; height: 34px; margin-top: 2px; }
+.viz__note .mark path { --md: calc(var(--nd, 1.3s) + 0.2s); }
+.js :is(.acc__item:not(.is-open), .acc__item.rv:not(.is-in)) .viz .pop { opacity: 0; scale: 0.2; transition-delay: 0s; }
+.js :is(.acc__item:not(.is-open), .acc__item.rv:not(.is-in)) .viz .v-car { translate: var(--tx, 0) 0; opacity: 0; transition-delay: 0s; }
+.js :is(.acc__item:not(.is-open), .acc__item.rv:not(.is-in)) .viz__note { opacity: 0; transition-delay: 0s; }
+.js .acc__item.is-open.is-in .viz .flow { animation: vizFlow 3.4s var(--wipe) calc(var(--d, 0) * 1ms) infinite; }
+.js .acc__item.is-open.is-in .viz .v-pulse { animation: vizPulse 2.6s ease-in-out calc(var(--d, 0) * 1ms + 900ms) infinite; }
+@keyframes vizFlow { 0% { opacity: 0; translate: 0 0; } 8% { opacity: 1; } 42% { opacity: 1; } 50%, 100% { opacity: 0; translate: var(--tx) var(--ty); } }
+@keyframes vizPulse { 0%, 100% { scale: 1; } 50% { scale: 1.45; } }
 .acc--roles .acc__head { grid-template-columns: 72px minmax(0, 1fr) auto 22px; }
 /* ---------- Roles: outcomes and deliveries ---------- */
 /* a role opens into two columns: what changed, as condensed numbers in
@@ -700,8 +912,20 @@ html:not(.js) .theme { display: none; }
   gap: 8px;
   margin-top: 22px;
 }
-.photos img { width: 100%; height: clamp(150px, 19vw, 250px); object-fit: cover; border-radius: 4px; }
+.photos img { width: 100%; height: clamp(150px, 19vw, 250px); object-fit: cover; border-radius: 0; }
 .photos img:nth-child(2) { object-position: 50% 20%; }
+
+/* a delivery shows its name; the line about it opens under the pointer,
+   on focus, or on a tap (js/home.js). Screens only: paper shows all */
+@media screen {
+  .js .ships li { cursor: default; }
+  .js .ships li > b { display: inline-flex; align-items: baseline; gap: 8px; }
+  .js .ships li > b::after { content: "+"; font-weight: 400; color: var(--faint); transition: rotate 0.35s var(--ease), color 0.2s ease; }
+  .js .ships li > span { max-height: 0; margin-top: 0; opacity: 0; overflow: hidden; transition: max-height 0.45s var(--ease), margin-top 0.3s ease, opacity 0.3s ease; }
+  .js .ships li:is(:hover, :focus-visible, .is-open) > span { max-height: 8em; margin-top: 4px; opacity: 1; }
+  .js .ships li:is(:hover, :focus-visible, .is-open) > b::after { rotate: 45deg; color: var(--c); }
+  .js .ships li:focus-visible { outline-offset: 4px; }
+}
 
 /* ---------- Toolkit ---------- */
 /* skills in groups, one row each on hairlines: the group's name on the
@@ -778,7 +1002,7 @@ html:not(.js) .theme { display: none; }
   top: 96px;
   margin: 0;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 0;
   background: var(--surface);
   font-family: var(--mono);
   overflow: hidden;
@@ -788,16 +1012,17 @@ html:not(.js) .theme { display: none; }
 .trace__asks { display: flex; flex-wrap: wrap; gap: 6px; padding: 18px 18px 0; }
 .trace__asks button {
   padding: 8px 14px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
   font-family: var(--sans);
   font-size: 14px;
   font-weight: 500;
   color: var(--dim);
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease;
 }
-.trace__asks button:hover { border-color: var(--line-2); color: var(--ink); }
-.trace__asks button[aria-selected="true"] { background: var(--fill); border-color: var(--fill); color: var(--on); }
+.trace__asks button::before { border-color: var(--line); }
+.trace__asks button:hover { color: var(--ink); }
+.trace__asks button:hover::before { border-color: var(--line-2); }
+.trace__asks button[aria-selected="true"] { color: var(--on); }
+.trace__asks button[aria-selected="true"]::before { background: var(--fill); border-color: var(--fill); }
 .trace__run { padding: 20px 18px 6px; min-height: 388px; }
 .trace__q, .trace__a { font-family: var(--sans); }
 .trace__q { font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1.25; letter-spacing: -0.02em; margin-bottom: 10px; }
@@ -827,7 +1052,7 @@ html:not(.js) .theme { display: none; }
   position: absolute;
   left: calc(var(--s) * 1%); bottom: 4px;
   width: calc(var(--w) * 1%); min-width: 6px;
-  height: 3px; border-radius: 2px;
+  height: 3px;
   background: var(--accent);
   transform-origin: 0 50%;
 }
@@ -841,7 +1066,7 @@ html:not(.js) .theme { display: none; }
 .trace__a {
   margin-top: 14px;
   padding: 12px 14px;
-  border-radius: 6px;
+  border-radius: 0;
   background: var(--tint);
   font-size: 14.5px;
   line-height: 1.55;
@@ -851,6 +1076,57 @@ html:not(.js) .theme { display: none; }
 .trace__evals { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 14px; font-family: var(--sans); }
 .trace__evals li { font-size: 13.5px; font-weight: 500; color: var(--accent-soft); }
 .trace__evals li::before { content: "✓ "; }
+
+/* the terms as words to pick (js/home.js): one definition shows at a time
+   under them, and the part of the trace it is about is marked in the
+   second colour. Screens only: without the script, and on paper, the
+   terms stay a list */
+html:not(.js) .concepts__hint, .concepts__panel { display: none; }
+@media screen {
+  .js .concepts__panel { display: block; }
+  .js .concepts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; overflow: visible; }
+  .js .concepts > div { flex: none; padding: 0; border: 0; border-radius: 0; background: none; }
+  .js .concepts > div::before { display: none; }
+  .js .concepts dd { display: none; }
+  .js .concepts dt { margin: 0; font-size: inherit; }
+  .concepts dt button {
+    padding: 10px 16px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-stretch: 106%;
+    font-size: clamp(17px, 1.5vw, 20px);
+    letter-spacing: -0.02em;
+    transition: color 0.2s ease, translate 0.3s var(--ease);
+  }
+  .concepts dt button::before { border-color: var(--line-2); }
+  .concepts dt button:hover { translate: calc(var(--tan) * 2px) -2px; }
+  .concepts dt button:hover::before { border-color: var(--accent); }
+  .concepts .is-on dt button { color: var(--on); }
+  .concepts .is-on dt button::before { background: var(--fill); border-color: var(--fill); }
+  .concepts__hint { margin: 0 0 12px; rotate: -3deg; transform-origin: 0 50%; font-size: 25px; }
+  .concepts__panel { min-height: 9.5em; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .concepts__panel b { display: block; margin-bottom: 8px; font-family: var(--display); font-weight: 800; font-stretch: 106%; font-size: clamp(28px, 2.8vw, 40px); line-height: 1.05; letter-spacing: -0.035em; }
+  .concepts__panel p { max-width: 28em; font-size: 17px; color: var(--dim); }
+  .concepts__panel.is-swap > * { animation: panelIn 0.45s var(--ease) both; }
+  .concepts__panel.is-swap > p { animation-delay: 0.05s; }
+  @keyframes panelIn { from { opacity: 0; translate: 0 8px; } }
+
+  /* the trace: the part the picked term is about */
+  .trace__spans li::before {
+    content: "";
+    position: absolute; inset: 0 -10px;
+    z-index: -1;
+    border-radius: 0;
+    background: color-mix(in srgb, var(--accent-2) 14%, transparent);
+    box-shadow: inset 3px 0 0 var(--accent-2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .trace__spans li { isolation: isolate; }
+  .trace__evals, .trace__a { transition: box-shadow 0.3s ease, background-color 0.3s ease; }
+  :is(.trace[data-hl="spans"] .trace__spans li, .trace[data-hl="tool"] li.is-tool, .trace[data-hl="check"] li.is-check, .trace[data-hl="route"] .trace__spans li:first-child, .trace[data-hl="human"] li.is-human)::before { opacity: 1; }
+  .trace[data-hl="evals"] .trace__evals { border-radius: 0; background: color-mix(in srgb, var(--accent-2) 14%, transparent); box-shadow: -10px 0 0 color-mix(in srgb, var(--accent-2) 14%, transparent), 10px 0 0 color-mix(in srgb, var(--accent-2) 14%, transparent), -10px 0 0 -7px var(--accent-2); }
+}
 .trace figcaption {
   display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px;
   padding: 12px 18px 16px;
@@ -908,10 +1184,47 @@ html:not(.js) .theme { display: none; }
 .project p { grid-area: text; max-width: 32em; font-size: 15.5px; color: var(--dim); }
 .project__go { grid-area: go; margin-top: 16px; font-size: 14px; font-weight: 600; }
 .project__go i { display: inline-block; font-style: normal; transition: transform 0.4s var(--ease); }
+/* the lead project shows its own screen beside its text */
+.project--feature {
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-areas: "kind shot" "name shot" "text shot" "go shot";
+  grid-template-rows: auto auto auto 1fr;
+}
+.project--feature h3 { margin-bottom: 16px; }
+.project__shot {
+  grid-area: shot;
+  align-self: start;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: var(--surface);
+}
+.project__shot img { width: 100%; height: auto; transition: transform 0.9s var(--ease); }
+.project--feature:is(:hover, :focus-visible) .project__shot img { transform: scale(1.035); }
 
 /* ---------- Contact ---------- */
-.section--contact { padding-bottom: 96px; }
-.contact__title { font-weight: 800; font-size: clamp(48px, 8.4vw, 128px); line-height: 0.95; letter-spacing: -0.055em; max-width: 10em; margin-bottom: clamp(40px, 7vh, 72px); }
+.section--contact { padding-top: 0; padding-bottom: 96px; overflow: clip; isolation: isolate; }
+.section--contact::before { display: none; }
+.contact__band {
+  --c: var(--on-form);
+  position: relative;
+  overflow: clip;
+  display: flex; align-items: flex-end;
+  min-height: clamp(380px, 68svh, 720px);
+  margin-bottom: clamp(32px, 6vh, 64px);
+  padding: clamp(40px, 8svh, 88px) 0;
+  background: var(--form);
+  color: var(--on-form);
+}
+.contact__band > .wrap { position: relative; z-index: 1; }
+.contact__band .contact__title { font-size: clamp(50px, 6vw, 100px); line-height: 0.98; max-width: none; margin: 0; }
+.contact__band .contact__title em { display: block; width: fit-content; }
+.contact__band .contact__sign { margin: 14px 0 0 0.15em; }
+.contact__band .note { color: inherit; }
+/* the mark, very large and very quiet, behind the last section; it slides
+   along its own lean as the page scrolls (js/home.js) */
+.contact__mark { position: absolute; top: -12%; right: -18vw; height: 124%; width: auto; max-width: none; fill: var(--on-form); }
+@media (max-width: 1000px) { .contact__mark { opacity: 0.16; } }
 .contact__rows { border-top: 1px solid var(--line); }
 .contact__row {
   position: relative;
@@ -939,6 +1252,9 @@ html:not(.js) .theme { display: none; }
   border-top: 1px solid var(--line);
   font-size: 13.5px; color: var(--faint);
 }
+/* what I am on this month, dated, so a visitor can tell the page is kept */
+.foot__now { flex: 1 0 100%; margin-bottom: 10px; font-size: 15px; color: var(--dim); }
+.foot__now b { margin-right: 6px; font-style: italic; font-weight: 600; color: var(--ink); }
 
 /* ==================================================================
    Reveals — the finished state is the default. Only `.js` hides
@@ -983,7 +1299,7 @@ html:not(.js) .theme { display: none; }
 /* headings rise word by word out of their own masks (js/home.js wraps
    each word); the heading itself does not fade */
 .js .rv.h-split { opacity: 1; transform: none; }
-.w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: 0 0.14em 0.14em 0.06em; margin: 0 -0.14em -0.14em -0.06em; }
 .w > span { display: inline-block; }
 .js .h-split .w > span { transform: translateY(115%); }
 .js .h-split.is-in .w > span { transform: none; transition: transform 0.9s var(--ease); transition-delay: calc(var(--wi, 0) * 45ms + 60ms); }
@@ -1011,11 +1327,13 @@ html:not(.js) .theme { display: none; }
 /* one band between the hero and the work: what I work on for a
    recruiter, my photos for the curious view. js/home.js runs it
    sideways and speeds it up with the scroll */
+/* the band the mark stands on: the J and the V run into it from the hero */
 .strip {
   position: relative;
   overflow: hidden;
   padding: clamp(18px, 3vh, 30px) 0;
-  border-top: 1px solid var(--line);
+  background: var(--form);
+  color: var(--on-form);
   user-select: none;
 }
 .strip__track {
@@ -1036,9 +1354,10 @@ html:not(.js) .theme { display: none; }
 .strip__track > * { margin-right: 0.3em; }
 .strip__track span { font-stretch: 72%; }
 /* the same family at the other end of its width axis, not an outline */
-.strip__track i { font-stretch: 125%; font-weight: 300; color: var(--dim); }
-.strip__track b { font-weight: 400; font-size: 0.6em; color: var(--c); }
-.strip__track img { margin-right: 10px; width: auto; height: clamp(150px, 19vw, 260px); border-radius: 3px; }
+.strip__track i { font-stretch: 125%; font-weight: 300; }
+/* between the words, the mark's slash */
+.strip__track b { display: inline-block; width: 0.16em; height: 0.72em; overflow: hidden; text-indent: -9em; background: currentColor; transform: skewX(var(--slant)); }
+.strip__track img { margin-right: 10px; width: auto; height: clamp(150px, 19vw, 260px); border-radius: 0; }
 
 /* ---------- Easter eggs ---------- */
 /* the note a find shows: a small flat card, bottom left, above the dock */
@@ -1050,7 +1369,7 @@ html:not(.js) .theme { display: none; }
   padding: 14px 16px 15px;
   border: 1px solid var(--line-2);
   border-left: 3px solid var(--accent-2);
-  border-radius: 8px;
+  border-radius: 0;
   background: var(--surface);
   color: var(--ink);
   box-shadow: 0 12px 32px -16px rgba(0, 0, 0, 0.45);
@@ -1060,17 +1379,15 @@ html:not(.js) .theme { display: none; }
   transition: opacity 0.25s ease, transform 0.35s var(--ease);
 }
 .toast.is-on { opacity: 1; transform: none; }
-.toast span { display: block; margin-bottom: 4px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); }
+.toast span { display: block; margin-bottom: 2px; font-size: 13px; font-style: italic; font-weight: 600; color: var(--accent-2); }
 .toast p { font-size: 14px; line-height: 1.45; }
 .confetti { position: fixed; inset: 0; z-index: 85; width: 100vw; height: 100vh; pointer-events: none; }
 /* the footer's count, shown only after the first find */
 .eggs b { color: var(--accent-2); font-weight: 500; }
 .eggs[hidden] { display: none; }
 /* five clicks: the mark turns once and the dot pops */
-.bar__name.is-spun .bar__mark { animation: markSpin 0.9s var(--ease); }
-.bar__name.is-spun .bar__dot { animation: dotPop 0.9s var(--ease); }
-@keyframes markSpin { from { transform: rotate(0deg) scale(1); } 45% { transform: rotate(200deg) scale(1.15); } to { transform: rotate(360deg) scale(1); } }
-@keyframes dotPop { 0%, 40% { transform: scale(1); } 70% { transform: scale(1.9); } to { transform: scale(1); } }
+.bar__name.is-spun :is(.jv, .wordmark) { animation: wordJump 0.9s var(--ease); }
+@keyframes wordJump { 30% { translate: 0 -8px; rotate: -6deg; } 60% { translate: 0 0; rotate: 3deg; } }
 
 /* ==================================================================
    Side quests — the personal side, full screen. The same system with a
@@ -1095,7 +1412,7 @@ html:has(.quests[open]) { overflow: hidden; }
 .quests__top { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 26px; }
 .quests__top kbd {
   margin-left: 8px; padding: 1px 6px;
-  border: 1px solid var(--line-2); border-radius: 4px;
+  border: 1px solid var(--line-2); border-radius: 0;
   font-family: var(--mono); font-size: 10.5px; color: var(--dim);
 }
 .quests__title {
@@ -1107,7 +1424,6 @@ html:has(.quests[open]) { overflow: hidden; }
   line-height: 1;
   letter-spacing: -0.05em;
 }
-.quests__title em { font-style: normal; color: var(--accent-2); }
 
 /* the player card */
 .player {
@@ -1118,9 +1434,9 @@ html:has(.quests[open]) { overflow: hidden; }
   margin-bottom: 16px;
   padding: 16px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 0;
 }
-.player__img { width: 132px; height: 132px; object-fit: cover; object-position: 50% 20%; border-radius: 8px; }
+.player__img { width: 132px; height: 132px; object-fit: cover; object-position: 50% 20%; border-radius: 0; }
 .player h3 { margin: 4px 0 10px; font-family: var(--display); font-weight: 700; font-size: 30px; letter-spacing: -0.04em; }
 .player__class { display: grid; gap: 4px; margin-bottom: 14px; }
 .player__class div { display: flex; gap: 10px; font-size: 14px; }
@@ -1136,7 +1452,7 @@ html:has(.quests[open]) { overflow: hidden; }
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 0;
   background: var(--line);
   overflow: hidden;
 }
@@ -1154,7 +1470,7 @@ html:has(.quests[open]) { overflow: hidden; }
   position: absolute; right: 20px; top: 62px;
   width: 56px; height: 70px;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 0;
   box-shadow: 0 0 0 1px var(--line);
   cursor: zoom-in;
 }
@@ -1163,6 +1479,11 @@ html:has(.quests[open]) { overflow: hidden; }
 .quest:has(.quest__shot) :is(h4, p) { margin-right: 68px; }
 .quest h4 { margin-bottom: 6px; font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -0.02em; }
 .quest p { max-width: 26em; font-size: 14px; line-height: 1.5; color: var(--dim); }
+/* the chess card's rating, read live from Chess.com (js/home.js) */
+.quest .quest__rating { margin-top: 10px; }
+.quest__rating b { font-family: var(--display); font-weight: 800; font-stretch: 70%; font-size: 1.4em; line-height: 1; color: var(--accent); }
+.quest__rating a:hover b { text-decoration: underline; text-underline-offset: 3px; }
+.quest__rating[hidden] { display: none; }
 .quest a { color: var(--accent); }
 @media (hover: hover) and (pointer: fine) {
   .quest:hover { background: var(--tint); }
@@ -1181,7 +1502,7 @@ html:has(.quests[open]) { overflow: hidden; }
 .reel__count { margin-right: 6px; white-space: nowrap; }
 .reel__nav .btn { width: 36px; padding: 0; justify-content: center; }
 .reel__nav .btn:disabled { opacity: 0.35; cursor: default; }
-.reel__nav .btn:disabled:hover { border-color: var(--line-2); }
+.reel__nav .btn:disabled:hover::before { border-color: var(--line-2); }
 @media (hover: none) { .reel__nav .btn { display: none; } }
 /* the reel: one row of photos at one height, each as wide as its own
    shape, snapping to the photo at the left edge. It fades out on the
@@ -1202,7 +1523,7 @@ html:has(.quests[open]) { overflow: hidden; }
 .reel::-webkit-scrollbar { display: none; }
 .has-before > .reel { --fl: 48px; }
 .has-after > .reel { --fr: 48px; }
-.reel__line { display: none; position: relative; height: 2px; margin-top: 12px; overflow: hidden; border-radius: 1px; background: var(--line); }
+.reel__line { display: none; position: relative; height: 2px; margin-top: 12px; overflow: hidden; background: var(--line); }
 .js .reel__line { display: block; }
 .reel__line b { position: absolute; inset: 0; background: var(--accent); transform: scaleX(var(--p, 0)); transform-origin: 0 50%; transition: transform 0.5s var(--ease); }
 .reel__shot {
@@ -1210,7 +1531,7 @@ html:has(.quests[open]) { overflow: hidden; }
   flex: 0 0 auto;
   height: 100%;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 0;
   background: var(--surface);
   cursor: zoom-in;
   scroll-snap-align: start;
@@ -1259,7 +1580,7 @@ html:has(.quests[open]) { overflow: hidden; }
   scroll-snap-align: center;
   scroll-snap-stop: always;
 }
-.lightbox__slide img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 6px; }
+.lightbox__slide img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 0; }
 .lightbox__film { display: flex; gap: 6px; padding: 6px 24px; overflow-x: auto; scrollbar-width: none; }
 .lightbox__film::-webkit-scrollbar { display: none; }
 .lightbox__film:empty { display: none; }
@@ -1270,7 +1591,7 @@ html:has(.quests[open]) { overflow: hidden; }
   flex: 0 0 auto;
   width: 42px; height: 54px;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: 0;
   opacity: 0.4;
   outline: 2px solid transparent;
   outline-offset: 2px;
@@ -1283,7 +1604,7 @@ html:has(.quests[open]) { overflow: hidden; }
   display: flex; justify-content: center; align-items: center; gap: 10px;
   padding: 10px 16px max(18px, env(safe-area-inset-bottom));
 }
-.lightbox__bar .btn { color: #f3f4f7; border-color: rgba(255, 255, 255, 0.25); }
+.lightbox__bar .btn { color: #f3f4f7; --btn-line: rgba(255, 255, 255, 0.25); }
 .lightbox__bar .meta { min-width: 60px; text-align: center; color: rgba(255, 255, 255, 0.6); }
 .lightbox__bar kbd { margin-left: 6px; font-family: var(--mono); font-size: 10.5px; color: rgba(255, 255, 255, 0.6); }
 .lightbox[open] .lightbox__track { animation: lbIn 0.35s var(--ease); }
@@ -1298,8 +1619,8 @@ html:has(.quests[open]) { overflow: hidden; }
   opacity: 0;
   pointer-events: none;
 }
-.quests__load span { font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
-.quests__load i { position: relative; display: block; width: 220px; height: 4px; overflow: hidden; border-radius: 2px; background: var(--line); }
+.quests__load span { font-size: 14px; font-style: italic; color: var(--dim); }
+.quests__load i { position: relative; display: block; width: 220px; height: 4px; overflow: hidden; background: var(--line); }
 .quests__load i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform: scaleX(0); transform-origin: 0 50%; }
 .quests.is-playing .quests__load { animation: loadFade 1.1s ease both; }
 .quests.is-playing .quests__load i::after { animation: loadBar 0.75s var(--ease) both; }
@@ -1322,25 +1643,19 @@ html:has(.quests[open]) { overflow: hidden; }
    quick answers in Contact, and a link to each role and product */
 .bar__find svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 /* the way in under the hero's buttons; it needs the script */
-.hero__more { display: none; margin-top: 18px; font-size: 14.5px; color: var(--dim); }
-.js .hero__more { display: block; }
-.hero__more.rv { --delay: 1.05s; }
-.hero__more :is(button, a) { color: var(--accent); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.hero__more :is(button, a):hover { text-decoration-thickness: 2px; }
 
 /* the finder: a wider panel, skills as chips, then the places */
 .finder__intro { margin: -4px 0 16px; font-size: 14.5px; color: var(--dim); }
 .finder__skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.finder__skill::before { border-color: var(--line-2); }
 .finder__skill {
   padding: 6px 12px;
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
   font-size: 13.5px;
   line-height: 1.4;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
-.finder__skill:hover { border-color: var(--accent); }
-.finder__skill[aria-pressed="true"] { border-color: var(--fill); background: var(--fill); color: var(--on); }
+.finder__skill:hover::before { border-color: var(--accent); }
+.finder__skill[aria-pressed="true"] { color: var(--on); }
+.finder__skill[aria-pressed="true"]::before { border-color: var(--fill); background: var(--fill); }
 .finder__paste { display: grid; gap: 8px; margin-top: 18px; }
 .finder__paste .meta { font-size: 11px; }
 .finder__paste textarea {
@@ -1349,7 +1664,7 @@ html:has(.quests[open]) { overflow: hidden; }
   resize: vertical;
   padding: 10px 12px;
   border: 1px solid var(--line-2);
-  border-radius: 8px;
+  border-radius: 0;
   background: var(--bg);
   color: var(--ink);
   font: inherit;
@@ -1361,7 +1676,7 @@ html:has(.quests[open]) { overflow: hidden; }
 .finder__sum { min-height: 1.5em; margin: 16px 0 8px; font-size: 14px; color: var(--dim); }
 .finder__sum a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .finder__list li { border-top: 1px solid var(--line); }
-.finder__hit { display: grid; gap: 3px; margin: 0 -8px; padding: 11px 8px 12px; border-radius: 6px; transition: background-color 0.2s ease; }
+.finder__hit { display: grid; gap: 3px; margin: 0 -8px; padding: 11px 8px 12px; border-radius: 0; transition: background-color 0.2s ease; }
 .finder__hit:hover { background: var(--tint-2); }
 .finder__hit .meta { font-size: 10.5px; }
 .finder__hit b { font-size: 14.5px; font-weight: 600; line-height: 1.35; }
@@ -1379,7 +1694,7 @@ html:has(.quests[open]) { overflow: hidden; }
 
 /* the part the finder or a link points at, marked for a moment */
 .is-found { animation: found 2.6s ease; }
-:is(li, p, .concepts > div).is-found { border-radius: 6px; }
+:is(li, p, .concepts > div).is-found { border-radius: 0; }
 /* the mark reaches 8px past a part; an accordion's body clips, so it
    keeps that much room on its right, outside its content */
 .acc__body { padding-right: 10px; margin-right: -10px; }
@@ -1414,95 +1729,54 @@ html:has(.quests[open]) { overflow: hidden; }
    preview so it is plain what is still to fill in */
 .answers__grid > [data-todo] { display: none; }
 .is-preview .answers__grid > [data-todo] { display: grid; }
-.is-preview [data-todo] dd { justify-self: start; padding: 1px 8px; border: 1px dashed var(--accent-2); border-radius: 4px; font-weight: 400; color: var(--dim); }
+.is-preview [data-todo] dd { justify-self: start; padding: 1px 8px; border: 1px dashed var(--accent-2); border-radius: 0; font-weight: 400; color: var(--dim); }
 .is-preview [data-todo] dd::before { content: "To fill · "; font-family: var(--mono); font-size: 11px; color: var(--accent-2); }
 
 /* ---------- Responsive ---------- */
 /* ==================================================================
    The two views — recruiter and curious
    ================================================================== */
-/* the switch over the hero shows both views, the current one under a
-   thumb in that view's colour. The other one slides the thumb across and
-   the page wipes into that view; the question never asks again. data-on
-   says where the thumb is (js/home.js sets it from the view) */
-.mode-switch {
-  --thumb: var(--blue-fill);
-  --thumb-on: #ffffff;
-  display: none;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 26px;
-}
-.mode-switch[data-on="curious"] { --thumb: var(--orange); --thumb-on: #12151c; }
-:root[data-theme="light"] .mode-switch[data-on="curious"] { --thumb: var(--orange-soft); --thumb-on: #ffffff; }
-.js .mode-switch { display: flex; }
-.hero .mode-switch.rv { --delay: 0.05s; }
-.mode-switch__label {
-  font-size: 13.5px;
-  color: var(--faint);
-}
-.mode-switch__track {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding: 4px;
-  border: 1px solid var(--line-2);
-  border-radius: 999px;
-  background: var(--glass-2);
-}
-.mode-switch__thumb {
-  position: absolute;
-  top: 4px; bottom: 4px; left: 4px;
-  width: calc(50% - 4px);
-  border-radius: 999px;
-  background: var(--thumb);
-  box-shadow: 0 8px 22px -8px var(--thumb);
-  transition: transform 0.5s var(--ease), background-color 0.35s ease, box-shadow 0.35s ease;
-}
-.mode-switch[data-on="curious"] .mode-switch__thumb { transform: translateX(100%); }
+/* the view switch, quiet in the bar: two small words, the current one
+   on a faint fill. The other one wipes the page into that view
+   (js/home.js); data-on says which is current */
+.mode-switch { display: flex; gap: 4px; }
 .mode-switch a {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  height: 40px;
-  padding: 0 20px;
-  border-radius: 999px;
-  font-size: 14.5px;
-  font-weight: 600;
-  white-space: nowrap;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.2;
   color: var(--dim);
   transition: color 0.3s ease;
 }
-.mode-switch svg { width: 17px; height: 17px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mode-switch a:hover { color: var(--ink); }
 .mode-switch[data-on="recruiter"] [data-mode-switch="recruiter"],
-.mode-switch[data-on="curious"] [data-mode-switch="curious"] { color: var(--thumb-on); cursor: default; }
-/* the other view leans the thumb towards it */
-.mode-switch:not([data-going]) a:not([aria-current]):hover { color: var(--ink); }
-.mode-switch[data-on="recruiter"]:not([data-going]):has([data-mode-switch="curious"]:hover) .mode-switch__thumb { transform: translateX(8px); }
-.mode-switch[data-on="curious"]:not([data-going]):has([data-mode-switch="recruiter"]:hover) .mode-switch__thumb { transform: translateX(calc(100% - 8px)); }
-.mode-switch a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mode-switch[data-on="curious"] [data-mode-switch="curious"] { color: var(--ink); cursor: default; }
+.mode-switch[data-on="recruiter"] [data-mode-switch="recruiter"]::before,
+.mode-switch[data-on="curious"] [data-mode-switch="curious"]::before { background: var(--tint-2); }
 /* then the screen wipes up with an edge in the new view's colour, as the
    question's does, and the page starts over in that view */
 .mode-wipe {
-  position: fixed; inset: 0;
+  position: fixed; inset: 0 -40vh;
   z-index: 200;
   pointer-events: none;
   background: var(--bg);
-  box-shadow: 0 -6px 0 var(--blue);
-  transform: translateY(105%);
-  transition: transform 0.42s var(--wipe);
+  box-shadow: -8px 0 0 var(--blue);
+  transform: translateX(120%) skewX(var(--slant));
+  transition: transform 0.46s var(--wipe);
 }
-.mode-wipe[data-to="curious"] { box-shadow: 0 -6px 0 var(--orange); }
-.mode-wipe.is-on { transform: none; }
+.mode-wipe[data-to="curious"] { box-shadow: -8px 0 0 var(--orange); }
+.mode-wipe.is-on { transform: skewX(var(--slant)); }
 .foot__mode { display: none; color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
 .js .foot__mode { display: inline; }
 .foot__mode:hover { color: var(--ink); }
+.foot__link { color: var(--dim); text-decoration: underline; text-underline-offset: 3px; }
+.foot__link:hover { color: var(--ink); }
 
 /* the curious view's side quests sit on the page */
 .quests-inline .player { margin-bottom: 16px; }
-.figures--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: clamp(32px, 5vh, 48px); }
+/* the day job's numbers in a sentence, each number condensed */
+.dayjob__facts { max-width: 34em; font-size: clamp(19px, 1.8vw, 23px); line-height: 1.5; letter-spacing: -0.01em; }
+.dayjob__facts b { font-family: var(--display); font-weight: 800; font-stretch: 70%; font-size: 1.4em; line-height: 1; color: var(--accent); }
 .dayjob__cta { margin-top: 36px; }
 
 /* ==================================================================
@@ -1517,7 +1791,7 @@ html:has(.quests[open]) { overflow: hidden; }
   display: block;
   position: absolute; top: 2px; right: 0;
   min-width: 15px; height: 15px; padding: 0 4px;
-  border-radius: 8px;
+  border-radius: 0;
   background: var(--fill);
   color: var(--on);
   font: 600 9.5px/15px var(--mono);
@@ -1526,7 +1800,7 @@ html:has(.quests[open]) { overflow: hidden; }
 .xp.has-xp .xp__bar {
   display: block;
   position: absolute; left: 9px; right: 9px; bottom: 4px;
-  height: 2px; border-radius: 1px;
+  height: 2px;
   background: var(--line-2);
   overflow: hidden;
 }
@@ -1539,7 +1813,7 @@ html:has(.quests[open]) { overflow: hidden; }
   margin: auto;
   padding: 20px 22px 18px;
   border: 1px solid var(--line-2);
-  border-radius: 12px;
+  border-radius: 0;
   background: var(--surface);
   color: var(--ink);
   box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.6);
@@ -1548,18 +1822,78 @@ html:has(.quests[open]) { overflow: hidden; }
 }
 .qlog::backdrop, .chess::backdrop, .finder::backdrop { background: color-mix(in srgb, var(--bg) 60%, transparent); }
 .qlog[open], .chess[open], .finder[open] { animation: panelIn 0.35s var(--ease); }
+/* The message box: a small chat window beside the words of the hero, sharp
+   like everything else. The question leans; the visitor's text does not. */
+.chat {
+  position: fixed;
+  inset: auto auto clamp(16px, 5svh, 56px) var(--gut);
+  width: min(460px, 100vw - 2 * var(--gut));
+  max-height: calc(100svh - 32px);
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--ink);
+}
+.chat::backdrop { background: color-mix(in srgb, var(--bg) 62%, transparent); }
+.chat[open] { animation: chatIn 0.45s var(--ease) both; }
+@keyframes chatIn { from { opacity: 0; transform: translate(-6px, 28px); } }
+.chat__head { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.chat__title { display: block; font-size: 19px; font-weight: 800; }
+.chat__close { margin-left: auto; padding-inline: 0; font-size: 13px; color: var(--dim); }
+.chat__close::before { display: none; }
+.chat__close kbd { margin-left: 6px; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
+.chat__bubble {
+  position: relative;
+  isolation: isolate;
+  width: fit-content;
+  margin-bottom: 14px;
+  padding: 9px 18px;
+  color: var(--on-form);
+  font-size: 15.5px;
+  font-weight: 500;
+}
+.chat__bubble::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--form); transform: skewX(var(--slant)); }
+.chat__text {
+  display: block;
+  width: 100%;
+  min-height: 116px;
+  padding: 12px;
+  border: 1px solid var(--line-2);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.45;
+  resize: vertical;
+}
+.chat__text::placeholder { color: var(--faint); }
+.chat__text:focus-visible { outline: 2px solid var(--form); outline-offset: -1px; }
+.chat__foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; }
+.chat__note { min-width: 0; font-size: 13px; line-height: 1.4; color: var(--dim); }
+.chat__send { flex: none; }
+.chat__alt { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--dim); }
+.chat__alt a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.chat__alt a:hover { color: var(--accent-soft); }
+@media (max-width: 520px) {
+  .chat { inset: auto 12px 12px 12px; width: auto; }
+  .chat__foot { flex-direction: column; align-items: stretch; }
+  .chat__close kbd { display: none; }
+  .chat__send { justify-content: center; }
+}
 @keyframes panelIn { from { opacity: 0; transform: translateY(-8px) scale(0.98); } }
 .qlog__head, .chess__head, .finder__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
 .qlog__head kbd, .chess__head kbd, .finder__head kbd { margin-left: 6px; font-family: var(--mono); font-size: 10.5px; color: var(--faint); }
 .qlog__title, .chess__title, .finder__title { margin-bottom: 14px; font-family: var(--display); font-weight: 700; font-size: 28px; line-height: 1.1; letter-spacing: -0.03em; }
-.qlog__title em, .chess__title em, .finder__title em { font-style: normal; color: var(--accent); }
+.qlog__title em { font-style: normal; color: var(--accent); }
 .qlog__xp { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.qlog__xp i { flex: 1; height: 6px; border-radius: 3px; background: var(--tint-2); overflow: hidden; }
+.qlog__xp i { flex: 1; height: 6px; border-radius: 0; background: var(--tint-2); overflow: hidden; }
 .qlog__xp b { display: block; height: 100%; background: var(--accent); transform: scaleX(var(--k, 0)); transform-origin: 0 50%; transition: transform 0.8s var(--ease) 0.15s; }
 .qlog__xp .meta { font-size: 11px; white-space: nowrap; }
 .qlog__list { list-style: none; border-top: 1px solid var(--line); }
 .qrow { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 11px 0; border-bottom: 1px solid var(--line); }
-.qrow > i { display: grid; place-items: center; width: 22px; height: 22px; border: 1px dashed var(--line-2); border-radius: 50%; font-style: normal; font-size: 12px; color: var(--on); }
+.qrow > i { display: grid; place-items: center; width: 22px; height: 22px; border: 1px dashed var(--line-2); font-style: normal; font-size: 12px; color: var(--on); }
 .qrow.is-done > i { border: 0; background: var(--fill); }
 .qrow b { display: block; font-size: 14.5px; font-weight: 600; }
 .qrow:not(.is-done) b { color: var(--dim); }
@@ -1575,7 +1909,7 @@ html:has(.quests[open]) { overflow: hidden; }
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
   border: 1px solid var(--line-2);
-  border-radius: 6px;
+  border-radius: 0;
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
@@ -1612,7 +1946,7 @@ html:has(.quests[open]) { overflow: hidden; }
   margin-top: 40px;
   padding: 22px 22px 20px;
   border: 1px solid var(--line-2);
-  border-radius: 12px;
+  border-radius: 0;
   background: var(--surface);
   opacity: 0;
   transform: translateY(14px);
@@ -1626,13 +1960,13 @@ html:has(.quests[open]) { overflow: hidden; }
 .runcard__actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
 /* the viewer: how many photos are collected, and where one was taken */
-.lightbox__bar .lightbox__got { position: absolute; top: max(10px, env(safe-area-inset-top)); left: 12px; min-width: 0; padding: 4px 8px; border-radius: 4px; background: rgba(8, 9, 12, 0.72); text-align: left; font-size: 11px; color: rgba(255, 255, 255, 0.8); }
+.lightbox__bar .lightbox__got { position: absolute; top: max(10px, env(safe-area-inset-top)); left: 12px; min-width: 0; padding: 4px 8px; border-radius: 0; background: rgba(8, 9, 12, 0.72); text-align: left; font-size: 11px; color: rgba(255, 255, 255, 0.8); }
 .lightbox__quiz[hidden] { display: none; }
 .lightbox__quiz { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; padding: 10px 16px 0; }
 .lightbox__quiz .meta { width: 100%; text-align: center; color: rgba(255, 255, 255, 0.7); }
-.lightbox__quiz .btn { color: #f3f4f7; border-color: rgba(255, 255, 255, 0.25); }
+.lightbox__quiz .btn { color: #f3f4f7; --btn-line: rgba(255, 255, 255, 0.25); }
 .lightbox__quiz .btn:disabled { opacity: 0.45; }
-.lightbox__quiz .btn.is-right { opacity: 1; border-color: var(--orange); color: var(--orange); }
+.lightbox__quiz .btn.is-right { opacity: 1; --btn-line: var(--orange); color: var(--orange); }
 
 /* quest cards that turn over, once their facts exist */
 .quest__back { display: none; position: absolute; inset: 0; z-index: 1; flex-direction: column; justify-content: center; gap: 8px; padding: 20px 20px 34px; background: var(--bg); }
@@ -1643,11 +1977,16 @@ html:has(.quests[open]) { overflow: hidden; }
 .quest.is-turning { animation: questTurn 0.44s var(--ease); }
 @keyframes questTurn { 50% { transform: perspective(800px) rotateY(90deg); } }
 
-/* ==================================================================
-   The question — a character select on a first visit
-   ================================================================== */
+/* The first screen. The question is the mark in the middle of the screen:
+   the J is one way in, the V the other. Each pick is a button as big as the
+   screen, cut along the gap, so anywhere on either side answers.
+   The line through the gap keeps its slope at any size: 34 units across
+   for every 84 down. */
 .onboard {
-  --pc-load: var(--accent);
+  --mw: calc(70svh * 104 / 84);
+  --xt: calc(50vw + 20.25svh - var(--mw) * 0.0125);
+  --xb: calc(50vw - 20.25svh - var(--mw) * 0.0125);
+  --off: color-mix(in srgb, var(--ink) 9%, var(--bg));
   position: fixed; inset: 0;
   z-index: 200;
   width: 100%; height: 100%;
@@ -1656,199 +1995,160 @@ html:has(.quests[open]) { overflow: hidden; }
   border: 0;
   background: var(--bg);
   color: var(--ink);
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  overflow: hidden;
 }
 /* shown from the first paint while the page asks, before any script */
-.onboard[open], :root[data-mode="ask"] .onboard { display: grid; }
+.onboard[open], :root[data-mode="ask"] .onboard { display: block; }
 .onboard::backdrop { background: var(--bg); }
-/* the ground: the hero's dots, a blue glow and an orange glow; the one
-   on the side of the card in focus grows */
 .onboard::before {
   content: "";
-  position: fixed; inset: 0;
+  position: absolute; inset: 0 -30vh;
   pointer-events: none;
   background-image: radial-gradient(color-mix(in srgb, var(--ink) 16%, transparent) 1.1px, transparent 1.4px);
   background-size: 26px 26px;
-  -webkit-mask-image: radial-gradient(ellipse at 50% 45%, #000 25%, transparent 78%);
-  mask-image: radial-gradient(ellipse at 50% 45%, #000 25%, transparent 78%);
+  transform: skewX(var(--slant));
 }
-.onboard__inner::before, .onboard__inner::after {
-  content: "";
-  position: fixed;
-  top: 20%; width: 60vmax; height: 60vmax;
-  border-radius: 50%;
+.onboard__forms {
+  position: absolute;
+  top: 15svh;
+  left: calc(50% - var(--mw) / 2);
+  width: var(--mw);
+  height: 70svh;
+  overflow: visible;
   pointer-events: none;
-  opacity: 0.12;
-  filter: blur(40px);
-  transition: opacity 0.6s ease, transform 0.9s var(--ease);
 }
-.onboard__inner::before { left: -22vmax; background: var(--blue); }
-.onboard__inner::after { right: -22vmax; background: var(--orange); }
-.onboard[data-hover="recruiter"] .onboard__inner::before,
-.onboard[data-hover="curious"] .onboard__inner::after { opacity: 0.28; transform: scale(1.08); }
-/* on paper-white the glows need far less */
-:root[data-theme="light"] .onboard__inner::before, :root[data-theme="light"] .onboard__inner::after { opacity: 0.06; }
-:root[data-theme="light"] .onboard[data-hover="recruiter"] .onboard__inner::before,
-:root[data-theme="light"] .onboard[data-hover="curious"] .onboard__inner::after { opacity: 0.14; }
-.onboard__inner {
-  position: relative;
-  width: min(1040px, 100% - 2 * var(--gut));
-  margin: auto;
-  padding: 24px 0 36px;
+.form { transform-box: fill-box; transform-origin: center; transition: fill 0.3s ease, opacity 0.2s ease, transform 0.5s var(--ease); }
+.form--j { fill: var(--blue-fill); }
+.form--v { fill: var(--orange); }
+/* the side the pointer is on stays lit, and slides a little along its lean */
+.onboard[data-hover="recruiter"] .form--v, .onboard[data-hover="curious"] .form--j { fill: var(--off); }
+.onboard[data-hover="recruiter"] .form--j { transform: translate(0.6%, -1.6%); }
+.onboard[data-hover="curious"] .form--v { transform: translate(-0.9%, 1.6%); }
+.onboard__top {
+  position: absolute; top: 0; left: 0; right: 0;
+  z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 64px;
+  padding: 0 var(--gut);
+  pointer-events: none;
 }
-.onboard__inner > * { position: relative; z-index: 1; }
-.onboard__top { display: flex; align-items: center; gap: 14px; margin-bottom: clamp(28px, 8vh, 80px); }
-.onboard__mark { width: 30px; height: 30px; flex: 0 0 auto; }
-.onboard__boot { flex: 1; display: flex; align-items: center; gap: 5px; min-width: 0; white-space: nowrap; overflow: hidden; }
-.onboard__boot i { width: 7px; height: 13px; background: var(--accent); animation: obCaret 1s steps(1) infinite; }
-@keyframes obCaret { 50% { opacity: 0; } }
+.onboard__top .wordmark { display: block; font-size: 22px; }
+.onboard__skip { pointer-events: auto; padding-inline: 0; }
+.onboard__skip::before { display: none; }
 .onboard kbd {
-  display: inline-block;
-  min-width: 20px;
-  padding: 1px 6px;
+  display: inline-grid; place-items: center;
+  min-width: 20px; height: 20px;
+  padding: 0 5px;
   border: 1px solid var(--line-2);
-  border-radius: 4px;
   font-family: var(--mono);
-  font-size: 10.5px;
-  text-align: center;
+  font-size: 11px;
+  font-style: normal;
   color: var(--dim);
 }
-.onboard__kicker { margin-bottom: 12px; }
 .onboard__title {
-  margin-bottom: clamp(24px, 5vh, 44px);
+  position: absolute; left: var(--gut); top: clamp(72px, 11svh, 104px);
+  z-index: 2;
   font-family: var(--display);
   font-weight: 800;
-  font-size: clamp(44px, 7.4vw, 100px);
-  line-height: 0.95;
-  letter-spacing: -0.05em;
+  font-stretch: 112%;
+  font-size: clamp(17px, 1.7vw, 24px);
+  letter-spacing: -0.02em;
+  color: var(--dim);
+  pointer-events: none;
 }
-.onboard__title em {
-  font-style: normal;
-  background: linear-gradient(90deg, var(--blue), var(--orange));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* the two cards */
-.onboard__picks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; perspective: 1200px; }
 .pick {
   --pc: var(--blue);
-  --pc-fill: var(--blue-fill);
-  --pc-on: #ffffff;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 22px 24px 24px;
-  border: 1px solid var(--line-2);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
-  text-align: left;
-  cursor: pointer;
-  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 0.5s var(--ease), border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.35s ease, opacity 0.4s ease;
-}
-.pick--cur { --pc: var(--orange); --pc-fill: var(--orange); --pc-on: #12151c; }
-.pick.is-on {
-  border-color: var(--pc);
-  background: color-mix(in srgb, var(--pc) 9%, var(--surface));
-  box-shadow: 0 0 0 1px var(--pc), 0 30px 70px -30px color-mix(in srgb, var(--pc) 70%, transparent);
-  transform: translateY(-4px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-}
-/* the selection is the focus mark: the pointer and the keys move it together */
-.pick:focus-visible { outline: none; }
-.pick__top { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 18px; }
-.pick__ic { width: 42px; height: 42px; margin-bottom: 14px; fill: none; stroke: var(--pc); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.5s var(--ease); }
-.pick.is-on .pick__ic { transform: scale(1.12) rotate(-6deg); }
-/* the card colour pulled a little towards the text colour, so it reads
-   on the tinted card in both themes */
-.pick__class { margin-bottom: 6px; color: color-mix(in srgb, var(--pc) 75%, var(--ink)); }
-.pick__name { margin-bottom: 6px; font-family: var(--display); font-weight: 700; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.05; letter-spacing: -0.04em; }
-.pick__line { margin-bottom: 20px; font-size: 15px; color: var(--dim); }
-/* stats as five-segment bars, like a character sheet; a card in focus
-   charges them up */
-.pick__stats { display: grid; gap: 9px; width: 100%; margin-bottom: 18px; }
-.stat { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); }
-.stat i { position: relative; height: 8px; background: repeating-linear-gradient(to right, var(--line-2) 0 calc(20% - 3px), transparent calc(20% - 3px) 20%); }
-.stat i::after {
-  content: "";
   position: absolute; inset: 0;
-  background: repeating-linear-gradient(to right, var(--pc) 0 calc(20% - 3px), transparent calc(20% - 3px) 20%);
-  clip-path: inset(0 calc(100% - var(--v) * 20%) 0 0);
-  opacity: 0.45;
-  transition: opacity 0.3s ease;
+  z-index: 1;
+  display: flex; flex-direction: column;
+  width: 100%; height: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
-.pick.is-on .stat i::after { opacity: 1; animation: obCharge 0.55s steps(5, end) backwards; }
-.pick.is-on .stat:nth-child(2) i::after { animation-delay: 0.08s; }
-.pick.is-on .stat:nth-child(3) i::after { animation-delay: 0.16s; }
-@keyframes obCharge { from { clip-path: inset(0 100% 0 0); } }
-.pick__perks { margin-bottom: 20px; font-size: 13px; color: var(--dim); }
-.pick__go {
-  display: inline-flex; align-items: center; gap: 8px;
-  height: 40px;
-  margin-top: auto;
-  padding: 0 16px;
-  border-radius: 6px;
-  background: var(--tint-2);
-  font-size: 14px;
-  font-weight: 600;
-  transition: background-color 0.25s ease, color 0.25s ease;
+.pick:focus-visible, .onboard:focus-visible { outline: none; }
+.pick--rec {
+  align-items: flex-start;
+  padding: calc(clamp(72px, 11svh, 104px) + clamp(30px, 5svh, 48px)) 0 0 var(--gut);
+  text-align: left;
+  clip-path: polygon(0 0, var(--xt) 0, var(--xb) 100%, 0 100%);
 }
-.pick.is-on .pick__go { background: var(--pc-fill); color: var(--pc-on); }
-.pick.is-on .pick__go i { animation: obNudge 1.1s var(--ease) infinite; }
-@keyframes obNudge { 50% { transform: translateX(4px); } }
-
-/* the foot: the keys until a choice, then the loading bar in their place */
-.onboard__foot { display: grid; margin-top: 24px; }
-.onboard__hint, .onboard__load { grid-area: 1 / 1; transition: opacity 0.3s ease, transform 0.4s var(--ease); }
-.onboard__hint { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.onboard__hint kbd:nth-of-type(2) { margin-right: 4px; }
-.onboard__hint kbd:nth-of-type(3) { margin-left: 8px; margin-right: 4px; }
-.onboard__load {
-  display: flex; align-items: center; gap: 14px;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--dim);
-  opacity: 0;
-  transform: translateY(6px);
+.pick--cur {
+  --pc: var(--orange);
+  align-items: flex-end; justify-content: flex-end;
+  padding: 0 var(--gut) clamp(48px, 8svh, 76px) 0;
+  text-align: right;
+  clip-path: polygon(var(--xt) 0, 100% 0, 100% 100%, var(--xb) 100%);
 }
-.onboard__load i { position: relative; flex: 1; height: 4px; overflow: hidden; border-radius: 2px; background: var(--line); }
-.onboard__load b { position: absolute; inset: 0; background: var(--pc-load); transform: scaleX(var(--load, 0)); transform-origin: 0 50%; }
-.onboard__pct { min-width: 40px; text-align: right; color: var(--ink); }
-.onboard[data-picked="recruiter"] { --pc-load: var(--blue); }
-.onboard[data-picked="curious"] { --pc-load: var(--orange); }
-
-/* a choice: the other card steps back, the chosen one forward */
+:root[data-theme="light"] .pick--cur { --pc: var(--orange-soft); }
+.pick__name {
+  font-family: var(--display);
+  font-weight: 900;
+  font-stretch: 112%;
+  font-size: min(4.7vw, 11svh);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--pc);
+  transition: color 0.25s ease;
+}
+.onboard[data-hover="recruiter"] .pick--cur .pick__name, .onboard[data-hover="curious"] .pick--rec .pick__name { color: var(--faint); }
+/* the answer: the words go, the chosen form grows until it is the screen,
+   and the page starts over in that view (see Arrival) */
 .onboard.is-picked .pick { cursor: default; }
-.onboard.is-picked .pick.is-out { opacity: 0.12; transform: scale(0.95) translateY(8px); }
-.onboard.is-picked .pick.is-chosen { transform: translateY(-8px) scale(1.02); }
-.onboard.is-picked .onboard__hint { opacity: 0; transform: translateY(-6px); }
-.onboard.is-picked .onboard__load { opacity: 1; transform: none; }
-/* then the screen wipes up in the chosen colour, and the page starts */
-.onboard::after {
-  content: "";
-  position: fixed; inset: 0;
-  z-index: 5;
-  pointer-events: none;
-  background: var(--bg);
-  box-shadow: 0 -6px 0 var(--pc-load);
-  transform: translateY(105%);
+.onboard.is-picked :is(.onboard__top, .onboard__title, .pick > *) { opacity: 0; transition: opacity 0.18s ease; }
+.onboard[data-picked="recruiter"] .form--j, .onboard[data-picked="curious"] .form--v { transform: scale(40); transition: transform 0.62s var(--wipe); }
+.onboard[data-picked="recruiter"] .form--v, .onboard[data-picked="curious"] .form--j { opacity: 0; }
+.onboard[data-picked="recruiter"] { background: var(--blue-fill); transition: background 0s linear 0.58s; }
+.onboard[data-picked="curious"] { background: var(--orange); transition: background 0s linear 0.58s; }
+.onboard[data-picked]::before { opacity: 0; }
+/* opening: the two forms arrive from above and from below, each along its
+   own lean, and lock. Then the words */
+.onboard.is-playing .form--j { animation: formJ 1.1s var(--ease) 0.08s backwards; }
+.onboard.is-playing .form--v { animation: formV 1.1s var(--ease) 0.08s backwards; }
+@keyframes formJ { from { transform: translate(34%, -112%); } }
+@keyframes formV { from { transform: translate(-70%, 112%); } }
+.onboard.is-playing :is(.onboard__top, .onboard__title, .pick > *) { animation: obIn 0.7s var(--ease) 0.62s backwards; }
+.onboard.is-playing .pick--cur > * { animation-delay: 0.74s; }
+@keyframes obIn { from { opacity: 0; transform: translateY(14px); } }
+/* a tall screen: the mark across the middle, an answer above and below */
+@media (max-aspect-ratio: 1 / 1) {
+  .onboard {
+    --mw: min(92vw, 46svh * 104 / 84);
+    --gt: calc(50vw + var(--mw) * 0.151);
+    --gb: calc(50vw - var(--mw) * 0.176);
+    --ty: calc(50svh - var(--mw) * 0.4038);
+    --by: calc(50svh + var(--mw) * 0.4038);
+  }
+  .onboard__forms { top: calc(50% - var(--mw) * 42 / 104); height: calc(var(--mw) * 84 / 104); }
+  /* the words sit above and below the mark: the line follows the gap
+     across the mark and runs straight out to the edges */
+  .pick--rec { clip-path: polygon(0 0, 100% 0, 100% var(--ty), var(--gt) var(--ty), var(--gb) var(--by), 0 var(--by)); }
+  .pick--cur { clip-path: polygon(var(--gt) var(--ty), 100% var(--ty), 100% 100%, 0 100%, 0 var(--by), var(--gb) var(--by)); }
+  .pick__name { font-size: clamp(50px, 15vw, 96px); }
+  .pick--cur { padding-bottom: clamp(28px, 6svh, 56px); }
 }
-.onboard.is-leaving::after { transform: none; transition: transform 0.42s var(--wipe); }
+@media (max-width: 767px) { .onboard__skip kbd { display: none; } .onboard__top { height: 56px; } }
 
-/* opening plays the entrance once */
-.onboard.is-playing :is(.onboard__kicker, .onboard__title, .pick, .onboard__foot) { animation: obIn 0.7s var(--ease) backwards; }
-.onboard.is-playing .onboard__kicker { animation-delay: 0.08s; }
-.onboard.is-playing .onboard__title { animation-delay: 0.16s; }
-.onboard.is-playing .pick:nth-child(1) { animation-delay: 0.3s; }
-.onboard.is-playing .pick:nth-child(2) { animation-delay: 0.4s; }
-.onboard.is-playing .onboard__foot { animation-delay: 0.58s; }
-@keyframes obIn { from { opacity: 0; transform: translateY(18px); } }
+/* Arrival: the page opens under the colour of the form that was chosen,
+   and that colour leaves along the lean */
+@media screen and (prefers-reduced-motion: no-preference) {
+  :root[data-mode-new]::after {
+    content: "";
+    position: fixed;
+    inset: 0 -40vh;
+    z-index: 300;
+    pointer-events: none;
+    background: var(--form);
+    animation: arrive 0.95s var(--wipe) 0.08s both;
+  }
+}
+@keyframes arrive {
+  from { transform: skewX(var(--slant)); }
+  to { transform: translateX(125%) skewX(var(--slant)); }
+}
 
 @media (max-width: 1080px) {
   .quests__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1859,23 +2159,39 @@ html:has(.quests[open]) { overflow: hidden; }
   .ai { grid-template-columns: minmax(0, 1fr); }
   .trace { position: relative; top: auto; }
 }
+/* below 1000px the bar has no room for the section links next to the
+   view switch: they move to the dock at the bottom, as on a phone */
+@media screen and (max-width: 1000px) {
+  .bar__links { display: none; }
+  .bar__end { margin-left: auto; }
+  .dock { display: flex; }
+  body { padding-bottom: 88px; }
+  /* LinkedIn lives in Contact */
+  .bar__end a.bar__icon[href*="linkedin"] { display: none; }
+}
 @media (max-width: 900px) {
-  .hero__grid { grid-template-columns: minmax(0, 1fr); align-items: start; }
-  .hero__photo { max-width: 460px; }
+  .how__grid { grid-template-columns: minmax(0, 1fr); }
+  .how__head { position: static; margin-bottom: clamp(28px, 5vh, 44px); }
 }
 @media (max-width: 767px) {
   body { padding-bottom: 88px; }
   .toast { bottom: 96px; left: 12px; max-width: calc(100vw - 24px); }
-  .hero__snap { left: -6%; width: 34%; border-width: 4px; }
   .bar { height: 56px; gap: 12px; }
   .bar__links { display: none; }
   .bar__end { margin-left: auto; }
   .dock { display: flex; }
-  .hero { padding-top: 92px; min-height: 0; }
   .acc__head { grid-template-columns: minmax(0, 1fr) 20px; gap: 12px; padding: 22px 0; }
   .acc--roles .acc__head { grid-template-columns: 46px minmax(0, 1fr) 20px; }
   .acc__head .tag, .acc__when { display: none; }
   .acc--roles .acc__body { padding-left: 58px; }
+  .acc__body:has(> .viz) { grid-template-columns: minmax(0, 1fr); }
+  .acc__body > .viz { grid-column: 1; grid-row: auto; order: 2; min-height: 0; margin: 4px 0 0; padding: 20px 16px 36px; }
+  .acc__body:has(> .viz) > .share { order: 3; }
+  .viz text { font-size: 16px; }
+  .viz__note { font-size: 19px; }
+  .concepts dt button { padding: 7px 12px; font-size: 15.5px; }
+  .js .concepts { gap: 6px; }
+  .concepts__panel { min-height: 0; }
   .concepts { grid-template-columns: minmax(0, 1fr); }
   .role { grid-template-columns: minmax(0, 1fr); gap: 26px; }
   .quests__grid { grid-template-columns: minmax(0, 1fr); }
@@ -1887,6 +2203,8 @@ html:has(.quests[open]) { overflow: hidden; }
   .bar__end a.bar__icon[href*="linkedin"] { display: none; }
   .contact__row { grid-template-columns: minmax(0, 1fr) auto; }
   .project { grid-template-columns: minmax(0, 1fr); grid-template-areas: "kind" "name" "text" "go"; grid-template-rows: none; padding: 26px 0 28px; }
+  .project--feature { grid-template-areas: "kind" "name" "text" "shot" "go"; }
+  .project__shot { margin-top: 18px; }
   .project h3 { margin-bottom: 10px; }
   .contact__row .meta { grid-column: 1 / -1; }
   .trace__run { min-height: 0; }
@@ -1901,7 +2219,6 @@ html:has(.quests[open]) { overflow: hidden; }
   .bar .btn--sm { height: 40px; }
   .trace__asks button { min-height: 44px; padding: 10px 14px; }
   .offclock button { padding: 10px 0; }
-  .hero__more button { padding: 6px 0; }
   .finder__skill { min-height: 40px; }
   .share button { min-height: 44px; }
   .answers__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 20px; }
@@ -1926,7 +2243,7 @@ html:has(.quests[open]) { overflow: hidden; }
     scroll-snap-align: start;
     padding: 18px 18px 20px;
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: 0;
     background: var(--tint);
   }
   .concepts > div::before { display: none; }
@@ -1970,26 +2287,12 @@ html:has(.quests[open]) { overflow: hidden; }
   .lightbox__slide { padding: 14px 8px 8px; }
   .lightbox__bar .btn { height: 44px; min-width: 44px; justify-content: center; }
 
-  /* the view switch runs across the column, each half a thumb target */
-  .mode-switch__track { flex: 1 1 auto; max-width: 380px; }
-  .mode-switch a { height: 44px; padding: 0 8px; gap: 7px; }
+  /* the bar keeps the mark and the view switch; my name is in the hero
+     and Contact is in the dock */
+  .bar__name .wordmark { display: none; }
+  .bar__end > .btn { display: none; }
+  .mode-switch a { padding: 6px 8px; font-size: 12.5px; }
   .foot__mode { padding: 12px 0; }
-  /* the question on a phone: the cards stack and lose the extras */
-  .onboard__inner { padding: 14px 0 28px; }
-  .onboard__top { margin-bottom: 26px; }
-  .onboard__title { font-size: clamp(40px, 12vw, 56px); margin-bottom: 22px; }
-  .onboard__picks { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .pick { padding: 16px 18px 18px; }
-  .pick__top { margin-bottom: 0; }
-  .onboard .pick__key, .onboard__skip kbd { display: none; }
-  .pick__ic { position: absolute; top: 18px; right: 18px; width: 34px; height: 34px; margin: 0; }
-  .pick__name { font-size: 30px; }
-  .pick__line { margin-bottom: 14px; font-size: 14px; }
-  .pick__stats { gap: 7px; margin-bottom: 14px; }
-  .stat { grid-template-columns: 100px minmax(0, 1fr); font-size: 10.5px; }
-  .pick__perks { display: none; }
-  .pick__go { height: 40px; }
-  .onboard__hint { display: none; }
 }
 /* the game's panels give the board and the list more room on a phone */
 @media screen and (max-width: 560px) {
@@ -2008,9 +2311,6 @@ html:has(.quests[open]) { overflow: hidden; }
   .finder__skills { flex-wrap: nowrap; overflow-x: auto; margin-inline: -22px; padding: 2px 22px; scrollbar-width: none; }
   .finder__skills::-webkit-scrollbar { display: none; }
   .finder__skill { flex: none; }
-}
-@media screen and (max-width: 374px) {
-  .mode-switch__label { display: none; }
 }
 @media (max-width: 560px) {
   .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2033,10 +2333,9 @@ html:has(.quests[open]) { overflow: hidden; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation: none !important; }
   .js .rv, .js .rv.is-in { opacity: 1; transform: none; }
   .js .hero__name .line > span { transform: none; }
-  .js .hero__photo .hero__frame { clip-path: none; }
-  .js .hero__snap { opacity: 1; transform: rotate(-4deg); }
-  .js .hero__photo .hero__frame img { transform: none; }
-  .js .h-split .w > span, .js .hero__line b::after { transform: none; }
+  .js .mark path { stroke-dashoffset: 0; }
+  .js .hero__form { translate: none; }
+  .js .h-split .w > span { transform: none; }
   .js :is(.acc__item, .contact__row, .concepts > div).rv::before { transform: none; }
   .js .section::before, .js .figures::before { transform: none; }
   .js .trace .st { opacity: 1; transform: none; }
@@ -2063,11 +2362,12 @@ html:has(.quests[open]) { overflow: hidden; }
   @page { margin: 12mm 13mm 14mm; }
   html { font-size: 9pt; }
   body { background: #fff; color: #111; padding: 0; font-size: 9pt; line-height: 1.45; }
-  .bar, .rail, .dock, .skip, .hero__field, .strip, .hero__actions, .hero__photo, .trace, .photos,
+  .bar, .dock, .skip, .hero__field, .strip, .hero__actions, .hero__photo, .trace, .photos,
   .acc__icon, .toast, .confetti, .eggs, .quests, .lightbox, .offclock, .keys, .head__intro, .project__go,
-  .onboard, .mode-switch, .foot__mode, .mode-wipe, .contact__row--cv,
+  .onboard, .mode-switch, .foot__mode, .foot__link, .mode-wipe, .contact__row--cv,
   .qlog, .chess, .runcard, .quest__play, .quest__back, .quest__turn,
-  .hero__more, .finder, .share, .answers,
+  .finder, .share, .answers, .project__shot, .foot__now,
+  .note, .mark, .viz, .concepts__panel, .contact__mark, .contact__band, .hero__role,
   .section--contact .contact__title { display: none !important; }
   /* the side projects print as a compact list, two to a row */
   .projects { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4pt 14pt; border-top: 0; }
@@ -2086,8 +2386,9 @@ html:has(.quests[open]) { overflow: hidden; }
   .hero { min-height: 0; padding: 0; display: block; }
   .hero__grid { display: block; }
   .hero__name { font-size: 26pt; margin: 4pt 0 6pt; }
+  .strike { text-decoration: line-through; }
   .hero__name .line { display: inline-block; padding: 0 0.12em 0 0; margin: 0; }
-  .line:nth-child(2) { padding-left: 0; }
+  .line:nth-child(1) { padding-left: 0; }
   .hero__line { font-size: 12pt; margin-bottom: 4pt; }
   .hero__pitch { font-size: 9.5pt; margin-bottom: 0; }
   .figures { grid-template-columns: repeat(5, minmax(0, 1fr)); margin-top: 5mm; }
@@ -2108,6 +2409,7 @@ html:has(.quests[open]) { overflow: hidden; }
   .acc--roles .acc__body { padding-left: 34pt; }
   .acc__body p, .role__sum { font-size: 9pt; margin-bottom: 4pt; }
   .acc__body > :last-child { margin-bottom: 5pt; }
+  .acc__body:has(> .viz) { display: block; }
   /* "copy a link" does not print: the part above it ends the body */
   .acc__body > :has(+ .share:last-child) { margin-bottom: 5pt; }
   .role { gap: 10pt; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
@@ -2118,6 +2420,13 @@ html:has(.quests[open]) { overflow: hidden; }
   .ships li { padding: 3pt 0; }
   .ships b { font-size: 9pt; }
   .ships span { font-size: 8pt; margin-top: 0; }
+  /* the habits print as a compact list, two to a row, all lit */
+  .how__grid { display: block; }
+  .how__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14pt; border-top: 0; }
+  .how__row { padding: 4pt 0; border-bottom: 0; break-inside: avoid; }
+  .how__row::before { display: none; }
+  .how__row dt { font-size: 9.5pt; margin-bottom: 2pt; color: var(--ink) !important; }
+  .how__row dd { font-size: 8pt; }
   .ai { display: block; }
   .concepts { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 10pt; }
   .concepts > div { padding: 5pt 0; }

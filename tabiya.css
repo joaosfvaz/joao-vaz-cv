@@ -14,7 +14,7 @@
   --on: #0c0e13;           /* dark text on amber, which is too light for white */
 }
 /* on paper the amber and the lapis step down so text in them reads */
-:root[data-theme="light"] .page--tabiya { --accent: #c87812; --accent-soft: #a2600c; --accent-2: #2f74c0; }
+:root[data-theme="light"] .page--tabiya { --accent: #c87812; --accent-soft: #a2600c; --accent-2: #2a69ae; }
 
 /* ---------- The lockup ---------- */
 .proj__lockup {
@@ -49,9 +49,9 @@
 .shot:hover .shot__frame img { transform: scale(1.015); }
 .shot figcaption {
   margin-top: 14px;
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.06em;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 13.5px;
   color: var(--ink-faint);
 }
 .shot--hero .shot__frame { border-color: rgba(242, 160, 61, 0.3); }
@@ -69,9 +69,9 @@
 .feat--flip .feat__text { order: 2; }
 .feat__no {
   display: block;
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.2em;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 13.5px;
   color: var(--accent-soft);
   margin-bottom: 16px;
 }

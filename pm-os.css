@@ -45,15 +45,15 @@
   display: flex;
   flex-direction: column;
   gap: 7px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 13.5px;
   color: var(--ink-dim);
 }
 .vault__key li { display: flex; align-items: center; gap: 9px; }
 .vault__key i {
   width: 8px; height: 8px;
-  border-radius: 50%;
+  transform: skewX(var(--slant));
   background: var(--ink-faint);
   flex: 0 0 auto;
 }
@@ -64,10 +64,10 @@
 
 .vault figcaption {
   margin-top: 14px;
-  font-family: var(--mono);
-  font-size: 11.5px;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 13.5px;
   line-height: 1.7;
-  letter-spacing: 0.04em;
   color: var(--ink-faint);
   max-width: 760px;
 }
@@ -92,7 +92,6 @@
   position: absolute;
   top: 0; left: 24px; right: 24px;
   height: 2px;
-  border-radius: 2px;
   background: var(--zc, var(--ink-faint));
   transform: scaleX(0);
   transform-origin: 0 50%;
@@ -107,17 +106,16 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 13.5px;
   color: var(--zt, var(--zc));
   margin-bottom: 16px;
 }
 .zone__tag::before {
   content: "";
   width: 8px; height: 8px;
-  border-radius: 50%;
+  transform: skewX(var(--slant));
   background: var(--zc);
 }
 .zone h3 {
@@ -139,10 +137,9 @@
 }
 .rule-row { background-color: color-mix(in srgb, var(--accent) 6%, transparent); }
 .rule-row__k {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 13.5px;
   color: var(--accent-3);
   padding-top: 3px;
 }
@@ -164,10 +161,9 @@
 }
 .routine:hover { background: var(--tint); }
 .routine__when {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 13.5px;
   color: var(--accent-3);
   padding-top: 4px;
   position: sticky;
@@ -185,12 +181,12 @@
 .routine__body em { color: var(--ink); font-style: normal; }
 .routine__writes {
   display: inline-block;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-family: var(--sans);
+  font-style: italic;
+  font-size: 13.5px;
   color: var(--ink-dim) !important;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--tint-2);
   padding: 6px 12px;
   margin-bottom: 0 !important;

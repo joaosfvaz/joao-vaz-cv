@@ -2,7 +2,7 @@
  *  Scroll driver — the single reader of scroll position on the page.
  *
  *  Everything that reacts to scroll (the reveals, the hero, the
- *  timeline, the progress bar) subscribes here. Layout metrics and
+ *  bands, the navigation) subscribes here. Layout metrics and
  *  section anchors are cached on resize, scrollY is sampled once per
  *  frame, and one rAF loop drives every consumer — so the whole page
  *  moves on the same clock.

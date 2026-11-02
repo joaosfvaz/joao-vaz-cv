@@ -16,7 +16,7 @@
        that address: every link here is absolute. The home page's sheet
        gives it the same type, colours and buttons; no scripts beyond the
        theme, so nothing waits to be revealed. -->
-  <link rel="stylesheet" href="/home.css?v=2026-10-30a" />
+  <link rel="stylesheet" href="/home.css?v=2026-11-02e" />
   <script>
     (function () {
       var t = null;
@@ -34,8 +34,7 @@
       gap: 28px;
       padding-block: 48px;
     }
-    .lost__home { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 600; font-size: 17px; }
-    .lost__home svg { width: 28px; height: 28px; }
+    .lost__home { display: inline-flex; align-items: center; gap: 10px; }
     .lost__code {
       font-family: var(--display);
       font-weight: 800;
@@ -45,22 +44,52 @@
       color: var(--accent);
     }
     .lost__title { max-width: 14em; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4.6vw, 54px); line-height: 1.05; letter-spacing: -0.04em; }
-    .lost__title em { font-style: normal; color: var(--accent-2); }
     .lost p { max-width: 34em; color: var(--dim); }
     .lost__go { display: flex; flex-wrap: wrap; gap: 12px; }
+    /* the text beside a board with one king on it, the square marked the
+       way the puzzle on the home page marks a picked piece */
+    .lost__body { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+    .lost__text { display: grid; gap: 28px; }
+    .lost__board {
+      display: grid;
+      grid-template: repeat(8, minmax(0, 1fr)) / repeat(8, minmax(0, 1fr));
+      width: min(100%, 380px);
+      aspect-ratio: 1;
+      border: 1px solid var(--line-2);
+      border-radius: 0;
+      overflow: hidden;
+      background: repeating-conic-gradient(#a3abba 0 25%, #e9e7e1 0 50%) 0 0 / 25% 25%;
+    }
+    .lost__board span {
+      grid-area: 5 / 5;
+      display: grid; place-items: center;
+      font-family: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", serif;
+      font-size: min(38px, 9vw);
+      line-height: 1;
+      color: #12151c;
+      box-shadow: inset 0 0 0 3px var(--orange);
+    }
+    @media (max-width: 767px) {
+      .lost__body { grid-template-columns: minmax(0, 1fr); }
+      .lost__board { width: min(100%, 260px); }
+    }
   </style>
 </head>
 <body>
   <main class="lost wrap">
-    <a class="lost__home" href="/" aria-label="João Vaz — home"><svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#4d7cff" /><g transform="translate(3.6 3.6) scale(.89)"><g fill="#fff"><path d="M15 13h8.5v24.5c0 7.2-5.8 13-13 13H9v-8.5h1.5c2.5 0 4.5-2 4.5-4.5z" /><path d="M27 13h8.6l4.9 21.5 4.9-21.5H54l-9.2 37.5h-8.6z" /></g><rect x="52" y="42.5" width="8" height="8" rx="1.2" fill="#ff7a3d" /></g></svg><span>João Vaz</span></a>
-    <div class="lost__code" aria-hidden="true">404</div>
-    <p class="meta">Quest not found</p>
-    <h1 class="lost__title">This page is <em>off the map.</em></h1>
-    <p>The link may be old, or the address may have a typo. Everything else is still here.</p>
-    <div class="lost__go">
-      <a class="btn btn--ink" href="/"><span>Go to the home page</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a>
-      <a class="btn btn--line" href="/?mode=recruiter">See the full CV</a>
-      <a class="btn btn--line" href="/?mode=curious#quests">See the side quests</a>
+    <a class="lost__home" href="/" aria-label="João Vaz — home"><svg class="jv" viewBox="8.3 8 104 84" aria-hidden="true"><path d="M40.3 8L62.3 8L50.4 64C46.57 82 32.44 92 16.44 92L10.44 92L8.3 72L18.7 72C23.7 72 27.55 68 28.82 62ZM89.3 8L112.3 8L67.44 92L49.44 92L48.55 83.76C55.29 77.87 59.71 71.25 62.79 64L76.01 32.9Z" /></svg><span class="wordmark" aria-hidden="true">João Vaz</span></a>
+    <div class="lost__body">
+      <div class="lost__text">
+        <div class="lost__code" aria-hidden="true">404</div>
+        <h1 class="lost__title">This page is off the board.</h1>
+        <p>The link may be old, or the address may have a typo. Everything else is still here.</p>
+        <div class="lost__go">
+          <a class="btn btn--ink" href="/"><span>Go to the home page</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a>
+          <a class="btn btn--line" href="/?mode=recruiter">See the full CV</a>
+          <a class="btn btn--line" href="/?mode=curious#quests">See the side quests</a>
+        </div>
+      </div>
+      <div class="lost__board" aria-hidden="true"><span>&#9818;&#xFE0E;</span></div>
     </div>
   </main>
 </body>

@@ -1,12 +1,14 @@
 # João Vaz — Personal Website
 
-A personal site built from my CV. Flat: a deep ground, a bold grotesque for display (Bricolage
-Grotesque), Geist for text and Geist Mono for labels, hairline dividers instead of panels, and two
-colours on top of white and grey. Blue (`--accent`) carries the accents — section numbers,
-highlighted words, rules, active states, the photo block. Orange (`--accent-2`) is the second
-voice, used sparingly — the second underline in the hero, the square on the photo, the strip's
-stars, half the project cards, the contact heading, the ripple in the dot field, the warning marks
-in the trace. No gradients, no glass. No framework, no build step, no runtime dependency.
+A personal site built from my CV. Flat and sharp: a deep ground, Archivo for all the reading and,
+heavy and italic, for display, Caveat for a few notes by hand, Geist Mono only for what a machine
+wrote, hairline dividers instead of panels, and two colours on top of white and grey. Blue
+(`--accent`) carries the accents — highlighted words, rules, active states, the buttons. Orange
+(`--accent-2`) is the second voice, used sparingly — the notes by hand, the strip's slashes, half
+the project cards, the contact heading, the ripple in the dot field, the warning marks in the
+trace. No gradients, no glass. No framework, no build step, no
+runtime dependency. One optional outside call: the chess card reads its rapid rating from
+Chess.com's public API after the page loads, and the line stays hidden if the call fails.
 
 Every page — the home page and the three project pages — runs on the same system: `home.css`,
 `js/scroll.js` and `js/home.js`. A project page only swaps the main colour: PM-OS is violet,
@@ -19,20 +21,49 @@ The movement is kept to a few places on purpose, so each one is noticed:
   rise and take the accent colour under the pointer (orange in a ripple), a ripple runs out from the photo once it lands, and a click
   or a tap on the hero sends another. The loop runs only while something moves; at rest it costs
   nothing. Under reduced motion it draws once and stays still.
-- **The name and the photo** — the name rises letter by letter out of its two lines; the photo is
-  wiped in from the bottom over a flat blue block that leans away from the pointer (a small orange square leans the other way), settles from a
-  slight zoom, then drifts a little against the scroll inside the overscan it keeps.
+- **Product pictures** — each product opens to one line of text beside a small picture with one
+  idea for all six: each dot is a car (in the agents' picture, a piece of data). `js/home.js` draws
+  them as SVG into each `[data-viz]`, from a fixed seed, with a note in marker: data flowing from
+  three sources into one answer, a car sliding past the fair range, cars for sale against cars
+  wanted, the funnel against similar cars, the stock with the nine cars that need the dealer, and
+  the next step landing on four cars. Illustrations, labelled as such; they play when their row
+  opens.
+- **The agent terms** — the eight terms beside the trace are words to pick. One definition shows
+  at a time under them, and the trace marks the part the term is about (`data-hl`). Without the
+  script, and on paper, they are a list.
+- **Deliveries** — each delivery in a role shows its name; the line about it opens under the
+  pointer, on focus or on a tap. Paper shows every line.
+- **The marker** — a second hand on the page, in Caveat and the second colour, used a handful of
+  times: "a demo" struck through and "evidence"
+  written over it in the AI heading, a ring round "dealer" as its habit lights up, a note on the
+  Tabiya screen and the sign-off under Contact. The strokes are SVG paths with `pathLength="1"`,
+  drawn on with `stroke-dashoffset` when their part arrives.
+- **The mark in the hero** — the first page is the mark, one sentence and two buttons. The hero and the
+  strip together fill the first screen: the mark stands on the right and runs into the strip. The J is flat colour; the
+  V holds the portrait, printed in the same colour (`--form`, which the curious view turns orange):
+  `mix-blend-mode: screen` over the fill turns black into the colour and leaves white alone, and a mask
+  fades the print out at the collar, so the rest of the V is flat colour too. Under the pointer the
+  print turns to full colour. The forms arrive from above and from below, each along its own lean, and
+  lock; as the page scrolls they move apart along the same lines. Below 1000px, or on a tall screen,
+  the sentence and the buttons come first and the mark under them. The name is once on screen, small,
+  in the bar; the `<h1>` is for screen readers and for paper.
+- **The message box** (`<dialog id="chat">`) — "Message me" and "Say hi" open a small chat window; without
+  the script they are plain links to LinkedIn. The visitor writes, and "Send message" copies the text at
+  once (`document.execCommand`, because the clipboard API refuses a page that has lost the focus to the new
+  tab) and opens the LinkedIn profile, where they press Message and paste. A visitor who is not logged in
+  meets LinkedIn's login wall, which returns them to the profile afterwards. The email link under it takes
+  the text to their mail app (`mailto:` with a `body`). Nothing leaves the page by itself.
+- **The bar at the top of the page** — the name, the view switch and Contact. The section links, the
+  icons and the small mark arrive with the scroll, or sooner under the pointer or the keyboard
+  (`.bar.is-top`, set in the markup of the home page and toggled by `js/home.js`).
 - **The load sequence** — one pass on arrival, choreographed in `home.css` (`--delay` on the hero's
-  reveals): the bar drops in, the label, the name letter by letter, the line "I build tools for
-  12,000+ car dealers and 10M+ visitors" with the numbers then underlined, one blue and one orange, the pitch and
-  the buttons; the blue block, then the photo; then the figures left to right.
-- **Headings** — every section heading rises word by word out of its own masks when it arrives
-  (`js/home.js` wraps the words; words inside the blue `<em>` stay in it).
-- **Dividers that draw** — every rule (sections, rows, the figures strip) draws from the left as
-  its row arrives. They are pseudo-elements scaled on `transform`, not borders.
+  reveals): the bar drops in, the sentence and the buttons rise while the two forms lock. The hero has
+  no row of numbers on screen: they are in the sentence and in the roles. The figures strip under the
+  name and the pitch are for paper only (see Print).
 - **Scroll depth** — as the hero leaves, its copy lifts a little faster than the page and dims, so
-  the name and the photo part company.
-- **The word strip** — one band of big type between the hero and the work. It runs sideways at a
+  the name and the mark part company.
+- **The word strip** — one band of big type on the colour of the mark, which runs into it from the
+  hero. It runs sideways at a
   steady pace, speeds up with the scroll and turns round when the scroll does; the set of words is
   copied once and the track jumps back by exactly one set, so the loop has no seam.
 - **Roles** — each role in Experience opens into two columns: **Outcomes**, as numbers in the
@@ -55,28 +86,55 @@ The movement is kept to a few places on purpose, so each one is noticed:
 
 ## Logo and icons
 
-The mark is a **JV monogram with an orange full stop** on a blue rounded square — the same blue and
-orange as the site, and the same full stop as "João Vaz." in the hero. It is hand-drawn SVG paths,
-so it needs no font.
+The mark is **an italic J with the V close behind it**: the left side of the V follows the curve of
+the J across a thin gap, so the two letters lock together. One colour, no container, drawn as
+paths, so it needs no font. Beside it in the bar stands the name in the display face (Archivo, 800,
+a little wide); on a phone the mark stands alone. Under the pointer the mark turns to the accent,
+and five quick clicks make it jump (an easter egg).
 
-- `favicon.svg` (and the same file as `assets/brand/logo.svg`) is the master. The bar on every page
-  carries it inline next to the name; on hover the mark tilts and the dot grows.
-- `assets/brand/favicon-32.png` and `favicon.ico` are the fallbacks for browsers without SVG icons.
-- `apple-touch-icon.png` (180px) and `assets/brand/icon-192.png` / `icon-512.png` are full-bleed
-  squares with the mark smaller, because phones round the corners themselves; `site.webmanifest`
+- The mark is an inline SVG (`.jv` in `home.css`) in the bar of every page, on the first-visit
+  question and on the 404 page. It takes the colour of the text around it.
+- `favicon.svg` (and the same file as `assets/brand/logo.svg`) is the mark alone, ink on a light
+  tab bar and paper on a dark one.
+- `assets/brand/favicon-32.png` and `favicon.ico` are the fallbacks for browsers without SVG icons:
+  paper on a dark square, the mark filling more of it so it holds at that size.
+- `apple-touch-icon.png` (180px) and `assets/brand/icon-192.png` / `icon-512.png` are the mark on
+  the dark ground, full-bleed, because phones round the corners themselves; `site.webmanifest`
   lists the last two.
-- `assets/brand/og.jpg` (1200×630) is the card a shared link shows. Every page's `<head>` carries
-  the Open Graph and Twitter tags that point at it, with the page's own title and description.
+- `assets/brand/og.jpg` (1200×630) is the card a shared link shows: the name, the line, the
+  portrait with the stage print and the note. Every page's `<head>` points at it.
 
-The PNGs, the ICO and the card were rendered from SVG and HTML with headless Chrome (and ffmpeg for
-the ICO). To change the mark, edit the paths in `favicon.svg` and in the bar's inline copy, then
-render them again.
+The PNGs, the ICO and the card were rendered from HTML with headless Chrome (and ffmpeg for the
+ICO).
+
+## The brand
+
+Everything comes from the mark: two forms locked across a thin gap, leaning forward. The rules, also
+on the page at `/brand/` (linked from the home page's footer, `noindex`):
+
+- **The lean.** `--slant` (-12deg) in `home.css`, on anything that leans: buttons and chips (a skewed
+  `::before` behind an upright label), the photo panels (`clip-path`, 26.57% of the width at 4:5), the
+  bands as they open, the screen wipes, the slashes in the strip and the columns of the dot field.
+- **Sharp corners.** No rounded corners; the only curve is the one in the J.
+- **The mark, large.** The first screen, the hero, the share card and the talk opener use the mark as
+  a picture. The band at Contact is the business card at the size of the screen: the mark in white on
+  the colour, running off the edge.
+- **The gap.** Things that belong together sit close across a thin slanted gap, as the J and the V do.
+- **The display voice.** Archivo, heavy and italic, for headings and numbers (one `:is()` list near the
+  top of `home.css`). Archivo plain for reading, Caveat for a few notes in the second colour, Geist
+  Mono only for what a machine wrote.
+- **Colour.** Ink `#0c0e13`, Paper `#f6f5f1`, Blue `#3268ff`, Orange `#ff7a3d`. A project page swaps
+  Blue for one accent of its own; Ink, Paper and the mark never change.
+- **The materials** are in `assets/brand/kit/`: the mark and the mark with the name (SVG with outlined
+  type, and PNG), the mark with the portrait, profile pictures, LinkedIn banner, business card (PDF with 3 mm bleed), talk opener,
+  email signature, and the brand board. They were rendered from HTML with headless Chrome; the type in
+  the logos was outlined from Archivo with fontTools and HarfBuzz.
 
 ## Two views and the question
 
 The home page has two views. The **recruiter view** is the full CV: products, AI, experience,
 projects, contact. The **curious view** is lighter and leads with orange: the side quests on the
-page itself, a short "Day job" with three figures and a way to the full CV, then projects and
+page itself, a short "Day job" with three numbers in one sentence and a way to the full CV, then projects and
 contact.
 
 - **Which view** — the head script sets `data-mode` on `<html>` before the first paint:
@@ -86,26 +144,28 @@ contact.
   **Send recruiters `joao-vaz.com/?mode=recruiter`** (LinkedIn, the CV, applications) and they
   never see the question.
 - **Parts of one view** carry `data-for="recruiter"` or `data-for="curious"`; anything else
-  belongs to both. One `@media screen` rule hides the other view's parts. The bar, the section
-  index, the dock and the skip link have a set of links per view, and `js/scroll.js` and the nav
+  belongs to both. One `@media screen` rule hides the other view's parts. The bar, the dock and
+  the skip link have a set of links per view, and `js/scroll.js` and the nav
   in `js/home.js` read only this view's `[data-nav]` links (`Scroll.inMode`), because a hidden
   section would measure at the top of the page.
 - **The side quests are written once**, in their dialog. In the curious view, `js/home.js` moves
   the player card, the quests and the photo log into `#quests` before anything else reads the
   page; the controller button and `/#side-quests` then scroll to that section.
-- **The question** (`<dialog id="onboard">`) is a character select: two cards with a class,
-  five-segment stat bars that charge up, the keys (← → to choose, 1 or 2, Enter) and a lean
-  towards the pointer on a mouse. It shows from the first paint while the page asks. A choice
-  plays a loading bar and a wipe, then goes to `/?mode=…&start=1`, so the page starts over in that
-  view, its intro plays where it can be seen, and the choice holds even where storage is blocked.
-  A toast then names the view. Skip or Esc means the recruiter view. The question only shows on
-  a first visit; after that the switch changes the view.
-- **The view switch** in the hero shows both views, Recruiter and Just curious, with the current
-  one under a thumb in that view's colour. The other one leans the thumb towards it on hover; a
-  click slides the thumb across, the screen wipes up with an edge in that view's colour, and the
-  page starts over at `/?mode=…&start=1`, with no question. The footer link ("Switch to the
-  curious view" / "Switch to the recruiter view") and "See the full CV" in Day job do the same
-  without the thumb. All of them are plain links to `/?mode=…`, so they still work without
+- **The question** (`<dialog id="onboard">`) is the mark in the middle of the screen and two words:
+  the J (blue) is the recruiter view, the V (orange) the curious view. Each pick is a button as big as
+  the screen, cut along the gap, so anywhere on either side answers. Nothing is picked for the visitor:
+  both forms stay lit until the pointer or the keys (← → to choose, 1 or 2, Enter) lean one way, and
+  then the other dims. It shows from the first paint while the page asks. A choice makes the chosen form
+  grow until it is the screen, then goes to `/?mode=…&start=1`, so the page starts over in that view,
+  under the same colour, which leaves along the lean (the rule on `:root[data-mode-new]::after`), and
+  the choice holds even where storage is blocked. A toast then names the view. Skip or Esc means the
+  recruiter view. The question only shows on a first visit; after that the switch changes the view.
+- **The view switch** sits quietly in the bar: two small words, Recruiter and Curious, the
+  current one on a faint fill. A click on the other one wipes the screen up with an edge in that
+  view's colour, and the page starts over at `/?mode=…&start=1`, with no question. On phones the
+  bar drops its Contact button (Contact is in the dock) to keep the switch. The footer link
+  ("Switch to the curious view" / "Switch to the recruiter view") and "See the full CV" in Day job
+  do the same. All of them are plain links to `/?mode=…`, so they still work without
   `js/home.js`.
 - **The game** (`js/game.js`, curious view only; the recruiter view loads it and leaves at once).
   Quiet on purpose: the controller in the bar is the only thing that stays on screen.
@@ -142,12 +202,12 @@ contact.
   A contact line (email, LinkedIn, the site) prints under the name; on screen it is hidden.
 - **The PDF CV** (`joao-vaz-cv.pdf`) is not the print of this page: it is a condensed one-page
   CV, `cv/index.html` with its own sheet `cv.css`, made for paper (A4, one column so hiring
-  systems read it in order). `make-cv.sh` prints it. "Download CV" in the hero and the CV row at
+  systems read it in order). `make-cv.sh` prints it. The CV row at
   Contact both point at the PDF and download it as `Joao-Vaz-CV.pdf`. Every fact in the CV is on
   this page too, so change both together, then run `sh make-cv.sh` and commit the new PDF.
   `/cv/` itself is not linked and asks search engines not to list it.
 - **The recruiter's tools** (`js/recruiter.js`, recruiter view only), for a visitor who came with
-  one question. A line under the hero's buttons leads to two of them.
+  one question.
   - **The skill finder.** The magnifier in the bar (hidden on phones under 400px, where the hero
     line opens it) and "Find a skill in my work" open a panel with 12 skills as chips and a box for
     a job description. A chip, or the skills a pasted text asks for (a keyword list per skill in
@@ -174,7 +234,7 @@ controller button in the bar opens it, so does the link under Contact, and so do
 short loading bar, then the title, the player card and the nine quest cards land in a run. Esc or
 "Back to work" closes it.
 
-- **Quest cards** — one per interest, numbered Q01–Q09, each with a status chip ("Daily" in the
+- **Quest cards** — one per interest, each with a status chip ("Daily" in the
   accent, "New quest" in orange).
 - **The photo log** — my sports photography, then landscapes and places. Each album is a
   **reel** (`[data-reel]`): one row of photos at one height, each as wide as its own shape.
@@ -232,14 +292,11 @@ Every page has a light and a dark theme, and a switch in the bar (a sun on dark,
 
 ## Navigation
 
-- **The bar** — the name, four sections, the theme switch and Contact. The active section is underlined, and a
-  hairline under the bar fills with the reading position.
-- **The section index** — on screens 1400px and wider, numbers 01–05 down the left edge, each with
-  a line that fills as its section is read. Labels show on hover. It stays out of the hero.
+- **The bar** — the name, four sections, the theme switch and Contact. The active section is underlined.
 - **The dock** — on phones the section links move into a dock at the bottom, under the thumb. The
   current section is filled in.
 
-All three read the same thing: the section under a reading line a third of the way down the
+Both read the same thing: the section under a reading line a third of the way down the
 window, from `window.Scroll`'s anchors.
 
 ### On phones
@@ -283,8 +340,8 @@ is served from the domain root, set by the `CNAME` file.
 
 The home page loads `home.css`, `js/scroll.js` and `js/home.js`. A project page loads the same
 three, plus `project.css` and its own sheet (and PM-OS adds `js/graph.js`). So a project page has
-the home page's bar, section index, dock, type, hairlines and motion: its sections are whatever
-its `data-nav` links point at, its section labels are the home page's numbered `.meta` labels, its
+the home page's bar, dock, type, hairlines and motion: its sections are whatever
+its `data-nav` links point at, its section labels are the home page's `.meta` labels, its
 title rises word by word, and its ticker is the same word strip. Its own sheet sets `--accent`,
 `--accent-soft` and, where a brand needs it, `--accent-2` and `--on` (dark text when the accent is
 too light for white).

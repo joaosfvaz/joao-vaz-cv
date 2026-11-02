@@ -88,6 +88,7 @@
     const role = el.closest("#work .acc__item");
     if (role) return head($(".acc__title", role)) + " · " + clean($(".acc__when", role).textContent);
     if (el.closest(".kit")) return "Toolkit";
+    if (el.closest("#how")) return "How I work";
     if (el.closest("#products")) return "Products";
     if (el.closest("#ai")) return "AI & agents";
     if (el.closest("#projects")) return "Side project";

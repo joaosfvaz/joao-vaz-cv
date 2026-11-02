@@ -2,9 +2,9 @@
  *  The site's behaviour — the home page and the project pages run the
  *  same file: reveals, word-by-word headings, the hero (name, photo,
  *  dot field, scroll depth), counters, the word strip, the accordions,
- *  the playable trace, the copy button and the navigation (bar, section
- *  index, dock). Every part looks for its own markup and skips itself
- *  when the page has none.
+ *  the playable trace, the copy button and the navigation (bar and
+ *  dock). Every part looks for its own markup and skips itself when
+ *  the page has none.
  *
  *  The same two rules as the rest of the site:
  *
@@ -163,14 +163,19 @@
    * ---------------------------------------------------------------- */
   const photo = $(".hero__photo");
   if (photo && !reduced) {
-    const img = $("img", photo);
+    const formJ = $(".hero__form--j", photo);
+    const formV = $(".hero__form--v", photo);
     onEnter.push((el) => {
       if (el === photo) setTimeout(() => photo.classList.add("is-settled"), 2500);
     });
     S.onFrame((st) => {
       if (st.y > st.vh * 1.4) return;
-      /* capped inside the overscan the frame keeps (scale 1.1) */
-      img.style.setProperty("--py", Math.min(st.y * 0.05, 24).toFixed(1) + "px");
+      /* each along its own lean: the J goes up, the V comes down */
+      formJ.style.setProperty("--fx", (st.y * 0.12 * 0.2126).toFixed(1) + "px");
+      formJ.style.setProperty("--fy", (st.y * -0.12).toFixed(1) + "px");
+      formV.style.setProperty("--fx", (st.y * -0.07 * 0.534).toFixed(1) + "px");
+      formV.style.setProperty("--fy", (st.y * 0.07).toFixed(1) + "px");
+      photo.style.setProperty("--py", (st.y * -0.03).toFixed(1) + "px");
     });
   }
 
@@ -258,7 +263,8 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       dots = [];
       for (let y = GAP / 2; y < H; y += GAP) {
-        for (let x = GAP / 2; x < W; x += GAP) dots.push({ x: x, y: y, v: 0, f: 1 - (y / H) * 0.55 });
+        /* the columns lean by the same angle as the mark */
+        for (let x = GAP / 2 - (y * 0.2126) % GAP; x < W; x += GAP) dots.push({ x: x, y: y, v: 0, f: 1 - (y / H) * 0.55 });
       }
       kick();
     }
@@ -332,16 +338,10 @@
         const r = hero.getBoundingClientRect();
         px = ev.clientX - r.left;
         py = ev.clientY - r.top;
-        /* the colour block behind the photo leans away from the pointer */
-        if (photo) {
-          photo.style.setProperty("--bx", ((0.5 - px / r.width) * 24).toFixed(1));
-          photo.style.setProperty("--by", ((0.5 - py / r.height) * 24).toFixed(1));
-        }
         kick();
       });
       hero.addEventListener("pointerleave", () => {
         px = py = -1e4;
-        if (photo) { photo.style.setProperty("--bx", "0"); photo.style.setProperty("--by", "0"); }
         kick();
       });
       hero.addEventListener("pointerdown", (ev) => {
@@ -361,32 +361,76 @@
   }
 
   /* ------------------------------------------------------------------
-   * Copy the email — the mail link copies the address instead and says
-   * so; if the clipboard is not available it stays a mail link.
+   * The large mark behind Contact slides along its own lean with the
+   * scroll.
    * ---------------------------------------------------------------- */
-  $$("[data-copy]").forEach((btn) => {
-    const label = $("[data-copy-label]", btn);
-    const status = $("[data-copy-status]");
-    const idle = label.textContent;
-    let timer = 0;
-    btn.addEventListener("click", (ev) => {
-      const addr = btn.dataset.copy;
-      /* no clipboard: let the mail link do its job */
-      if (!(navigator.clipboard && window.isSecureContext)) return;
-      ev.preventDefault();
-      const done = () => {
-        label.textContent = "Copied — " + addr;
-        btn.classList.add("is-done");
-        if (status) status.textContent = "Email address copied.";
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-          label.textContent = idle;
-          btn.classList.remove("is-done");
-        }, 2600);
-      };
-      navigator.clipboard.writeText(addr).then(done, () => { window.location.href = "mailto:" + addr; });
+  const contactMark = $(".contact__mark");
+  if (contactMark && !reduced) {
+    let top = 0;
+    S.onMeasure(() => { top = contactMark.parentElement.getBoundingClientRect().top + window.scrollY; });
+    S.onFrame((st) => {
+      if (st.y + st.vh < top) return;
+      const d = (st.y + st.vh - top) * 0.12;
+      contactMark.style.transform = "translate3d(" + (d * 0.2126).toFixed(1) + "px," + (-d).toFixed(1) + "px,0)";
     });
-  });
+  }
+
+  /* ------------------------------------------------------------------
+   * The message box — the visitor writes here. Sending copies the text and
+   * opens my LinkedIn profile in a new tab, where they press Message and
+   * paste, or they use the email link, which takes the text to their mail
+   * app. Without the dialog or the script, the buttons stay plain links.
+   * ---------------------------------------------------------------- */
+  const chat = $("#chat");
+  if (chat && chat.showModal) {
+    const text = $(".chat__text", chat);
+    const note = $("[data-chat-note]", chat);
+    const hint = note.textContent;
+    const say = (msg) => { note.textContent = msg; };
+    $$("[data-chat-open]").forEach((a) => a.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      say(hint);
+      chat.showModal();
+      text.focus();
+    }));
+    $("[data-chat-close]", chat).addEventListener("click", () => chat.close());
+    /* a click on the backdrop lands on the dialog itself, outside its box;
+       a key pressed on a button also clicks, at no position, so check both */
+    chat.addEventListener("click", (ev) => {
+      if (ev.target !== chat) return;
+      const r = chat.getBoundingClientRect();
+      if (ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom) chat.close();
+    });
+    const send = () => {
+      const msg = text.value.trim();
+      if (!msg) { say("Write your message first."); text.focus(); return; }
+      /* copy first and at once: the new tab takes the focus, and the
+         clipboard API refuses a page that has lost it */
+      text.focus();
+      text.setSelectionRange(0, text.value.length);
+      let copied = false;
+      try { copied = document.execCommand("copy"); } catch (e) { copied = false; }
+      text.setSelectionRange(text.value.length, text.value.length);
+      const api = !copied && navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(msg) : null;
+      window.open(chat.dataset.profile, "_blank", "noopener");
+      const ok = () => say("Copied. On LinkedIn, log in if asked, press Message, then paste.");
+      const fail = () => { say("Copy your message from this box, then paste it on LinkedIn."); text.select(); };
+      if (copied) ok();
+      else if (api) api.then(ok, fail);
+      else fail();
+    };
+    $("[data-chat-send]", chat).addEventListener("click", send);
+    /* the email option carries whatever they have written so far */
+    const mail = $("[data-chat-mail]", chat);
+    const address = mail.getAttribute("href");
+    mail.addEventListener("click", () => {
+      const msg = text.value.trim();
+      mail.setAttribute("href", msg ? address + "?body=" + encodeURIComponent(msg) : address);
+    });
+    text.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter" && (ev.metaKey || ev.ctrlKey)) { ev.preventDefault(); send(); }
+    });
+  }
 
   /* ------------------------------------------------------------------
    * Accordions — one open item per group. The panel height is a CSS
@@ -575,18 +619,218 @@
   }
 
   /* ------------------------------------------------------------------
-   * Navigation — the bar, the section index and the dock all mark the
-   * section under the reading line, a third of the way down the window.
-   * The bar's hairline and each index line fill with the reading.
+   * Deliveries — each shows its name; the line about it opens under the
+   * pointer or on focus (home.css), and a tap or Enter toggles it.
+   * ---------------------------------------------------------------- */
+  $$(".ships li").forEach((li) => {
+    li.tabIndex = 0;
+    li.addEventListener("click", () => li.classList.toggle("is-open"));
+    li.addEventListener("keydown", (ev) => {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      ev.preventDefault();
+      li.classList.toggle("is-open");
+    });
+  });
+
+  /* ------------------------------------------------------------------
+   * Product pictures — one idea for all six: each dot is a car (in the
+   * agents' picture, a piece of data). Drawn here into each [data-viz]
+   * as SVG, with a note in marker; home.css plays them when their row
+   * opens. A fixed seed, so every visit draws the same picture.
+   * ---------------------------------------------------------------- */
+  const vizzes = $$("[data-viz]");
+  if (vizzes.length) {
+    const NS = "http://www.w3.org/2000/svg";
+    const make = (tag, attrs, parent) => {
+      const n = document.createElementNS(NS, tag);
+      Object.keys(attrs).forEach((k) => n.setAttribute(k, attrs[k]));
+      if (parent) parent.appendChild(n);
+      return n;
+    };
+    let seed = 11;
+    const rand = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+    const gauss = () => Math.sqrt(-2 * Math.log(rand() || 1e-9)) * Math.cos(6.2832 * rand());
+    const dot = (g, x, y, cls, d, r, style) =>
+      make("circle", { cx: x.toFixed(1), cy: y.toFixed(1), r: r || 4.2, class: cls, style: "--d:" + Math.round(d) + (style || "") }, g);
+    const text = (g, x, y, words, anchor) => {
+      const t = make("text", { x: x, y: y, "text-anchor": anchor || "start" }, g);
+      t.textContent = words;
+    };
+    /* arrows in marker: down, down-left, down-right, up, up-left */
+    const ARROWS = {
+      d: ["M14 4C20 18 20 30 16 44", "M8 36L16 45L23 36"],
+      dl: ["M54 6C34 6 16 18 10 42", "M3 32L10 44L20 35"],
+      dr: ["M6 6C26 6 44 18 50 42", "M40 35L50 44L57 32"],
+      u: ["M16 44C12 32 12 20 16 6", "M8 14L16 4L24 13"],
+      ul: ["M54 44C36 42 18 30 12 8", "M4 16L11 5L20 13"],
+    };
+    const note = (box, words, x, y, rot, arrow, delay) => {
+      const n = document.createElement("span");
+      n.className = "note viz__note";
+      n.style.left = x + "%";
+      n.style.top = y + "%";
+      n.style.rotate = rot + "deg";
+      if (delay) n.style.setProperty("--nd", delay + "s");
+      n.appendChild(document.createTextNode(words));
+      if (arrow) {
+        /* an arrow that points up sits above its words */
+        const m = make("svg", { class: "mark", viewBox: "0 0 60 50" });
+        if (arrow[0] === "u") n.insertBefore(m, n.firstChild);
+        else n.appendChild(m);
+        ARROWS[arrow].forEach((d) => make("path", { pathLength: 1, d: d }, m));
+        if (arrow === "dl" || arrow === "ul") m.style.marginLeft = "-14px";
+      }
+      box.appendChild(n);
+    };
+    const DRAW = {
+      /* three sources of data flow into one answer */
+      agents(box, g) {
+        const hub = [300, 112];
+        [["listings", 74, 46], ["prices", 74, 116], ["market", 74, 186]].forEach((src, si) => {
+          const cx = src[1], cy = src[2];
+          make("path", { class: "v-link", d: "M" + (cx + 30) + " " + cy + "C" + (cx + 120) + " " + cy + " " + (hub[0] - 120) + " " + hub[1] + " " + (hub[0] - 20) + " " + hub[1] }, g);
+          for (let i = 0; i < 13; i++) {
+            const a = rand() * 6.2832, rr = Math.sqrt(rand()) * 21;
+            const x = cx + Math.cos(a) * rr, y = cy + Math.sin(a) * rr * 0.8;
+            dot(g, x, y, "v-m pop", si * 120 + i * 20, 3.6);
+            if (i % 3 === 0) dot(g, x, y, "v-a flow", 700 + si * 380 + i * 90, 3.6, ";--tx:" + (hub[0] - x).toFixed(1) + "px;--ty:" + (hub[1] - y).toFixed(1) + "px");
+          }
+          text(g, cx, cy + 38, src[0], "middle");
+        });
+        dot(g, hub[0], hub[1], "v-a pop v-pulse", 600, 12);
+        text(g, hub[0], hub[1] + 40, "one answer", "middle");
+        note(box, "from our data, not from memory", 47, 3, -3, "d", 1.4);
+      },
+      /* similar cars by price, the fair range, and this car sliding in */
+      price(box, g) {
+        make("line", { class: "v-axis", x1: 24, y1: 200, x2: 376, y2: 200 }, g);
+        text(g, 24, 224, "cheaper");
+        text(g, 376, 224, "pricier", "end");
+        make("rect", { class: "v-band pop", x: 148, y: 52, width: 108, height: 132, rx: 10, style: "--d:150" }, g);
+        text(g, 202, 42, "fair range", "middle");
+        for (let i = 0; i < 48; i++) {
+          const x = Math.min(366, Math.max(34, 202 + gauss() * 64));
+          dot(g, x, 118 + (rand() - 0.5) * 92, "v-m pop", (x - 24) * 1.6, 4.2);
+        }
+        dot(g, 292, 118, "v-o v-car", 0, 8.5, ";--tx:-250px");
+        note(box, "+9%, a bit pricey", 70, 9, -4, "d", 2.1);
+      },
+      /* cars for sale against cars wanted, per segment */
+      market(box, g) {
+        dot(g, 22, 16, "v-m pop", 0, 4.2);
+        text(g, 32, 20, "for sale");
+        dot(g, 104, 16, "v-a pop", 0, 4.2);
+        text(g, 114, 20, "wanted");
+        [["SUV", 10, 6], ["Hatch", 5, 12], ["Saloon", 8, 8], ["Estate", 4, 9], ["Van", 3, 4]].forEach((seg, i) => {
+          const cx = 44 + i * 78;
+          for (let k = 0; k < seg[1]; k++) dot(g, cx - 8, 196 - k * 12, "v-m pop", i * 70 + k * 45, 4.4);
+          for (let k = 0; k < seg[2]; k++) dot(g, cx + 8, 196 - k * 12, "v-a pop", i * 70 + k * 45 + 30, 4.4);
+          text(g, cx, 224, seg[0], "middle");
+        });
+        note(box, "buy these", 40, 12, -5, "dl", 1.6);
+      },
+      /* every step of every car, against similar cars */
+      funnel(box, g) {
+        [["Views", 28, 24], ["Clicks", 17, 19], ["Saves", 9, 12], ["Messages", 5, 6], ["Calls", 3, 4]].forEach((row, ri) => {
+          const y = 34 + ri * 42;
+          text(g, 18, y + 4, row[0]);
+          for (let i = 0; i < row[1]; i++) dot(g, 116 + i * 10, y, "v-a pop", ri * 160 + i * 22, 3.8);
+          make("circle", { class: "v-ring pop", cx: 116 + (row[2] - 1) * 10, cy: y, r: 7, style: "--d:" + (1100 + ri * 90) }, g);
+        });
+        note(box, "the ring is similar cars", 49, 50, -3, "ul", 1.9);
+      },
+      /* the stock at a glance: nine cars need the dealer */
+      home(box, g) {
+        const need = ["2,1", "5,4", "7,2", "9,5", "11,1", "12,4", "14,3", "4,6", "8,0"];
+        for (let r = 0; r < 7; r++) {
+          for (let c = 0; c < 16; c++) {
+            const hot = need.indexOf(c + "," + r) > -1;
+            dot(g, 33 + c * 22, 26 + r * 22, hot ? "v-o pop v-pulse" : "v-m pop", (c + r) * 28 + (hot ? 300 : 0), hot ? 5.2 : 4.4);
+          }
+        }
+        note(box, "these 9 need you", 46, 66, -3, "u", 1.6);
+      },
+      /* a next step lands on the cars that need one */
+      recs(box, g) {
+        const acts = { "2,1": "renew", "6,4": "reprice", "9,1": "boost", "12,3": "renew" };
+        for (let r = 0; r < 6; r++) {
+          for (let c = 0; c < 14; c++) {
+            const act = acts[c + "," + r];
+            const x = 34 + c * 26, y = 24 + r * 38;
+            dot(g, x, y, act ? "v-o pop v-pulse" : "v-m pop", (c + r) * 26 + (act ? 500 : 0), act ? 5.2 : 4.4);
+            /* the step, in marker, just above the car */
+            if (act) note(box, act, (x - 6) / 4, ((y - 30) / 240) * 100, -6, null, 1.1 + Object.keys(acts).indexOf(c + "," + r) * 0.25);
+          }
+        }
+      },
+    };
+    vizzes.forEach((box) => {
+      const draw = DRAW[box.dataset.viz];
+      if (!draw) return;
+      /* the notes sit in the drawing's own space, in % of it */
+      const wrap = document.createElement("div");
+      wrap.className = "viz__draw";
+      const svg = make("svg", { viewBox: "0 0 400 240", "aria-hidden": "true" }, wrap);
+      box.insertBefore(wrap, box.firstChild);
+      draw(wrap, make("g", {}, svg));
+    });
+  }
+
+  /* ------------------------------------------------------------------
+   * The agent terms — each term becomes a word to pick. One definition
+   * shows at a time in a panel under them, and the trace marks the part
+   * the term is about. Under a mouse, pointing at a word picks it.
+   * Without the script the terms stay a list.
+   * ---------------------------------------------------------------- */
+  const terms = $(".concepts");
+  if (terms) {
+    const items = $$(":scope > div", terms);
+    const traceEl = $("[data-trace]");
+    const panel = document.createElement("div");
+    const pName = document.createElement("b");
+    const pText = document.createElement("p");
+    panel.className = "concepts__panel";
+    panel.setAttribute("aria-live", "polite");
+    panel.append(pName, pText);
+    terms.after(panel);
+    const pick = (item, swap) => {
+      items.forEach((it) => {
+        const on = it === item;
+        it.classList.toggle("is-on", on);
+        $("dt button", it).setAttribute("aria-pressed", String(on));
+      });
+      pName.textContent = $("dt", item).textContent;
+      pText.textContent = $("dd", item).textContent;
+      if (swap && !reduced) {
+        panel.classList.remove("is-swap");
+        void panel.offsetWidth;
+        panel.classList.add("is-swap");
+      }
+      if (traceEl) traceEl.setAttribute("data-hl", item.dataset.hl || "");
+    };
+    const pointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    items.forEach((it) => {
+      const dt = $("dt", it);
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = dt.textContent;
+      dt.textContent = "";
+      dt.appendChild(btn);
+      btn.addEventListener("click", () => pick(it, !it.classList.contains("is-on")));
+      if (pointer) btn.addEventListener("pointerenter", () => { if (!it.classList.contains("is-on")) pick(it, true); });
+    });
+    pick(items[0], false);
+  }
+
+  /* ------------------------------------------------------------------
+   * Navigation — the bar and the dock both mark the section under the
+   * reading line, a third of the way down the window.
    * ---------------------------------------------------------------- */
   const bar = $("#bar");
-  const rail = $$(".rail").filter(S.inMode)[0];
   const navLinks = $$("[data-nav]").filter(S.inMode);
   /* the sections are whatever the page's own links point at, in order
      (this view's links only, the same rule as js/scroll.js) */
   const ids = navLinks.map((a) => a.dataset.nav).filter((id, i, all) => all.indexOf(id) === i);
-  const railFills = {};
-  $$(".rail a").filter(S.inMode).forEach((a) => { railFills[a.dataset.nav] = $("i", a); });
   let active = "";
 
   function sync(st) {
@@ -596,7 +840,6 @@
       const an = S.anchors[id];
       if (!an) return;
       if (line >= an.top) next = id;
-      if (railFills[id]) railFills[id].style.setProperty("--f", clamp((line - an.top) / an.height, 0, 1).toFixed(3));
     });
     /* the last section is short: at the very bottom it is the one */
     if (st.y >= st.max - 4 && ids.length) next = ids[ids.length - 1];
@@ -609,15 +852,9 @@
         else a.removeAttribute("aria-current");
       });
     }
-    if (bar) {
-      bar.classList.toggle("is-scrolled", st.y > 8);
-      bar.style.setProperty("--p", st.progress.toFixed(4));
-    }
-    /* the index stays out of the hero and the word strip, where the bar
-       already shows the sections; the dock is always there, under the
-       thumb */
-    const first = S.anchors[ids[0]];
-    if (rail) rail.classList.toggle("is-hidden", st.y < (first ? first.top - st.vh * 0.4 : st.vh * 0.5));
+    if (bar) bar.classList.toggle("is-scrolled", st.y > 8);
+    /* the home page only: see "At the top of the home page" in home.css */
+    if (bar && hero) bar.classList.toggle("is-top", st.y < st.vh * 0.4);
   }
   S.onScroll(sync);
   S.onMeasure((st) => sync(st));
@@ -625,8 +862,8 @@
   /* ------------------------------------------------------------------
    * The bands — every other section in the other theme's colours. Each
    * one opens to the full width as it reaches the middle of the screen
-   * and closes again as it leaves (--g, read by home.css). The bar, the
-   * index and the dock take a band's colours while it is under them.
+   * and closes again as it leaves (--g, read by home.css). The bar and
+   * the dock take a band's colours while it is under them.
    * ---------------------------------------------------------------- */
   const bands = $$(".section.invert").filter(S.inMode);
   if (bands.length) {
@@ -650,7 +887,7 @@
     }
     /* each fixed part reads the page at its own height */
     const dock = $$(".dock").filter(S.inMode)[0];
-    const parts = [[bar, () => 32], [rail, (st) => st.vh / 2], [dock, (st) => st.vh - 32]].filter((p) => p[0]);
+    const parts = [[bar, () => 32], [dock, (st) => st.vh - 32]].filter((p) => p[0]);
     const fades = new Map();
     const tint = (st) => parts.forEach((p) => {
       const el = p[0];
@@ -666,6 +903,42 @@
     });
     S.onScroll(tint);
     S.onMeasure((st) => tint(st));
+  }
+
+  /* ------------------------------------------------------------------
+   * How I work — each habit lights up as it reaches the reading line,
+   * two thirds of the way down the window, and dims again above it.
+   * ---------------------------------------------------------------- */
+  const habits = $$(".how__row").filter(S.inMode);
+  if (habits.length) {
+    let tops = [];
+    S.onMeasure(() => { tops = habits.map((el) => el.getBoundingClientRect().top + window.scrollY); });
+    const light = (st) => habits.forEach((el, i) => el.classList.toggle("is-lit", reduced || st.y + st.vh * 0.66 >= tops[i]));
+    S.onScroll(light);
+    S.onMeasure((st) => light(st));
+  }
+
+  /* ------------------------------------------------------------------
+   * The chess card's rating — read live from Chess.com's public API,
+   * once the page has loaded. If the call fails or is slow, the line
+   * stays hidden.
+   * ---------------------------------------------------------------- */
+  const rating = $("[data-chess-rating]");
+  if (rating && window.fetch) {
+    window.addEventListener("load", () => {
+      const ctl = window.AbortController ? new AbortController() : null;
+      const timer = setTimeout(() => { if (ctl) ctl.abort(); }, 6000);
+      fetch("https://api.chess.com/pub/player/joaosfvaz/stats", ctl ? { signal: ctl.signal } : {})
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          const n = d && d.chess_rapid && d.chess_rapid.last && d.chess_rapid.last.rating;
+          if (!n) return;
+          $("[data-chess-rapid]", rating).textContent = String(n);
+          rating.hidden = false;
+        })
+        .catch(() => { /* offline or blocked: the card reads fine without it */ })
+        .then(() => clearTimeout(timer));
+    });
   }
 
   /* ------------------------------------------------------------------
@@ -1045,7 +1318,7 @@
    * and the choice holds even where storage is blocked. Skip or Esc on a
    * first visit means the recruiter view; later they only close it.
    * ---------------------------------------------------------------- */
-  /* the hero switch: the thumb sits on this view */
+  /* the bar's switch: the current view is marked */
   $$(".mode-switch").forEach((sw) => {
     sw.setAttribute("data-on", S.mode);
     $$("[data-mode-switch]", sw).forEach((a) => {
@@ -1054,9 +1327,9 @@
     });
   });
   /* the switch, the footer link and "See the full CV" go straight to the
-     other view: the switch slides its thumb across, the screen wipes up
-     in that view's colour and the page starts over in it. The question
-     itself only asks once, on a first visit */
+     other view: the switch marks it, the screen wipes up in that view's
+     colour and the page starts over in it. The question itself only asks
+     once, on a first visit */
   function switchTo(to, sw) {
     if (to === S.mode || root.hasAttribute("data-mode-switching")) return;
     root.setAttribute("data-mode-switching", "");
@@ -1074,7 +1347,7 @@
       void wipe.offsetWidth;
       wipe.classList.add("is-on");
       setTimeout(() => location.replace(url), 440);
-    }, sw ? 380 : 0);
+    }, sw ? 140 : 0);
   }
   $$("[data-mode-switch]").forEach((a) => a.addEventListener("click", (ev) => {
     ev.preventDefault();
@@ -1084,12 +1357,8 @@
   const ob = $("#onboard");
   if (ob && ob.showModal) {
     const picks = $$(".pick", ob);
-    const boot = $("[data-boot]", ob);
-    const loadLabel = $("[data-load-label]", ob);
-    const loadPct = $("[data-load-pct]", ob);
     let going = false;
     let pending = "";
-    let bootTimers = [];
 
     const hover = (p) => {
       picks.forEach((x) => x.classList.toggle("is-on", x === p));
@@ -1097,46 +1366,27 @@
     };
     const pickFor = (mode) => picks.filter((p) => p.dataset.pick === mode)[0];
 
-    /* the console line types out the boot, then says it is ready */
-    function runBoot() {
-      bootTimers.forEach(clearTimeout);
-      if (reduced) { boot.textContent = "Ready"; return; }
-      bootTimers = ["Booting joao-vaz.com", "Loading player data", "2 paths found", "Ready"].map((t, i) =>
-        setTimeout(() => { boot.textContent = t; }, i * 340));
-    }
-
     function open() {
       ob.showModal();
       ob.classList.add("is-playing");
-      picks[0].focus({ preventScroll: true });
-      hover(picks[0]);
-      runBoot();
+      /* no answer is picked for the visitor: both forms stay lit until the
+         pointer or the arrow keys lean one way */
+      ob.focus({ preventScroll: true });
+      hover(null);
     }
 
-    /* a choice: the card steps forward, the bar loads, the screen wipes
-       and the page starts over in that view */
+    /* a choice: the words go, the chosen form grows until it is the
+       screen, and the page starts over in that view */
     function choose(mode) {
       if (going) return;
       going = true;
-      const p = pickFor(mode);
-      hover(p);
-      picks.forEach((x) => x.classList.toggle(x === p ? "is-chosen" : "is-out", true));
+      hover(pickFor(mode));
       ob.classList.add("is-picked");
       ob.setAttribute("data-picked", mode);
-      loadLabel.textContent = "Loading the " + mode + " view";
       const url = "/?mode=" + mode + "&start=1";
       pending = url;
       if (reduced) { location.replace(url); return; }
-      const t0 = performance.now();
-      (function tick(now) {
-        const k = clamp((now - t0) / 950, 0, 1);
-        const v = Math.round(100 * S.easeOutCubic(k));
-        loadPct.textContent = v + "%";
-        ob.style.setProperty("--load", (v / 100).toFixed(3));
-        if (k < 1) { requestAnimationFrame(tick); return; }
-        ob.classList.add("is-leaving");
-        setTimeout(() => location.replace(url), 420);
-      })(t0);
+      setTimeout(() => location.replace(url), 640);
     }
 
     const skip = () => choose("recruiter");
@@ -1151,20 +1401,7 @@
       p.addEventListener("focus", () => hover(p));
       p.addEventListener("click", () => choose(p.dataset.pick));
     });
-    /* on a mouse, the cards lean towards the pointer */
-    if (!reduced && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-      picks.forEach((p) => {
-        p.addEventListener("pointermove", (ev) => {
-          const r = p.getBoundingClientRect();
-          p.style.setProperty("--rx", (((ev.clientY - r.top) / r.height - 0.5) * -7).toFixed(2) + "deg");
-          p.style.setProperty("--ry", (((ev.clientX - r.left) / r.width - 0.5) * 9).toFixed(2) + "deg");
-        });
-        p.addEventListener("pointerleave", () => {
-          p.style.removeProperty("--rx");
-          p.style.removeProperty("--ry");
-        });
-      });
-    }
+    ob.addEventListener("pointerleave", () => { if (!going) hover(null); });
     ob.addEventListener("keydown", (ev) => {
       if (going) return;
       const i = picks.indexOf(document.activeElement);

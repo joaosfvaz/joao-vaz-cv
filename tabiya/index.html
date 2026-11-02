@@ -27,9 +27,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/home.css?v=2026-10-30a" />
-  <link rel="stylesheet" href="/project.css?v=2026-10-30a" />
-  <link rel="stylesheet" href="/tabiya.css?v=2026-10-30a" />
+  <link rel="stylesheet" href="/home.css?v=2026-11-02e" />
+  <link rel="stylesheet" href="/project.css?v=2026-11-02e" />
+  <link rel="stylesheet" href="/tabiya.css?v=2026-11-02e" />
   <script>
     document.documentElement.className += " js";
     /* the theme is set before the first paint: a saved choice, else the
@@ -46,10 +46,10 @@
 
   <a class="skip" href="#why">Skip to the page</a>
 
-  <!-- The same bar, index and dock as the home page, pointed at this
+  <!-- The same bar and dock as the home page, pointed at this
        page's own sections. -->
   <header class="bar" id="bar">
-    <a class="bar__name" href="/" aria-label="João Vaz — home"><svg class="bar__mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="15" fill="#4d7cff" /><g transform="translate(3.6 3.6) scale(.89)"><g fill="#fff"><path d="M15 13h8.5v24.5c0 7.2-5.8 13-13 13H9v-8.5h1.5c2.5 0 4.5-2 4.5-4.5z" /><path d="M27 13h8.6l4.9 21.5 4.9-21.5H54l-9.2 37.5h-8.6z" /></g><rect class="bar__dot" x="52" y="42.5" width="8" height="8" rx="1.2" fill="#ff7a3d" /></g></svg><span>João Vaz</span></a>
+    <a class="bar__name" href="/" aria-label="João Vaz — home"><svg class="jv" viewBox="8.3 8 104 84" aria-hidden="true"><path d="M40.3 8L62.3 8L50.4 64C46.57 82 32.44 92 16.44 92L10.44 92L8.3 72L18.7 72C23.7 72 27.55 68 28.82 62ZM89.3 8L112.3 8L67.44 92L49.44 92L48.55 83.76C55.29 77.87 59.71 71.25 62.79 64L76.01 32.9Z" /></svg><span class="wordmark" aria-hidden="true">João Vaz</span></a>
     <nav class="bar__links" aria-label="Sections">
       <a href="#why" data-nav="why">Why</a>
       <a href="#features" data-nav="features">Features</a>
@@ -66,22 +66,15 @@
       <a class="bar__icon" href="https://linkedin.com/in/joaovaz00" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg></a>
       <a class="btn btn--ink btn--sm" href="https://dij9fnusrsdml.cloudfront.net" target="_blank" rel="noopener"><span class="bar__long">Open the app</span><span class="bar__short">Open app</span></a>
     </div>
-    <i class="bar__progress" aria-hidden="true"></i>
   </header>
 
-  <nav class="rail" aria-label="Section index">
-    <a href="#why" data-nav="why"><b>01</b><span>Why</span><i></i></a>
-    <a href="#features" data-nav="features"><b>02</b><span>Features</span><i></i></a>
-    <a href="#architecture" data-nav="architecture"><b>03</b><span>How it runs</span><i></i></a>
-    <a href="#learned" data-nav="learned"><b>04</b><span>Lessons</span><i></i></a>
-  </nav>
 
   <nav class="dock" aria-label="Sections">
     <a class="dock__home" href="/#projects" aria-label="All work"><b>←</b><span>All work</span></a>
-    <a href="#why" data-nav="why"><b>01</b>Why</a>
-    <a href="#features" data-nav="features"><b>02</b>Features</a>
-    <a href="#architecture" data-nav="architecture"><b>03</b>How it runs</a>
-    <a href="#learned" data-nav="learned"><b>04</b>Lessons</a>
+    <a href="#why" data-nav="why">Why</a>
+    <a href="#features" data-nav="features">Features</a>
+    <a href="#architecture" data-nav="architecture">How it runs</a>
+    <a href="#learned" data-nav="learned">Lessons</a>
   </nav>
 
   <main>
@@ -126,7 +119,7 @@
 
     <!-- WHY -->
     <section class="section" id="why">
-      <header class="head"><p class="meta rv"><b>01</b> Why I built it</p></header>
+      <header class="head"><p class="meta rv">Why I built it</p></header>
       <p class="lead rv">
         I got back into chess. I played a lot, I lost a lot, and I could not say <em>why</em> — the
         games just ended. The obvious answer was a Chess.com subscription. I did not want to pay for
@@ -143,7 +136,7 @@
 
     <!-- WHAT IT DOES -->
     <section class="section" id="features">
-      <header class="head"><p class="meta rv"><b>02</b> What it does</p></header>
+      <header class="head"><p class="meta rv">What it does</p></header>
 
       <article class="feat">
         <div class="feat__text">
@@ -209,7 +202,7 @@
 
     <!-- ARCHITECTURE -->
     <section class="section" id="architecture">
-      <header class="head"><p class="meta rv"><b>03</b> How it runs</p></header>
+      <header class="head"><p class="meta rv">How it runs</p></header>
       <p class="lead rv">
         No server and no database. A schedule wakes a function, the functions write files, and the
         browser reads them.
@@ -314,7 +307,7 @@
 
     <!-- LEARNED -->
     <section class="section" id="learned">
-      <header class="head"><p class="meta rv"><b>04</b> What I took from it</p></header>
+      <header class="head"><p class="meta rv">What I took from it</p></header>
       <ul class="takeaways">
         <li class="rv"><strong>Queues change how you design.</strong> Splitting "fetch" from
           "analyse" turned a script that failed halfway into a pipeline that picks itself back up.</li>
@@ -339,7 +332,7 @@
     <span>Tabiya, a chess coach that explains</span>
     <span class="eggs" data-eggs hidden>Easter eggs found: <b>0</b> / 4</span>
   </footer>
-  <script src="/js/scroll.js?v=2026-10-30a"></script>
-  <script src="/js/home.js?v=2026-10-30a"></script>
+  <script src="/js/scroll.js?v=2026-11-02e"></script>
+  <script src="/js/home.js?v=2026-11-02e"></script>
 </body>
 </html>
